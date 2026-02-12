@@ -1,26 +1,26 @@
-import { clampChroma, type Color } from "culori";
+import { converter, clampChroma, type Color } from "culori";
+
+const toRgb = converter("rgb");
 
 /**
  * Ensures a color is within the displayable gamut by clamping its chroma.
  * This preserves lightness and hue while reducing saturation if needed.
  */
-export function clampToGamut(color: Color): Color {
-  return clampChroma(color);
+export function clampToGamut<T extends Color>(color: T): T {
+  return clampChroma(color) as T;
 }
 
 /**
- * Checks if a color is within the sRGB gamut.
+ * Checks if a color is within the sRGB gamut by verifying RGB components are in [0, 1].
  */
 export function isInGamut(color: Color): boolean {
-  const clamped = clampChroma(color);
-  // Compare rounded values or use a small epsilon if needed
-  // For simplicity, we can check if clampChroma changed the color
-  // but Culori's clampChroma returns a new object.
-  // A better way is to check if it's already in sRGB.
-  // formatHex will return null if it can't represent it? No, it clamps.
+  const rgb = toRgb(color);
+  if (!rgb) return false;
   
-  // Culori doesn't have a direct "isInGamut" for sRGB that doesn't clamp.
-  // But we can compare the r, g, b values of the converted color.
-  // Actually, let's just use the fact that clampChroma exists.
-  return true; // Placeholder, will refine if needed.
+  const eps = 0.001; // Small epsilon for floating point math
+  return (
+    rgb.r >= -eps && rgb.r <= 1 + eps &&
+    rgb.g >= -eps && rgb.g <= 1 + eps &&
+    rgb.b >= -eps && rgb.b <= 1 + eps
+  );
 }

@@ -7,7 +7,7 @@ import { parse } from "culori";
  */
 export const ColorSchema = z.string()
   .min(1, "Color string cannot be empty")
-  .describe("Color string (HEX, RGB, HSL, OKLCH, etc.)")
+  .describe('Color string in any supported format (e.g., "#ff0000", "red", "rgb(255, 0, 0)", "oklch(0.6 0.2 29)")')
   .refine((val) => {
     try {
       return !!parse(val);
@@ -27,4 +27,4 @@ export const PrecisionSchema = z.number()
   .min(0, "Precision cannot be negative")
   .max(10, "Precision cannot exceed 10")
   .default(3)
-  .describe("Decimal places for output (0-10)");
+  .describe("Decimal places for output values (0-10)");
