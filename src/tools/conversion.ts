@@ -1,9 +1,18 @@
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
+import {
+	formatConversionResult,
+	stringifyColor,
+} from "../formatters/conversion.js";
 import { convertColor, parseColor } from "../lib/engine.js";
-import { formatConversionResult, stringifyColor } from "../formatters/conversion.js";
-import type { ConvertInput, BatchConvertInput, ParseInput } from "../schemas/conversion.js";
+import type {
+	BatchConvertInput,
+	ConvertInput,
+	ParseInput,
+} from "../schemas/conversion.js";
 
-export async function handleConvert(args: ConvertInput): Promise<CallToolResult> {
+export async function handleConvert(
+	args: ConvertInput,
+): Promise<CallToolResult> {
 	const { color, to, precision } = args;
 	const result = convertColor(color, to, precision);
 	const markdown = formatConversionResult(color, result, to);
@@ -19,7 +28,9 @@ export async function handleConvert(args: ConvertInput): Promise<CallToolResult>
 	};
 }
 
-export async function handleBatchConvert(args: BatchConvertInput): Promise<CallToolResult> {
+export async function handleBatchConvert(
+	args: BatchConvertInput,
+): Promise<CallToolResult> {
 	const { colors, to, precision } = args;
 	const results = colors.map((color) => {
 		const result = convertColor(color, to, precision);
@@ -35,7 +46,9 @@ export async function handleBatchConvert(args: BatchConvertInput): Promise<CallT
 		.join("\n");
 
 	return {
-		content: [{ type: "text", text: `### Batch Conversion to ${to}\n\n${markdown}` }],
+		content: [
+			{ type: "text", text: `### Batch Conversion to ${to}\n\n${markdown}` },
+		],
 		structuredContent: {
 			results,
 			space: to,

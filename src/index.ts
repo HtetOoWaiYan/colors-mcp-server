@@ -2,8 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { logger } from "./logger.js";
 import {
-	ConvertInputSchema,
 	BatchConvertInputSchema,
+	ConvertInputSchema,
 	ParseInputSchema,
 } from "./schemas/conversion.js";
 import {
