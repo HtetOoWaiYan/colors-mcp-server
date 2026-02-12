@@ -1,4 +1,13 @@
-import { type Color, formatHsl, formatRgb } from "culori";
+import {
+	type Color,
+	formatHsl,
+	formatRgb,
+	type Lab,
+	type Lch,
+	type Oklab,
+	type Oklch,
+	type P3,
+} from "culori";
 
 /**
  * Formats a color object or string for display in Markdown.
@@ -13,20 +22,17 @@ export function stringifyColor(color: string | Color): string {
 
 	// Explicitly handle common perceptual/wide-gamut spaces for correct property order
 	if (mode === "oklch" || mode === "lch") {
-		const c = color as unknown as Record<string, unknown>;
-		const { l, c: chroma, h, alpha } = c;
-		return `${mode}(${l} ${chroma} ${h}${alpha !== undefined ? ` / ${alpha}` : ""})`;
+		const { l, c, h, alpha } = color as Oklch | Lch;
+		return `${mode}(${l} ${c} ${h ?? 0}${alpha !== undefined ? ` / ${alpha}` : ""})`;
 	}
 
 	if (mode === "oklab" || mode === "lab") {
-		const c = color as unknown as Record<string, unknown>;
-		const { l, a, b, alpha } = c;
+		const { l, a, b, alpha } = color as Oklab | Lab;
 		return `${mode}(${l} ${a} ${b}${alpha !== undefined ? ` / ${alpha}` : ""})`;
 	}
 
 	if (mode === "p3") {
-		const c = color as unknown as Record<string, unknown>;
-		const { r, g, b, alpha } = c;
+		const { r, g, b, alpha } = color as P3;
 		return `color(display-p3 ${r} ${g} ${b}${alpha !== undefined ? ` / ${alpha}` : ""})`;
 	}
 

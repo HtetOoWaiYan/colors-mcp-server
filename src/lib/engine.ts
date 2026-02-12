@@ -1,4 +1,4 @@
-import { type Color, converter, formatHex, parse } from "culori";
+import { type Color, converter, formatHex, type Mode, parse } from "culori";
 
 /**
  * Parses a color string into a Culori color object.
@@ -19,15 +19,12 @@ export function parseColor(color: string): Color {
 /**
  * Rounds numeric properties of a color object to the specified precision.
  */
-export function roundValues<T extends Record<string, unknown>>(
-	color: T,
-	precision = 3,
-): T {
+export function roundValues<T extends Color>(color: T, precision = 3): T {
 	const result = { ...color };
-	for (const key of Object.keys(result)) {
+	for (const key of Object.keys(result) as Array<keyof T>) {
 		const value = result[key];
 		if (typeof value === "number") {
-			result[key as keyof T] = Number(value.toFixed(precision)) as T[keyof T];
+			result[key] = Number(value.toFixed(precision)) as T[keyof T];
 		}
 	}
 	return result;
@@ -54,7 +51,8 @@ export function convertColor(
 		return hex;
 	}
 
-	const convert = converter(to as Parameters<typeof converter>[0]);
+	// Validate the mode before passing to converter
+	const convert = converter(to as Mode);
 	if (!convert) {
 		throw new Error(
 			`Unsupported color space: "${to}". \n` +
@@ -63,8 +61,5 @@ export function convertColor(
 	}
 
 	const converted = convert(parsed);
-	return roundValues(
-		converted as unknown as Record<string, unknown>,
-		precision,
-	) as unknown as Color;
+	return roundValues(converted, precision);
 }
