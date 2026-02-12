@@ -1,6 +1,16 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { logger } from "./logger.js";
+import {
+	ConvertInputSchema,
+	BatchConvertInputSchema,
+	ParseInputSchema,
+} from "./schemas/conversion.js";
+import {
+	handleBatchConvert,
+	handleConvert,
+	handleParse,
+} from "./tools/conversion.js";
 
 /**
  * Colors MCP Server
@@ -13,7 +23,26 @@ const server = new McpServer({
 	version: "1.0.0",
 });
 
-// Note: Tools will be registered here in subsequent phases using server.registerTool()
+server.tool(
+	"colors_convert",
+	"Convert a color to a different color space",
+	ConvertInputSchema.shape,
+	handleConvert,
+);
+
+server.tool(
+	"colors_batch_convert",
+	"Convert multiple colors to a target color space",
+	BatchConvertInputSchema.shape,
+	handleBatchConvert,
+);
+
+server.tool(
+	"colors_parse",
+	"Parse and validate a color string",
+	ParseInputSchema.shape,
+	handleParse,
+);
 
 /**
  * Main entry point
