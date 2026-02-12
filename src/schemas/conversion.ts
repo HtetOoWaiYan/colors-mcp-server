@@ -33,3 +33,14 @@ export const BatchConvertInputSchema = z
 
 export type ConvertInput = z.infer<typeof ConvertInputSchema>;
 export type BatchConvertInput = z.infer<typeof BatchConvertInputSchema>;
+
+/**
+ * Input schema for the colors_parse tool.
+ */
+export const ParseInputSchema = z
+	.object({
+		color: z.string().describe("Color string to parse and validate"),
+	})
+	.strict();
+
+export type ParseInput = z.infer<typeof ParseInputSchema>;
