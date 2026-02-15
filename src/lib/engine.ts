@@ -5,7 +5,8 @@ import { type Color, converter, formatHex, type Mode, parse } from "culori";
  * Throws an educational error if the format is invalid.
  */
 export function parseColor(color: string): Color {
-	const parsed = parse(color);
+	const normalized = color.trim().toLowerCase();
+	const parsed = parse(normalized);
 	if (!parsed) {
 		throw new Error(
 			`Invalid color format: "${color}". \n` +
