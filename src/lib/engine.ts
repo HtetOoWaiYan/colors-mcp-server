@@ -1,4 +1,16 @@
-import { type Color, converter, formatHex, type Mode, parse } from "culori";
+import {
+	type Color,
+	type Hsl,
+	type Oklch,
+	converter,
+	differenceEuclidean,
+	formatHex,
+	interpolate,
+	type Mode,
+	parse,
+	samples,
+	wcagContrast,
+} from "culori";
 
 /**
  * Parses a color string into a Culori color object.
@@ -63,4 +75,82 @@ export function convertColor(
 
 	const converted = convert(parsed);
 	return roundValues(converted, precision);
+}
+
+/**
+ * Adjusts properties of a color in OKLCH space.
+ */
+export function adjustColor(
+	color: string,
+	mode: "lightness" | "chroma" | "hue",
+	amount: number,
+	relative = false,
+): Color {
+	const parsed = parseColor(color);
+	const lch = converter("oklch")(parsed) as Oklch;
+
+	switch (mode) {
+		case "lightness":
+			lch.l = relative ? (lch.l ?? 0) * (1 + amount) : (lch.l ?? 0) + amount;
+			break;
+		case "chroma":
+			lch.c = relative ? (lch.c ?? 0) * (1 + amount) : (lch.c ?? 0) + amount;
+			break;
+		case "hue":
+			lch.h = relative ? (lch.h ?? 0) * (1 + amount) : (lch.h ?? 0) + amount;
+			break;
+	}
+
+	return lch;
+}
+
+/**
+ * Mixes two colors using the specified interpolation mode.
+ */
+export function mixColors(
+	color1: string,
+	color2: string,
+	ratio = 0.5,
+	mode: string = "oklch",
+): Color {
+	const c1 = parseColor(color1);
+	const c2 = parseColor(color2);
+	const mixer = interpolate([c1, c2], mode as Mode);
+	return mixer(ratio);
+}
+
+/**
+ * Generates a color scale between multiple colors.
+ */
+export function createScale(
+	colors: string[],
+	steps: number,
+	mode: string = "oklch",
+): Color[] {
+	const parsedColors = colors.map(parseColor);
+	const scale = interpolate(parsedColors, mode as Mode);
+	const samplesList = samples(steps);
+	// samples(n) returns n numbers roughly equally spaced from 0 to 1
+	return samplesList.map((t) => scale(t));
+}
+
+/**
+ * Calculates the difference between two colors.
+ */
+export function calculateDifference(
+	color1: string,
+	color2: string,
+	metric: "deltaE" | "contrast" = "deltaE",
+): number {
+	const c1 = parseColor(color1);
+	const c2 = parseColor(color2);
+
+	if (metric === "contrast") {
+		return wcagContrast(c1, c2);
+	}
+
+	// Use Euclidean difference in Oklab as a good default for DeltaE
+	// if 'deltaEOK' logic is desired.
+	const diff = differenceEuclidean("oklab");
+	return diff(c1, c2);
 }

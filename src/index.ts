@@ -7,10 +7,22 @@ import {
 	ParseInputSchema,
 } from "./schemas/conversion.js";
 import {
+	AdjustInputSchema,
+	DifferenceInputSchema,
+	MixInputSchema,
+	ScaleInputSchema,
+} from "./schemas/manipulation.js";
+import {
 	handleBatchConvert,
 	handleConvert,
 	handleParse,
 } from "./tools/conversion.js";
+import {
+	handleAdjust,
+	handleDifference,
+	handleMix,
+	handleScale,
+} from "./tools/manipulation.js";
 
 /**
  * Colors MCP Server
@@ -42,6 +54,34 @@ server.tool(
 	"Parse and validate a color string",
 	ParseInputSchema.shape,
 	handleParse,
+);
+
+server.tool(
+	"colors_adjust",
+	"Adjust color properties (lightness, chroma, hue)",
+	AdjustInputSchema.shape,
+	handleAdjust,
+);
+
+server.tool(
+	"colors_mix",
+	"Mix two colors with perceptual interpolation",
+	MixInputSchema.shape,
+	handleMix,
+);
+
+server.tool(
+	"colors_scale",
+	"Generate a perceptually uniform color scale",
+	ScaleInputSchema.shape,
+	handleScale,
+);
+
+server.tool(
+	"colors_difference",
+	"Calculate color difference (DeltaE) or contrast ratio",
+	DifferenceInputSchema.shape,
+	handleDifference,
 );
 
 /**
