@@ -1,9 +1,4 @@
-import {
-	type Oklch,
-	converter,
-	differenceEuclidean,
-	wcagContrast,
-} from "culori";
+import { converter, differenceEuclidean, type Oklch } from "culori";
 import { describe, expect, it } from "vitest";
 import {
 	adjustColor,
