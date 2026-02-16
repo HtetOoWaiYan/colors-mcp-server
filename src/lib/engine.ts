@@ -1,16 +1,16 @@
 import {
-  type Color,
-  type Oklch,
-  type Rgb,
-  converter,
-  differenceEuclidean,
-  formatHex,
-  interpolate,
-  type Mode,
-  parse,
-  samples,
-  wcagContrast,
-} from 'culori';
+	type Color,
+	type Oklch,
+	type Rgb,
+	converter,
+	differenceEuclidean,
+	formatHex,
+	interpolate,
+	type Mode,
+	parse,
+	samples,
+	wcagContrast,
+} from "culori";
 
 /**
  * Parses a color string into a Culori color object.
@@ -203,28 +203,28 @@ export function alphaBlend(fg: Color, bg: Color): Color {
  * Returns the ratio and pass/fail for AA, AAA, and non-text levels.
  */
 export function checkContrast(
-  fg: string,
-  bg: string,
-  base?: string,
+	fg: string,
+	bg: string,
+	base?: string,
 ): ContrastResult {
-  const fgColor = parseColor(fg);
-  const bgColor = parseColor(bg);
-  const baseColor = parseColor(base ?? '#ffffff');
+	const fgColor = parseColor(fg);
+	const bgColor = parseColor(bg);
+	const baseColor = parseColor(base ?? "#ffffff");
 
-  const effectiveBg = alphaBlend(bgColor, baseColor);
-  const effectiveFg = alphaBlend(fgColor, effectiveBg);
-  const ratio = wcagContrast(effectiveFg, effectiveBg);
+	const effectiveBg = alphaBlend(bgColor, baseColor);
+	const effectiveFg = alphaBlend(fgColor, effectiveBg);
+	const ratio = wcagContrast(effectiveFg, effectiveBg);
 
-  return {
-    ratio: Number(ratio.toFixed(2)),
-    aa: {
-      regular: ratio >= CONTRAST_THRESHOLDS.AA_REGULAR,
-      large: ratio >= CONTRAST_THRESHOLDS.AA_LARGE,
-    },
-    aaa: {
-      regular: ratio >= CONTRAST_THRESHOLDS.AAA_REGULAR,
-      large: ratio >= CONTRAST_THRESHOLDS.AAA_LARGE,
-    },
-    nonText: ratio >= CONTRAST_THRESHOLDS.NON_TEXT,
-  };
+	return {
+		ratio: Number(ratio.toFixed(2)),
+		aa: {
+			regular: ratio >= CONTRAST_THRESHOLDS.AA_REGULAR,
+			large: ratio >= CONTRAST_THRESHOLDS.AA_LARGE,
+		},
+		aaa: {
+			regular: ratio >= CONTRAST_THRESHOLDS.AAA_REGULAR,
+			large: ratio >= CONTRAST_THRESHOLDS.AAA_LARGE,
+		},
+		nonText: ratio >= CONTRAST_THRESHOLDS.NON_TEXT,
+	};
 }

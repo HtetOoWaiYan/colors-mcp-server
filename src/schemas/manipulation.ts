@@ -25,6 +25,31 @@ export const AdjustInputSchema = z
 export type AdjustInput = z.infer<typeof AdjustInputSchema>;
 
 /**
+ * Input schema for the colors_batch_adjust tool.
+ */
+export const BatchAdjustInputSchema = z
+	.object({
+		colors: z
+			.array(ColorSchema)
+			.min(1, "At least one color is required")
+			.describe("List of colors to adjust"),
+		mode: z
+			.enum(["lightness", "chroma", "hue"])
+			.describe("Property to adjust (lightness, chroma, hue)"),
+		amount: z
+			.number()
+			.describe("Amount to adjust by (e.g., 0.1 for +10%, -0.05 for -5%)"),
+		relative: z
+			.boolean()
+			.optional()
+			.default(false)
+			.describe("Whether to adjust relatively (%) or absolutely"),
+	})
+	.strict();
+
+export type BatchAdjustInput = z.infer<typeof BatchAdjustInputSchema>;
+
+/**
  * Input schema for the colors_mix tool.
  */
 export const MixInputSchema = z
@@ -91,3 +116,23 @@ export const DifferenceInputSchema = z
 	.strict();
 
 export type DifferenceInput = z.infer<typeof DifferenceInputSchema>;
+
+/**
+ * Input schema for the colors_batch_difference tool.
+ */
+export const BatchDifferenceInputSchema = z
+	.object({
+		reference: ColorSchema.describe("The target/reference color"),
+		candidates: z
+			.array(ColorSchema)
+			.min(1, "At least one candidate color is required")
+			.describe("List of colors to compare against the reference"),
+		metric: z
+			.enum(["deltaE", "contrast"])
+			.optional()
+			.default("deltaE")
+			.describe("Metric to calculate (deltaE or contrast)"),
+	})
+	.strict();
+
+export type BatchDifferenceInput = z.infer<typeof BatchDifferenceInputSchema>;

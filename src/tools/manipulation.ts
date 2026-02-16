@@ -9,6 +9,8 @@ import {
 } from "../lib/engine.js";
 import type {
 	AdjustInput,
+	BatchAdjustInput,
+	BatchDifferenceInput,
 	DifferenceInput,
 	MixInput,
 	ScaleInput,
@@ -31,6 +33,38 @@ export async function handleAdjust(args: AdjustInput): Promise<CallToolResult> {
 			params: { mode: args.mode, amount: args.amount, relative: args.relative },
 			output: output,
 			raw: result,
+		},
+	};
+}
+
+export async function handleBatchAdjust(
+	args: BatchAdjustInput,
+): Promise<CallToolResult> {
+	const { colors, mode, amount, relative } = args;
+	const results = colors.map((color) => {
+		const result = adjustColor(color, mode, amount, relative);
+		return {
+			input: color,
+			output: stringifyColor(result),
+			raw: result,
+		};
+	});
+
+	const markdown = results
+		.map((r) => `- **${r.input}** → **${r.output}**`)
+		.join("\n");
+
+	return {
+		content: [
+			{
+				type: "text",
+				text: `### Batch Adjust (${mode} ${amount})\n\n${markdown}`,
+			},
+		],
+		structuredContent: {
+			results,
+			operation: "adjust",
+			params: { mode, amount, relative },
 		},
 	};
 }
@@ -94,6 +128,45 @@ export async function handleDifference(
 			operation: "difference",
 			params: { metric: args.metric },
 			value: value,
+		},
+	};
+}
+
+export async function handleBatchDifference(
+	args: BatchDifferenceInput,
+): Promise<CallToolResult> {
+	const { reference, candidates, metric } = args;
+	const results = candidates.map((candidate) => {
+		const value = calculateDifference(reference, candidate, metric);
+		return {
+			color: candidate,
+			value: value,
+		};
+	});
+
+	// Sort by difference (ascending)
+	results.sort((a, b) => a.value - b.value);
+
+	const nearest = results[0];
+	const markdown = results
+		.slice(0, 10) // Show top 10
+		.map((r) => `- **${r.color}**: ${r.value.toFixed(4)}`)
+		.join("\n");
+
+	return {
+		content: [
+			{
+				type: "text",
+				text: `### Batch Difference (${metric})\n\nReference: **${reference}**\n\nNearest Match: **${
+					nearest.color
+				}** (${nearest.value.toFixed(4)})\n\nTop Comparisons:\n${markdown}`,
+			},
+		],
+		structuredContent: {
+			reference,
+			metric,
+			nearest: nearest,
+			results,
 		},
 	};
 }
