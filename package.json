@@ -1,6 +1,6 @@
 {
 	"name": "@htetoowaiyan/colors-mcp-server",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "A simple color utility MCP server for frontend developers — convert, mix, adjust, and analyze colors.",
 	"type": "module",
 	"main": "./dist/index.js",
