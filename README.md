@@ -3,7 +3,7 @@
 [![npm](https://img.shields.io/npm/v/@htetoowaiyan/colors-mcp-server)](https://www.npmjs.com/package/@htetoowaiyan/colors-mcp-server)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-A simple color utility [MCP](https://modelcontextprotocol.io/) server for frontend developers. Convert, mix, adjust, and analyze colors right from your AI-powered editor.
+A simple color utility [MCP](https://modelcontextprotocol.io/) server for frontend developers. Convert, mix, adjust, and analyze colors right from your AI agents.
 
 > This is a personal project I built to learn how to create MCP servers. I needed these color utilities in my own development workflow, so I made it myself. There are other feature-rich color MCP servers out there — this one is intentionally simple and straightforward.
 
@@ -15,10 +15,13 @@ A simple color utility [MCP](https://modelcontextprotocol.io/) server for fronte
 | `colors_batch_convert` | Convert multiple colors to a target color space at once |
 | `colors_parse` | Parse and validate a color string |
 | `colors_adjust` | Adjust color properties (lightness, chroma, hue) |
+| `colors_batch_adjust` | Batch adjust multiple colors (lightness, chroma, hue) |
 | `colors_mix` | Mix two colors with perceptual interpolation |
 | `colors_scale` | Generate a perceptually uniform color scale |
 | `colors_difference` | Calculate color difference (Delta E) between two colors |
+| `colors_batch_difference` | Batch calculate color difference (Delta E) against a target color |
 | `colors_contrast` | Check WCAG contrast ratio between foreground and background colors |
+| `colors_batch_contrast` | Batch check WCAG contrast ratio for multiple foregrounds against a background |
 
 ## Setup
 
