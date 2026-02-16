@@ -6,8 +6,8 @@ import type { ContrastInput } from "../schemas/accessibility.js";
 export async function handleContrast(
 	args: ContrastInput,
 ): Promise<CallToolResult> {
-	const { foreground, background } = args;
-	const result = checkContrast(foreground, background);
+	const { foreground, background, base } = args;
+  const result = checkContrast(foreground, background, base);
 	const markdown = formatContrastResult(foreground, background, result);
 
 	return {

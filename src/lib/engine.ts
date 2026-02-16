@@ -1,15 +1,16 @@
 import {
-	type Color,
-	type Oklch,
-	converter,
-	differenceEuclidean,
-	formatHex,
-	interpolate,
-	type Mode,
-	parse,
-	samples,
-	wcagContrast,
-} from "culori";
+  type Color,
+  type Oklch,
+  type Rgb,
+  converter,
+  differenceEuclidean,
+  formatHex,
+  interpolate,
+  type Mode,
+  parse,
+  samples,
+  wcagContrast,
+} from 'culori';
 
 /**
  * Parses a color string into a Culori color object.
@@ -145,7 +146,7 @@ export function calculateDifference(
 	const c2 = parseColor(color2);
 
 	if (metric === "contrast") {
-		return wcagContrast(c1, c2);
+		return wcagContrast(alphaBlend(c1, c2), c2);
 	}
 
 	// Use Euclidean difference in Oklab as a good default for DeltaE
@@ -174,24 +175,56 @@ const CONTRAST_THRESHOLDS = {
 } as const;
 
 /**
- * Checks WCAG contrast ratio between foreground and background colors.
- * Returns the ratio and pass/fail for AA, AAA, and non-text levels.
+ * Alpha-blends a foreground color onto a background color.
+ * If the foreground is fully opaque (alpha undefined or 1), returns it unchanged.
+ * Formula: result = alpha * fg + (1 - alpha) * bg  (per channel in RGB)
  */
-export function checkContrast(fg: string, bg: string): ContrastResult {
-	const fgColor = parseColor(fg);
-	const bgColor = parseColor(bg);
-	const ratio = wcagContrast(fgColor, bgColor);
+export function alphaBlend(fg: Color, bg: Color): Color {
+	const alpha = fg.alpha ?? 1;
+	if (alpha >= 1) return fg;
+
+	const toRgb = converter("rgb");
+	const fgRgb = toRgb(fg) as Rgb;
+	const bgRgb = toRgb(bg) as Rgb;
 
 	return {
-		ratio: Number(ratio.toFixed(2)),
-		aa: {
-			regular: ratio >= CONTRAST_THRESHOLDS.AA_REGULAR,
-			large: ratio >= CONTRAST_THRESHOLDS.AA_LARGE,
-		},
-		aaa: {
-			regular: ratio >= CONTRAST_THRESHOLDS.AAA_REGULAR,
-			large: ratio >= CONTRAST_THRESHOLDS.AAA_LARGE,
-		},
-		nonText: ratio >= CONTRAST_THRESHOLDS.NON_TEXT,
+		mode: "rgb",
+		r: alpha * (fgRgb.r ?? 0) + (1 - alpha) * (bgRgb.r ?? 0),
+		g: alpha * (fgRgb.g ?? 0) + (1 - alpha) * (bgRgb.g ?? 0),
+		b: alpha * (fgRgb.b ?? 0) + (1 - alpha) * (bgRgb.b ?? 0),
+		alpha: 1,
 	};
+}
+
+/**
+ * Checks WCAG contrast ratio between foreground and background colors.
+ * If the foreground has an alpha < 1, it is blended onto the background first.
+ * If the background has an alpha < 1, it is blended onto the base color first (default white).
+ * Returns the ratio and pass/fail for AA, AAA, and non-text levels.
+ */
+export function checkContrast(
+  fg: string,
+  bg: string,
+  base?: string,
+): ContrastResult {
+  const fgColor = parseColor(fg);
+  const bgColor = parseColor(bg);
+  const baseColor = parseColor(base ?? '#ffffff');
+
+  const effectiveBg = alphaBlend(bgColor, baseColor);
+  const effectiveFg = alphaBlend(fgColor, effectiveBg);
+  const ratio = wcagContrast(effectiveFg, effectiveBg);
+
+  return {
+    ratio: Number(ratio.toFixed(2)),
+    aa: {
+      regular: ratio >= CONTRAST_THRESHOLDS.AA_REGULAR,
+      large: ratio >= CONTRAST_THRESHOLDS.AA_LARGE,
+    },
+    aaa: {
+      regular: ratio >= CONTRAST_THRESHOLDS.AAA_REGULAR,
+      large: ratio >= CONTRAST_THRESHOLDS.AAA_LARGE,
+    },
+    nonText: ratio >= CONTRAST_THRESHOLDS.NON_TEXT,
+  };
 }
