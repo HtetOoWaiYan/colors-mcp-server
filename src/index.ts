@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { createRequire } from 'node:module';
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { logger } from "./logger.js";
@@ -27,6 +28,9 @@ import {
 	handleScale,
 } from "./tools/manipulation.js";
 
+const require = createRequire(import.meta.url);
+const { version } = require('../package.json');
+
 /**
  * Colors MCP Server
  * Modern server for color conversion, manipulation, and analysis.
@@ -35,7 +39,7 @@ import {
 // Create MCP server instance
 const server = new McpServer({
   name: 'colors-mcp-server',
-  version: '1.0.4',
+  version,
 });
 
 server.registerTool(
