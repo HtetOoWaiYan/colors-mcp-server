@@ -26,12 +26,7 @@ describe("Engine Manipulation", () => {
 			// Gray (l=0.5) * 1.5 = 0.75
 			// Note: We use explicit oklch to ensure starting L value
 			const startColor = "oklch(0.5 0 0)";
-			const result = adjustColor(
-				startColor,
-				"lightness",
-				0.5,
-				true,
-			) as Oklch;
+			const result = adjustColor(startColor, "lightness", 0.5, true) as Oklch;
 			expect(result.l).toBeCloseTo(0.75);
 		});
 
@@ -42,11 +37,7 @@ describe("Engine Manipulation", () => {
 
 		it("should adjust hue absolutely", () => {
 			// oklch hue is 0-360
-			const result = adjustColor(
-				"oklch(0.5 0.2 0)",
-				"hue",
-				180,
-			) as Oklch;
+			const result = adjustColor("oklch(0.5 0.2 0)", "hue", 180) as Oklch;
 			expect(result.h).toBeCloseTo(180);
 		});
 	});

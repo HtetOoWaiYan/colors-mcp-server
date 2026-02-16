@@ -1,6 +1,6 @@
 {
 	"name": "@htetoowaiyan/colors-mcp-server",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "A simple color utility MCP server for frontend developers — convert, mix, adjust, and analyze colors.",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -21,7 +21,8 @@
 		"prepublishOnly": "npm run build",
 		"test": "vitest run",
 		"test:watch": "vitest",
-		"test:coverage": "vitest run --coverage"
+		"test:coverage": "vitest run --coverage",
+		"format": "biome format --write src"
 	},
 	"keywords": [
 		"mcp",

@@ -1,7 +1,8 @@
+#!/usr/bin/env node
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { logger } from "./logger.js";
-import { ContrastInputSchema } from './schemas/accessibility.js';
+import { ContrastInputSchema } from "./schemas/accessibility.js";
 import {
 	BatchConvertInputSchema,
 	ConvertInputSchema,
@@ -13,7 +14,7 @@ import {
 	MixInputSchema,
 	ScaleInputSchema,
 } from "./schemas/manipulation.js";
-import { handleContrast } from './tools/accessibility.js';
+import { handleContrast } from "./tools/accessibility.js";
 import {
 	handleBatchConvert,
 	handleConvert,
@@ -34,7 +35,7 @@ import {
 // Create MCP server instance
 const server = new McpServer({
 	name: "colors-mcp-server",
-	version: "1.0.0",
+	version: "1.0.2",
 });
 
 server.tool(
@@ -87,10 +88,10 @@ server.tool(
 );
 
 server.tool(
-  'colors_contrast',
-  'Check WCAG contrast ratio between foreground and background colors (AA, AAA, non-text)',
-  ContrastInputSchema.shape,
-  handleContrast,
+	"colors_contrast",
+	"Check WCAG contrast ratio between foreground and background colors (AA, AAA, non-text)",
+	ContrastInputSchema.shape,
+	handleContrast,
 );
 
 /**

@@ -1,15 +1,15 @@
 import {
-  type Color,
-  type Oklch,
-  converter,
-  differenceEuclidean,
-  formatHex,
-  interpolate,
-  type Mode,
-  parse,
-  samples,
-  wcagContrast,
-} from 'culori';
+	type Color,
+	type Oklch,
+	converter,
+	differenceEuclidean,
+	formatHex,
+	interpolate,
+	type Mode,
+	parse,
+	samples,
+	wcagContrast,
+} from "culori";
 
 /**
  * Parses a color string into a Culori color object.
