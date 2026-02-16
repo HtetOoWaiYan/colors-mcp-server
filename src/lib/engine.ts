@@ -1,16 +1,15 @@
 import {
-	type Color,
-	type Hsl,
-	type Oklch,
-	converter,
-	differenceEuclidean,
-	formatHex,
-	interpolate,
-	type Mode,
-	parse,
-	samples,
-	wcagContrast,
-} from "culori";
+  type Color,
+  type Oklch,
+  converter,
+  differenceEuclidean,
+  formatHex,
+  interpolate,
+  type Mode,
+  parse,
+  samples,
+  wcagContrast,
+} from 'culori';
 
 /**
  * Parses a color string into a Culori color object.
@@ -153,4 +152,46 @@ export function calculateDifference(
 	// if 'deltaEOK' logic is desired.
 	const diff = differenceEuclidean("oklab");
 	return diff(c1, c2);
+}
+
+/**
+ * Result of a WCAG contrast check.
+ */
+export interface ContrastResult {
+	ratio: number;
+	aa: { regular: boolean; large: boolean };
+	aaa: { regular: boolean; large: boolean };
+	nonText: boolean;
+}
+
+// WCAG 2.x contrast thresholds
+const CONTRAST_THRESHOLDS = {
+	AA_REGULAR: 4.5,
+	AA_LARGE: 3,
+	AAA_REGULAR: 7,
+	AAA_LARGE: 4.5,
+	NON_TEXT: 3,
+} as const;
+
+/**
+ * Checks WCAG contrast ratio between foreground and background colors.
+ * Returns the ratio and pass/fail for AA, AAA, and non-text levels.
+ */
+export function checkContrast(fg: string, bg: string): ContrastResult {
+	const fgColor = parseColor(fg);
+	const bgColor = parseColor(bg);
+	const ratio = wcagContrast(fgColor, bgColor);
+
+	return {
+		ratio: Number(ratio.toFixed(2)),
+		aa: {
+			regular: ratio >= CONTRAST_THRESHOLDS.AA_REGULAR,
+			large: ratio >= CONTRAST_THRESHOLDS.AA_LARGE,
+		},
+		aaa: {
+			regular: ratio >= CONTRAST_THRESHOLDS.AAA_REGULAR,
+			large: ratio >= CONTRAST_THRESHOLDS.AAA_LARGE,
+		},
+		nonText: ratio >= CONTRAST_THRESHOLDS.NON_TEXT,
+	};
 }

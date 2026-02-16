@@ -1,6 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { logger } from "./logger.js";
+import { ContrastInputSchema } from './schemas/accessibility.js';
 import {
 	BatchConvertInputSchema,
 	ConvertInputSchema,
@@ -12,6 +13,7 @@ import {
 	MixInputSchema,
 	ScaleInputSchema,
 } from "./schemas/manipulation.js";
+import { handleContrast } from './tools/accessibility.js';
 import {
 	handleBatchConvert,
 	handleConvert,
@@ -82,6 +84,13 @@ server.tool(
 	"Calculate color difference (DeltaE) or contrast ratio",
 	DifferenceInputSchema.shape,
 	handleDifference,
+);
+
+server.tool(
+  'colors_contrast',
+  'Check WCAG contrast ratio between foreground and background colors (AA, AAA, non-text)',
+  ContrastInputSchema.shape,
+  handleContrast,
 );
 
 /**
