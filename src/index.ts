@@ -34,64 +34,137 @@ import {
 
 // Create MCP server instance
 const server = new McpServer({
-	name: "colors-mcp-server",
-	version: "1.0.2",
+  name: 'colors-mcp-server',
+  version: '1.0.3',
 });
 
-server.tool(
-	"colors_convert",
-	"Convert a color to a different color space",
-	ConvertInputSchema.shape,
-	handleConvert,
+server.registerTool(
+  'colors_convert',
+  {
+    title: 'Convert Color',
+    description: 'Convert a color to a different color space',
+    inputSchema: ConvertInputSchema,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  handleConvert,
 );
 
-server.tool(
-	"colors_batch_convert",
-	"Convert multiple colors to a target color space",
-	BatchConvertInputSchema.shape,
-	handleBatchConvert,
+server.registerTool(
+  'colors_batch_convert',
+  {
+    title: 'Batch Convert Colors',
+    description: 'Convert multiple colors to a target color space',
+    inputSchema: BatchConvertInputSchema,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  handleBatchConvert,
 );
 
-server.tool(
-	"colors_parse",
-	"Parse and validate a color string",
-	ParseInputSchema.shape,
-	handleParse,
+server.registerTool(
+  'colors_parse',
+  {
+    title: 'Parse Color',
+    description: 'Parse and validate a color string',
+    inputSchema: ParseInputSchema,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  handleParse,
 );
 
-server.tool(
-	"colors_adjust",
-	"Adjust color properties (lightness, chroma, hue)",
-	AdjustInputSchema.shape,
-	handleAdjust,
+server.registerTool(
+  'colors_adjust',
+  {
+    title: 'Adjust Color',
+    description: 'Adjust color properties (lightness, chroma, hue)',
+    inputSchema: AdjustInputSchema,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  handleAdjust,
 );
 
-server.tool(
-	"colors_mix",
-	"Mix two colors with perceptual interpolation",
-	MixInputSchema.shape,
-	handleMix,
+server.registerTool(
+  'colors_mix',
+  {
+    title: 'Mix Colors',
+    description: 'Mix two colors with perceptual interpolation',
+    inputSchema: MixInputSchema,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  handleMix,
 );
 
-server.tool(
-	"colors_scale",
-	"Generate a perceptually uniform color scale",
-	ScaleInputSchema.shape,
-	handleScale,
+server.registerTool(
+  'colors_scale',
+  {
+    title: 'Generate Color Scale',
+    description: 'Generate a perceptually uniform color scale',
+    inputSchema: ScaleInputSchema,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  handleScale,
 );
 
-server.tool(
-	"colors_difference",
-	"Calculate color difference (DeltaE) or contrast ratio",
-	DifferenceInputSchema.shape,
-	handleDifference,
+server.registerTool(
+  'colors_difference',
+  {
+    title: 'Color Difference',
+    description: 'Calculate color difference (DeltaE) or contrast ratio',
+    inputSchema: DifferenceInputSchema,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  handleDifference,
 );
 
-server.tool(
-	"colors_contrast",
-	"Check WCAG contrast ratio between foreground and background colors (AA, AAA, non-text)",
-	ContrastInputSchema.shape,
-	handleContrast,
+server.registerTool(
+  'colors_contrast',
+  {
+    title: 'Check Contrast',
+    description:
+      'Check WCAG contrast ratio between foreground and background colors (AA, AAA, non-text)',
+    inputSchema: ContrastInputSchema,
+    annotations: {
+      readOnlyHint: true,
+      destructiveHint: false,
+      idempotentHint: true,
+      openWorldHint: false,
+    },
+  },
+  handleContrast,
 );
 
 /**
