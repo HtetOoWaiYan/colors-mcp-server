@@ -1,17 +1,48 @@
 {
-	"name": "colors-mcp-server",
+	"name": "@htetoowaiyan/colors-mcp-server",
 	"version": "1.0.0",
-	"description": "Modern MCP server for color conversion and manipulation",
+	"description": "A simple color utility MCP server for frontend developers — convert, mix, adjust, and analyze colors.",
 	"type": "module",
+	"main": "./dist/index.js",
+	"exports": {
+		".": "./dist/index.js"
+	},
 	"bin": {
 		"colors-mcp-server": "./dist/index.js"
 	},
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
 	"scripts": {
 		"dev": "tsx src/index.ts",
 		"build": "tsc",
+		"prepublishOnly": "npm run build",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage"
+	},
+	"keywords": [
+		"mcp",
+		"mcp-server",
+		"colors",
+		"color-conversion",
+		"color-manipulation",
+		"wcag",
+		"contrast",
+		"frontend",
+		"culori"
+	],
+	"author": "HtetOoWaiYan",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/HtetOoWaiYan/colors-mcp-server.git"
+	},
+	"homepage": "https://github.com/HtetOoWaiYan/colors-mcp-server#readme",
+	"bugs": {
+		"url": "https://github.com/HtetOoWaiYan/colors-mcp-server/issues"
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "^1.26.0",
