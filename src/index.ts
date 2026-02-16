@@ -35,7 +35,7 @@ import {
 // Create MCP server instance
 const server = new McpServer({
   name: 'colors-mcp-server',
-  version: '1.0.3',
+  version: '1.0.4',
 });
 
 server.registerTool(
