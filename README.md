@@ -5,7 +5,7 @@
 
 A simple color utility [MCP](https://modelcontextprotocol.io/) server for frontend developers. Convert, mix, adjust, and analyze colors right from your AI agents.
 
-> This is a personal project I built to learn how to create MCP servers. I needed these color utilities in my own development workflow, so I made it myself. There are other feature-rich color MCP servers out there — this one is intentionally simple and straightforward.
+This MCP server provides a streamlined set of color utilities designed for efficiency and precision. It focuses on delivering core color manipulation tools in a straightforward, lightweight package for modern development workflows.
 
 ## Tools
 
