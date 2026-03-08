@@ -25,7 +25,8 @@
 		"lint": "biome lint src",
 		"lint:fix": "biome lint --write src",
 		"format": "biome format --write src",
-		"prepare": "husky"
+		"prepare": "husky",
+		"inspect": "npx @modelcontextprotocol/inspector tsx src/index.ts"
 	},
 	"keywords": [
 		"mcp",
