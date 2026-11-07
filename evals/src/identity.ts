@@ -38,7 +38,18 @@ const git = (args: string[], cwd = REPO_ROOT) =>
 // `refs/evals/` keeps it from being garbage-collected, and its SHA identifies the server tested.
 export function snapshotWorkingTree(): string {
 	const tmp = mkdtempSync(join(tmpdir(), "eval-index-"));
-	const env = { ...process.env, GIT_INDEX_FILE: join(tmp, "index") };
+	// Fixed identity and dates make the same tree always yield the same SHA, so a resumed run matches its earlier cells.
+	const fixed = "2000-01-01T00:00:00Z";
+	const env = {
+		...process.env,
+		GIT_INDEX_FILE: join(tmp, "index"),
+		GIT_AUTHOR_NAME: "evals",
+		GIT_AUTHOR_EMAIL: "evals@localhost",
+		GIT_AUTHOR_DATE: fixed,
+		GIT_COMMITTER_NAME: "evals",
+		GIT_COMMITTER_EMAIL: "evals@localhost",
+		GIT_COMMITTER_DATE: fixed,
+	};
 	const run = (args: string[]) =>
 		execFileSync("git", args, { cwd: REPO_ROOT, env, encoding: "utf8" }).trim();
 	try {
