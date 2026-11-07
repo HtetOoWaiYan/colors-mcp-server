@@ -67,6 +67,21 @@ describe("viewer render() on real tool results", () => {
 		],
 		["colors_convert", { colors: ["tomato"], to: "hex" }, "tomato→#ff6347"],
 		["colors_info", { colors: ["tomato"] }, "tomato→#ff6347"],
+		[
+			"colors_find",
+			{ hueMin: 140, hueMax: 165, chromaMin: 0.1, lightnessMin: 0.45 },
+			"Found 1 color(s)",
+		],
+		[
+			"colors_scrim",
+			{ text: "#ffffff", overlay: "#000000", regions: ["#d8d2c4"] },
+			"Overlay opacity ",
+		],
+		[
+			"colors_palette",
+			{ kind: "diverging", color: "#0d9488", color2: "#b45309" },
+			"Palette: diverging",
+		],
 	];
 	for (const [name, args, expected] of views) {
 		it(`renders ${name} with its own view`, () => {

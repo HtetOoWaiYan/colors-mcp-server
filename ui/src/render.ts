@@ -275,6 +275,43 @@ function renderAudit(sc: Json): HTMLElement {
 	return box;
 }
 
+function renderFind(sc: Json): HTMLElement {
+	const colors = asArr(sc.colors).map(str);
+	if (!sc.found || colors.length === 0)
+		return h("div", {}, title("No color meets every rule"));
+	const box = h("div", {}, title(`Found ${colors.length} color(s)`));
+	box.append(strip(colors));
+	for (const d of asArr(sc.details) as Json[])
+		box.append(
+			h(
+				"div",
+				{ class: "row" },
+				swatch(str(d.color)),
+				mono(str(d.color)),
+				h(
+					"span",
+					{ class: "muted" },
+					`L ${str(d.lightness)}  C ${str(d.chroma)}  H ${str(d.hue)}`,
+				),
+			),
+		);
+	return box;
+}
+
+function renderScrim(sc: Json): HTMLElement {
+	if (!sc.found) return h("div", {}, title("No overlay opacity works"));
+	return h(
+		"div",
+		{},
+		title(`Overlay opacity ${str(sc.opacity)}`),
+		h(
+			"p",
+			{ class: "muted" },
+			`Contrast per region: ${asArr(sc.ratios).map(str).join(", ")}`,
+		),
+	);
+}
+
 export function render(sc: Json): HTMLElement {
 	const first = Array.isArray(sc.results)
 		? (sc.results[0] as Json | undefined)
@@ -282,6 +319,9 @@ export function render(sc: Json): HTMLElement {
 	if (first && "ratio" in first) return renderCheck(sc);
 	if ("kind" in sc && ("colors" in sc || "theme" in sc))
 		return renderPalette(sc);
+	if ("found" in sc && "colors" in sc) return renderFind(sc);
+	if ("found" in sc && ("opacity" in sc || "ratios" in sc))
+		return renderScrim(sc);
 	if ("findings" in sc) return renderAudit(sc);
 	if ("ranking" in sc) return renderCompare(sc);
 	if ("simulations" in sc) return renderVision(sc);
