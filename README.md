@@ -110,9 +110,9 @@ CMYK output is missing on purpose. An accurate RGB to CMYK conversion needs the 
 
 ## Does it help?
 
-The `evals/` package measures this. It has 56 fixed tasks in 14 categories, for example contrast fixes, gradients, tonal ramps, light and dark themes, CSS audits and color-blind-safe chart colors. A grader built from hand-written color math scores each answer. 14 of the tasks are held out and sealed.
+The `evals/` package measures this. A grader built from hand-written color math scores each answer as pass or fail. Both suites run each task twice per model, with and without the server, and send tool results as text only.
 
-Pass rate on the 42 development tasks (2 trials per task, tool results sent as text only, no server instructions):
+**Main suite.** 56 fixed tasks in 14 categories, for example contrast fixes, gradients, tonal ramps, light and dark themes, CSS audits and color-blind-safe chart colors. The tasks and the tools cover the same categories, so this suite shows that the tools cover it. It does not show how much they help elsewhere. Pass rate on the 42 development tasks:
 
 | Model | No tools | 1.x server | 2.x server |
 | --- | --- | --- | --- |
@@ -121,7 +121,16 @@ Pass rate on the 42 development tasks (2 trials per task, tool results sent as t
 
 Both models pass all 14 held-out tasks with the 2.x server. They pass 32% and 46% without tools.
 
-Read these numbers with care. The tasks and the tools cover the same categories, so the scores show that the tools cover this suite. They do not show how much the tools help on color work outside it. The suite covers CSS, UI-token and chart-palette tasks only, and it tested two models. Print, film, photo and game work have guides but no tasks. The reports are in [`evals/results/reports/`](evals/results/reports), and the method is in [`evals/README.md`](evals/README.md).
+**Generalization suite.** 28 tasks written as designer briefs, in categories the tools were not built around: picking a color that meets several constraints, the smallest scrim over a photo, one color for light and dark surfaces, alpha compositing and mixing arithmetic, grayscale-safe chart colors, diverging scales and video Y'CbCr conversion. Seven tasks are ones the tools barely help with. Nothing was tuned on this suite.
+
+| Model | No tools | 2.x server | Difference (95% interval) |
+| --- | --- | --- | --- |
+| Haiku 5.5 | 59% | 93% | +0.34 [0.16, 0.54] |
+| GPT-6 Luna | 55% | 70% | +0.14 [-0.02, 0.30] |
+
+The server helps Haiku clearly, mostly because Haiku runs out of output tokens when it does the math itself. For GPT-6 Luna the gain is small, and the interval includes zero. It is no better than the baseline on tasks where it must search for colors that satisfy several rules at once (grayscale-safe sets, 25%) or do arithmetic the tools do not cover (Y'CbCr). The tools measure colors well but do not search for them. A few single tasks are worse with the server, but each task ran only twice, so one failed trial moves a score by 50 points on that task.
+
+Both suites cover CSS, UI-token, chart-palette and a little video work, and they tested two models. Print, photo and game work have guides but no tasks. The reports are in [`evals/results/reports/`](evals/results/reports), and the method is in [`evals/README.md`](evals/README.md).
 
 ## Protocol support
 
