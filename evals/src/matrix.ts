@@ -33,6 +33,8 @@ export interface MatrixOptions {
 	conditions: ConditionSpec[];
 	tasks: Task[];
 	taskHashes: Record<string, string>;
+	/** The suite's grader hash; defaults to v1's, so another suite's cells never resume from v1's keys. */
+	graderHash?: string;
 	trials: number;
 	profile?: "tni" | "instructions";
 	maxAttempts?: number;
@@ -88,7 +90,7 @@ function keyFor(
 export async function runMatrix(o: MatrixOptions): Promise<MatrixSummary> {
 	const log = o.log ?? (() => {});
 	const maxAttempts = o.maxAttempts ?? 3;
-	const gh = graderHash();
+	const gh = o.graderHash ?? graderHash();
 	const summary: MatrixSummary = {
 		ran: 0,
 		skipped: 0,

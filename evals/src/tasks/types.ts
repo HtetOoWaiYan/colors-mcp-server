@@ -40,4 +40,12 @@ export const CATEGORY_NAMES: Record<number, string> = {
 	12: "audit",
 	13: "end-to-end",
 	14: "trap",
+	// Generalization suite: categories 101+ so they never collide with v1's numbering.
+	101: "constrained-pick",
+	102: "scrim",
+	103: "dual-surface",
+	104: "composite-mix",
+	105: "grayscale-safe",
+	106: "diverging-scale",
+	107: "video-ycbcr",
 };

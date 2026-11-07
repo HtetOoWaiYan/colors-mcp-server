@@ -2,6 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { graderHash } from "./identity.js";
 import { type ModelSpec, runMatrix } from "./matrix.js";
 import { ResultStore } from "./record.js";
 import {
@@ -9,6 +10,7 @@ import {
 	ProviderError,
 	type TurnResult,
 } from "./runner/types.js";
+import { loadSuite } from "./tasks/load.js";
 import type { Task } from "./tasks/types.js";
 
 const task = (id: string, split: "dev" | "heldout" = "dev"): Task => ({
@@ -257,6 +259,28 @@ describe("matrix", () => {
 		await runMatrix(opts(store, [task("a")], p, { trials: 1 }));
 		await runMatrix(
 			opts(store, [task("a")], p, { trials: 1, profile: "instructions" }),
+		);
+		expect(calls).toBe(2);
+	});
+
+	it("keys cells by the suite's grader hash, defaulting to v1's", async () => {
+		const store = new ResultStore(
+			join(dir, "results"),
+			join(dir, "sealed"),
+			"r1",
+		);
+		let calls = 0;
+		const p: Provider = { id: "p", chat: async () => (calls++, reply("yes")) };
+		await runMatrix(opts(store, [task("a")], p, { trials: 1 }));
+		await runMatrix(
+			opts(store, [task("a")], p, { trials: 1, graderHash: graderHash() }),
+		);
+		expect(calls).toBe(1);
+		await runMatrix(
+			opts(store, [task("a")], p, {
+				trials: 1,
+				graderHash: loadSuite("generalization").graderHash,
+			}),
 		);
 		expect(calls).toBe(2);
 	});

@@ -19,8 +19,13 @@ export const REPO_ROOT = resolve(EVALS_ROOT, "..");
 
 // Grader and reference sources are part of run identity, so editing them invalidates resume keys.
 export function graderHash(): string {
+	return graderHashFor(["graders", "reference"]);
+}
+
+/** Same hash over any list of source directories under evals/src, for suites with their own graders. */
+export function graderHashFor(dirs: readonly string[]): string {
 	const files: string[] = [];
-	for (const dir of ["graders", "reference"]) {
+	for (const dir of dirs) {
 		for (const f of readdirSync(join(here, dir)).sort()) {
 			if (f.endsWith(".ts") && !f.endsWith(".test.ts"))
 				files.push(join(here, dir, f));

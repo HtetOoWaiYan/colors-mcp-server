@@ -1,5 +1,5 @@
 import { extractAnswer } from "./extract.js";
-import { grade } from "./graders/index.js";
+import { gradeAny as grade } from "./graders-gen/index.js";
 import type { CellRecord, Outcome } from "./record.js";
 import { type AgentRun, runAgent, SYSTEM_PROMPT } from "./runner/agent-loop.js";
 import { connectServer, type ServerSpec } from "./runner/mcp-bridge.js";

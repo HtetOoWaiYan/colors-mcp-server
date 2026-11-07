@@ -6,7 +6,7 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
-import { EVALS_ROOT, graderHash, prepareServerBuild } from "./identity.js";
+import { EVALS_ROOT, prepareServerBuild } from "./identity.js";
 import { type ConditionSpec, type ModelSpec, runMatrix } from "./matrix.js";
 import { formatOracle, runOracle } from "./oracle.js";
 import {
@@ -21,7 +21,7 @@ import { connectServer } from "./runner/mcp-bridge.js";
 import { anthropicProvider } from "./runner/providers/anthropic.js";
 import { openAiProvider } from "./runner/providers/openai.js";
 import { BASE_URL, ensureService, loadApiKey } from "./service.js";
-import { loadSuite } from "./tasks/load.js";
+import { loadSuite, parseSuiteName, type SuiteName } from "./tasks/load.js";
 
 const MODELS = {
 	"haiku-5-5": { modelName: "claude-haiku-5-5", api: "anthropic" },
@@ -55,6 +55,13 @@ const modelIds = () =>
 	(flag("models", "haiku-5-5,gpt-6-luna") as string).split(",");
 const results = join(EVALS_ROOT, "results");
 const sealed = join(EVALS_ROOT, "sealed");
+
+// Runs written before suites existed carry no `suite` field and are v1.
+function runSuite(runId: string): SuiteName | undefined {
+	const p = join(results, runId, "manifest.json");
+	if (!existsSync(p)) return undefined;
+	return parseSuiteName(JSON.parse(readFileSync(p, "utf8")).suite);
+}
 
 async function preflight(): Promise<number> {
 	const ref = flag("server-ref", "main") as string;
@@ -91,7 +98,13 @@ async function run(): Promise<number> {
 	if (!runId) throw new Error("--run-id is required");
 	const ref = flag("server-ref", "main") as string;
 	const trials = Number(flag("trials", "2"));
-	const { tasks: allTasks, manifest } = loadSuite();
+	const suite = loadSuite(parseSuiteName(flag("suite")));
+	const { tasks: allTasks, manifest } = suite;
+	const existing = runSuite(runId);
+	if (existing && existing !== suite.name)
+		throw new Error(
+			`run ${runId} belongs to suite ${existing}; use a new --run-id for suite ${suite.name}`,
+		);
 	let tasks = allTasks;
 	const only = flag("tasks");
 	if (only) tasks = tasks.filter((t) => only.split(",").includes(t.id));
@@ -101,6 +114,11 @@ async function run(): Promise<number> {
 	const store = new ResultStore(results, sealed, runId);
 	const reuse = flag("reuse-from");
 	if (reuse) {
+		const from = runSuite(reuse);
+		if (from !== suite.name)
+			throw new Error(
+				`--reuse-from ${reuse} is suite ${from ?? "unknown"}, not ${suite.name}`,
+			);
 		const n = store.importCondition(
 			new ResultStore(results, sealed, reuse),
 			"no-tools",
@@ -144,7 +162,8 @@ async function run(): Promise<number> {
 		toolDefsHash,
 		lockHash: build.lockHash,
 		node: process.version,
-		graderHash: graderHash(),
+		graderHash: suite.graderHash,
+		suite: suite.name,
 		suiteVersion: manifest.version,
 		suiteHash: manifest.suiteHash,
 		models: models.map((m) => ({ id: m.id, name: m.modelName })),
@@ -173,6 +192,7 @@ async function run(): Promise<number> {
 			conditions,
 			tasks,
 			taskHashes: manifest.tasks,
+			graderHash: suite.graderHash,
 			trials,
 			profile,
 			log: (l) => console.log(l),
@@ -184,8 +204,11 @@ async function run(): Promise<number> {
 			build.sha,
 			serverName,
 			models.map((m) => m.id),
+			suite.name,
 		);
-		if (summary.pending === 0 && !summary.stoppedBy && !only && !limit) {
+		const complete =
+			summary.pending === 0 && !summary.stoppedBy && !only && !limit;
+		if (complete && suite.heldout) {
 			// A completed matrix spends one held-out evaluation (sealed-set policy).
 			appendFileSync(
 				join(results, "holdout-log.jsonl"),
@@ -204,11 +227,13 @@ async function writeReport(
 	sha: string | undefined,
 	serverName: string,
 	models: string[],
+	suiteName: SuiteName,
 ): Promise<void> {
-	const { tasks, manifest } = loadSuite();
+	const { tasks, manifest, heldout } = loadSuite(suiteName);
 	const store = new ResultStore(results, sealed, runId);
 	const report = computeReport({
 		runId,
+		suite: { name: suiteName, heldout },
 		suiteVersion: manifest.version,
 		tasks,
 		cells: store.all(true),
@@ -233,16 +258,29 @@ async function report(): Promise<number> {
 	const mPath = join(results, runId, "manifest.json");
 	if (!existsSync(mPath)) throw new Error(`no manifest for run ${runId}`);
 	const m = JSON.parse(readFileSync(mPath, "utf8"));
+	const suite = parseSuiteName(m.suite);
+	const asked = flag("suite");
+	if (asked && parseSuiteName(asked) !== suite)
+		throw new Error(`run ${runId} is suite ${suite}, not ${asked}`);
 	await writeReport(
 		runId,
 		m.serverSha,
 		`server@${String(m.serverSha).slice(0, 8)}${m.clientProfile === "instructions" ? "+instr" : ""}`,
 		m.models.map((x: { id: string }) => x.id),
+		suite,
 	);
 	return 0;
 }
 
 async function oracle(): Promise<number> {
+	const suite = parseSuiteName(flag("suite"));
+	if (suite !== "v1") {
+		// Its tasks were written from briefs, not around the tools, so there is no "right tool call" to replay.
+		console.error(
+			`oracle: suite ${suite} has no tool-path oracle by design; its witnesses are checked by npm test`,
+		);
+		return 64;
+	}
 	const build = prepareServerBuild(
 		flag("server-ref", "working-tree") as string,
 	);
@@ -265,7 +303,7 @@ const table: Record<string, () => Promise<number>> = {
 };
 if (!cmd || !table[cmd]) {
 	console.error(
-		"usage: cli <preflight|run|report> [--server-ref main] [--run-id ID] [--models haiku-5-5,gpt-6-luna] [--trials 2] [--tasks c01-1,...] [--limit N]",
+		"usage: cli <preflight|run|report|oracle> [--suite v1|generalization] [--server-ref main] [--run-id ID] [--models haiku-5-5,gpt-6-luna] [--trials 2] [--tasks c01-1,...] [--limit N]",
 	);
 	process.exit(64);
 }

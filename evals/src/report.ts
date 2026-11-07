@@ -22,7 +22,12 @@ export interface Agg {
 
 export interface Report {
 	runId: string;
+	suite: string;
 	suiteVersion: number;
+	/** False for a dev-only suite: no held-out aggregates, no predeclared bar. */
+	hasHeldout: boolean;
+	categories: number[];
+	devTasksPerCategory: number[];
 	models: string[];
 	conditions: string[];
 	dev: Record<string, Record<string, Agg>>;
@@ -79,8 +84,13 @@ export function computeReport(args: {
 	conditions: string[];
 	serverCondition: string;
 	seed?: number;
+	suite?: { name: string; heldout: boolean };
 }): Report {
 	const { tasks, cells, models, conditions } = args;
+	const suite = args.suite ?? { name: "v1", heldout: true };
+	const categories = [
+		...new Set(tasks.filter((t) => t.split === "dev").map((t) => t.category)),
+	].sort((a, b) => a - b);
 	const taskById = new Map(tasks.map((t) => [t.id, t]));
 	const groups = new Map<string, Group>();
 	for (const c of cells) {
@@ -212,7 +222,7 @@ export function computeReport(args: {
 		perCategoryDev[m] = {};
 		for (const cond of conditions) {
 			const row: Record<number, number> = {};
-			for (let c = 1; c <= 14; c++) {
+			for (const c of categories) {
 				const ts = tasks.filter((t) => t.split === "dev" && t.category === c);
 				const props = ts
 					.map((t) => taskProp(m, cond, t.id))
@@ -305,14 +315,26 @@ export function computeReport(args: {
 	const bar = {
 		devPooled: dp,
 		heldoutPooled: hp,
-		meetsBar: Number.isNaN(dp.mean)
-			? null
+		meetsBar:
+			!suite.heldout || Number.isNaN(dp.mean)
+				? null
 			: dp.mean >= 0.15 && dp.lo > 0 && hp.mean > 0 && hp.mean >= dp.mean / 2,
 	};
 
 	return {
 		runId: args.runId,
+		suite: suite.name,
 		suiteVersion: args.suiteVersion,
+		hasHeldout: suite.heldout,
+		categories,
+		devTasksPerCategory: [
+			...new Set(
+				categories.map(
+					(c) =>
+						tasks.filter((t) => t.split === "dev" && t.category === c).length,
+				),
+			),
+		],
 		models,
 		conditions,
 		dev,
@@ -336,6 +358,31 @@ const ci = (i: Interval) =>
 		? "n/a"
 		: `${i.mean >= 0 ? "+" : ""}${num(i.mean, 3)} [${num(i.lo, 3)}, ${num(i.hi, 3)}] (${i.n} tasks)`;
 
+function renderHeldout(r: Report, L: string[]): void {
+	L.push("", "## Held-out split (sealed): full-split aggregates only", "");
+	L.push(
+		"| model | condition | tasks | pass | check score |",
+		"|---|---|---|---|---|",
+	);
+	for (const m of r.models) {
+		for (const c of r.conditions) {
+			const a = (r.heldout[m] as Record<string, Agg>)[c] as Agg;
+			L.push(
+				`| ${m} | ${c} | ${a.tasks} | ${pct(a.pass)} | ${pct(a.checkScore)} |`,
+			);
+		}
+	}
+	L.push("", "Held-out paired difference (descriptive only, 14 tasks):", "");
+	for (const k of [...r.models, "pooled"])
+		L.push(`- **${k}**: ${ci(r.paired.heldout[k] as Interval)}`);
+	L.push(
+		"",
+		"## Predeclared bar (for later milestones)",
+		"",
+		`Dev pooled: ${r.bar.devPooled ? ci(r.bar.devPooled) : "n/a"}. Held-out pooled: ${r.bar.heldoutPooled ? ci(r.bar.heldoutPooled) : "n/a"}. Meets bar: ${r.bar.meetsBar === null ? "n/a" : r.bar.meetsBar ? "yes" : "no"} (needs dev mean >= +0.15 with lower bound > 0, held-out mean > 0 and >= half the dev mean). Not a claim at baseline.`,
+	);
+}
+
 export function renderMarkdown(
 	r: Report,
 	meta: { serverSha?: string; nodeVersion?: string; notes?: string[] },
@@ -343,11 +390,13 @@ export function renderMarkdown(
 	const L: string[] = [];
 	L.push(`# Eval report: ${r.runId}`, "");
 	L.push(
-		`Suite v${r.suiteVersion}. Client profile: **TNI** (text-only tool results, no server instructions). Server: \`${meta.serverSha ?? "n/a"}\`. Node ${meta.nodeVersion ?? "n/a"}.`,
+		`Suite: ${r.suite}, version ${r.suiteVersion}. Client profile: **TNI** (text-only tool results, no server instructions). Server: \`${meta.serverSha ?? "n/a"}\`. Node ${meta.nodeVersion ?? "n/a"}.`,
 	);
 	L.push(
 		"",
-		"> Scope: bounded CSS, UI-token and chart-palette color tasks, two small hosted models, TNI client only. No claim is made about print, film, photo or game work. Baseline results are descriptive; no significance claims.",
+		r.hasHeldout
+			? "> Scope: bounded CSS, UI-token and chart-palette color tasks, two small hosted models, TNI client only. No claim is made about print, film, photo or game work. Baseline results are descriptive; no significance claims."
+			: "> Scope: generalization suite of adjacent and out-of-scope color tasks written from designer briefs, not around the tools; dev split only and never tuned on, so no held-out comparison is made. Two small hosted models, TNI client only. Descriptive; no significance claims.",
 		"",
 	);
 	for (const n of meta.notes ?? []) L.push(`- ${n}`);
@@ -373,34 +422,25 @@ export function renderMarkdown(
 	);
 	for (const k of [...r.models, "pooled"])
 		L.push(`- **${k}**: ${ci(r.paired.dev[k] as Interval)}`);
-	L.push("", "## Held-out split (sealed): full-split aggregates only", "");
-	L.push(
-		"| model | condition | tasks | pass | check score |",
-		"|---|---|---|---|---|",
-	);
-	for (const m of r.models) {
-		for (const c of r.conditions) {
-			const a = (r.heldout[m] as Record<string, Agg>)[c] as Agg;
-			L.push(
-				`| ${m} | ${c} | ${a.tasks} | ${pct(a.pass)} | ${pct(a.checkScore)} |`,
-			);
-		}
-	}
-	L.push("", "Held-out paired difference (descriptive only, 14 tasks):", "");
-	for (const k of [...r.models, "pooled"])
-		L.push(`- **${k}**: ${ci(r.paired.heldout[k] as Interval)}`);
+	if (r.hasHeldout) renderHeldout(r, L);
+	else
+		L.push(
+			"",
+			"## Held-out split",
+			"",
+			"None: this suite is dev-only by design (never tuned on), so there is no held-out comparison and no predeclared bar.",
+		);
+	const perCat = r.devTasksPerCategory;
 	L.push(
 		"",
-		"## Predeclared bar (for later milestones)",
+		`## Per category, dev only (descriptive; ${perCat.length === 1 ? perCat[0] : perCat.join(" or ")} tasks each)`,
 		"",
-		`Dev pooled: ${r.bar.devPooled ? ci(r.bar.devPooled) : "n/a"}. Held-out pooled: ${r.bar.heldoutPooled ? ci(r.bar.heldoutPooled) : "n/a"}. Meets bar: ${r.bar.meetsBar === null ? "n/a" : r.bar.meetsBar ? "yes" : "no"} (needs dev mean >= +0.15 with lower bound > 0, held-out mean > 0 and >= half the dev mean). Not a claim at baseline.`,
 	);
-	L.push("", "## Per category, dev only (descriptive; 3 tasks each)", "");
 	L.push(
 		`| category | ${r.models.flatMap((m) => r.conditions.map((c) => `${m} / ${c}`)).join(" | ")} |`,
 		`|---|${r.models.flatMap(() => r.conditions.map(() => "---")).join("|")}|`,
 	);
-	for (let c = 1; c <= 14; c++) {
+	for (const c of r.categories) {
 		L.push(
 			`| ${c} | ${r.models.flatMap((m) => r.conditions.map((cond) => pct(((r.perCategoryDev[m] as Record<string, Record<number, number>>)[cond] as Record<number, number>)[c] ?? null))).join(" | ")} |`,
 		);

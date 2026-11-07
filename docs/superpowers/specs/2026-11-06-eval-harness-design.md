@@ -173,7 +173,11 @@ Task files carry: id, category, split, prompt, output schema, graders, witness, 
 4. A baseline report exists for Haiku 5.5 and GPT-6 Luna under `no-tools` and `server@<sha>`, containing: paired per-task dev results with bootstrap intervals, held-out aggregates only, regressions, infra-failure and `limit_exhausted` counts, strict vs lenient results, and a ranked list of failure patterns, each with transcript evidence and a proposed tool or description change for sub-project 2.
 5. Interrupted runs resume without repeating finished cells, and a changed prompt, grader or server build does not reuse old results.
 
-## 12. Follow-ups, not in this spec
+## 12. Addendum (2026-11-07): generalization suite
+
+A second, independent suite named `generalization` (v1 of that suite, 28 tasks in 7 categories numbered 101-107) measures whether the tools help, do nothing or hurt on adjacent and out-of-scope color work. Its tasks were designed from designer briefs, not from the tool list. **All of its tasks are in the dev split:** it is never tuned on, so it has no sealed split, no held-out comparison and no predeclared bar. Its run identity includes its own task hashes and a grader hash over `graders/`, `reference/`, `graders-gen/` and `reference-gen/`. Suite v1, its graders and its grader hash are unchanged. Thresholds are derived from reference math (see `evals/README.md` and each task's `grader.params.derivation`). At least 6 tasks (7 in v1 of the suite) are ones the tools give no direct help with.
+
+## 13. Follow-ups, not in this spec
 
 - Add open-weight models (after adapter conformance).
 - Instructions off/on ablation (sub-project 3).

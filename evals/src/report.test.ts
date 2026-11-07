@@ -118,4 +118,27 @@ describe("computeReport", () => {
 		expect(md).toContain("Held-out split (sealed)");
 		expect(md).not.toContain("m/server@abc/h/t1");
 	});
+
+	it("a dev-only suite names itself, reports its own categories and claims no held-out comparison", () => {
+		const gen = [task("g1", "dev", 101), task("g2", "dev", 105)];
+		const cells = gen.flatMap((t) => [
+			cell("m", "no-tools", t, 1, "semantic_failure"),
+			cell("m", SERVER, t, 1, "pass"),
+		]);
+		const r = computeReport({
+			...base,
+			tasks: gen,
+			cells,
+			suite: { name: "generalization", heldout: false },
+		});
+		expect(r.categories).toEqual([101, 105]);
+		expect(r.perCategoryDev.m?.[SERVER]).toEqual({ 101: 1, 105: 1 });
+		expect(r.bar.meetsBar).toBeNull();
+		const md = renderMarkdown(r, {});
+		expect(md).toContain("Suite: generalization, version 1.");
+		expect(md).toContain("no held-out comparison");
+		expect(md).not.toContain("Held-out split (sealed)");
+		expect(md).not.toContain("Predeclared bar");
+		expect(md).toContain("| 101 |");
+	});
 });
