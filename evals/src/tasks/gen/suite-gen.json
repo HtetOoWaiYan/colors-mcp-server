@@ -1,0 +1,2725 @@
+[
+	{
+		"id": "g101-1",
+		"category": 101,
+		"categoryName": "constrained-pick",
+		"split": "dev",
+		"prompt": "I need one primary button fill color for a fintech app. Requirements:\n\n- It is a green: OKLCH hue between 140 and 165 degrees.\n- OKLCH chroma at least 0.11, so it reads as a real green, not gray.\n- OKLCH lightness at least 0.45, so it does not read as near-black.\n- White label text (#ffffff) on it reaches a contrast ratio of at least 4.5:1.\n\nAny color that meets every requirement is fine. Contrast is the WCAG 2 contrast ratio. OKLCH is Björn Ottosson's Oklab in polar form (lightness 0 to 1, chroma, hue in degrees).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": [
+				"hex"
+			]
+		},
+		"grader": {
+			"kind": "gen-pick",
+			"params": {
+				"hue": {
+					"min": 140,
+					"max": 165
+				},
+				"cMin": 0.11,
+				"lMin": 0.45,
+				"contrasts": [
+					{
+						"name": "white_text",
+						"against": "#ffffff",
+						"min": 4.5
+					}
+				],
+				"derivation": {
+					"openMaxChroma": 0.1842,
+					"feasibleColors": 3233,
+					"witnessSlack": 1.805
+				}
+			}
+		},
+		"witness": {
+			"hex": "#058237"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "green"
+			},
+			{
+				"hex": "#fa7dc8"
+			},
+			{
+				"hex": "#59715f"
+			},
+			{
+				"hex": "#6cea96"
+			},
+			{
+				"hex": "#568136"
+			},
+			{
+				"hex": "#02631c"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g101-2",
+		"category": 101,
+		"categoryName": "constrained-pick",
+		"split": "dev",
+		"prompt": "Pick the link color for our dark theme. The page background is #0b0f19. Requirements:\n\n- It is a blue: OKLCH hue between 240 and 265 degrees.\n- OKLCH chroma at least 0.1, so it reads as blue, not gray.\n- OKLCH lightness at most 0.85, so it does not look washed out.\n- As text on the #0b0f19 background it reaches a contrast ratio of at least 7:1.\n\nAny color that meets every requirement is fine. Contrast is the WCAG 2 contrast ratio. OKLCH is Björn Ottosson's Oklab in polar form (lightness 0 to 1, chroma, hue in degrees).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": [
+				"hex"
+			]
+		},
+		"grader": {
+			"kind": "gen-pick",
+			"params": {
+				"hue": {
+					"min": 240,
+					"max": 265
+				},
+				"cMin": 0.1,
+				"lMax": 0.85,
+				"contrasts": [
+					{
+						"name": "page",
+						"against": "#0b0f19",
+						"min": 7
+					}
+				],
+				"derivation": {
+					"openMaxChroma": 0.169,
+					"feasibleColors": 4750,
+					"witnessSlack": 2.416
+				}
+			}
+		},
+		"witness": {
+			"hex": "#59a8fe"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "green"
+			},
+			{
+				"hex": "#a65701"
+			},
+			{
+				"hex": "#85abd7"
+			},
+			{
+				"hex": "#2789e9"
+			},
+			{
+				"hex": "#869ae2"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g101-3",
+		"category": 101,
+		"categoryName": "constrained-pick",
+		"split": "dev",
+		"prompt": "Choose our new purple brand color. It is used as a button fill with white text, and as a solid accent bar on the dark sidebar (#111827). Requirements:\n\n- OKLCH hue between 290 and 315 degrees.\n- OKLCH chroma at least 0.18, so it reads as a vivid purple, not gray.\n- White button text (#ffffff) on it reaches a contrast ratio of at least 4.5:1.\n- The color itself reaches a contrast ratio of at least 3:1 against the sidebar #111827.\n\nAny color that meets every requirement is fine. Contrast is the WCAG 2 contrast ratio. OKLCH is Björn Ottosson's Oklab in polar form (lightness 0 to 1, chroma, hue in degrees).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": [
+				"hex"
+			]
+		},
+		"grader": {
+			"kind": "gen-pick",
+			"params": {
+				"hue": {
+					"min": 290,
+					"max": 315
+				},
+				"cMin": 0.18,
+				"contrasts": [
+					{
+						"name": "white_text",
+						"against": "#ffffff",
+						"min": 4.5
+					},
+					{
+						"name": "sidebar",
+						"against": "#111827",
+						"min": 3
+					}
+				],
+				"derivation": {
+					"openMaxChroma": 0.3001,
+					"feasibleColors": 7837,
+					"witnessSlack": 2.432
+				}
+			}
+		},
+		"witness": {
+			"hex": "#993aef"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "green"
+			},
+			{
+				"hex": "#66c510"
+			},
+			{
+				"hex": "#7c649e"
+			},
+			{
+				"hex": "#7d22c9"
+			},
+			{
+				"hex": "#a651fe"
+			},
+			{
+				"hex": "#a141b2"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g101-4",
+		"category": 101,
+		"categoryName": "constrained-pick",
+		"split": "dev",
+		"prompt": "Pick a teal for our app header bar, which carries white text. Requirements:\n\n- It is a teal: OKLCH hue between 180 and 205 degrees.\n- OKLCH chroma at least 0.05, so it reads as teal, not gray.\n- OKLCH lightness at least 0.4, so it does not read as near-black.\n- White header text (#ffffff) on it reaches a contrast ratio of at least 4.5:1.\n\nAny color that meets every requirement is fine. Contrast is the WCAG 2 contrast ratio. OKLCH is Björn Ottosson's Oklab in polar form (lightness 0 to 1, chroma, hue in degrees).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": [
+				"hex"
+			]
+		},
+		"grader": {
+			"kind": "gen-pick",
+			"params": {
+				"hue": {
+					"min": 180,
+					"max": 205
+				},
+				"cMin": 0.05,
+				"lMin": 0.4,
+				"contrasts": [
+					{
+						"name": "white_text",
+						"against": "#ffffff",
+						"min": 4.5
+					}
+				],
+				"derivation": {
+					"openMaxChroma": 0.0964,
+					"feasibleColors": 5084,
+					"witnessSlack": 2.102
+				}
+			}
+		},
+		"witness": {
+			"hex": "#017e7a"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "green"
+			},
+			{
+				"hex": "#fe8185"
+			},
+			{
+				"hex": "#536665"
+			},
+			{
+				"hex": "#3ae4e0"
+			},
+			{
+				"hex": "#275963"
+			},
+			{
+				"hex": "#01514a"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g102-1",
+		"category": 102,
+		"categoryName": "scrim",
+		"split": "dev",
+		"prompt": "Our homepage hero puts a white headline over a photo, with a black overlay layer between them.\n\nText color: #ffffff. Overlay color: #000000. Worst-case photo regions behind the text: #d8d2c4, #a7b8c9, #f2efe9.\n\nFind the smallest overlay opacity, in steps of 0.05 (for example 0.35), at which the text reaches a WCAG 2 contrast ratio of at least 4.5:1 against every one of those regions once the overlay is applied. The overlay is painted over each region like CSS: on 8-bit sRGB channel values, result = opacity x overlay + (1 - opacity) x region, rounded to the nearest integer before measuring contrast. Do not overshoot: a darker or lighter overlay than needed hides the photo.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"opacity\": number}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"opacity": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 1
+				}
+			},
+			"required": [
+				"opacity"
+			]
+		},
+		"grader": {
+			"kind": "gen-scrim",
+			"params": {
+				"text": "#ffffff",
+				"scrim": "#000000",
+				"regions": [
+					"#d8d2c4",
+					"#a7b8c9",
+					"#f2efe9"
+				],
+				"target": 4.5,
+				"step": 0.05,
+				"alphaStar": 0.55
+			}
+		},
+		"witness": {
+			"opacity": 0.55
+		},
+		"invalid": [
+			{},
+			{
+				"opacity": "0.55"
+			},
+			{
+				"opacity": 0.5
+			},
+			{
+				"opacity": 0.65
+			},
+			{
+				"opacity": 0.575
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g102-2",
+		"category": 102,
+		"categoryName": "scrim",
+		"split": "dev",
+		"prompt": "A campaign banner puts white text over a landscape photo, tinted with our brand navy as an overlay layer.\n\nText color: #ffffff. Overlay color: #0b1f3a. Worst-case photo regions behind the text: #c9d6df, #e8dcc8, #9fb4a3.\n\nFind the smallest overlay opacity, in steps of 0.05 (for example 0.35), at which the text reaches a WCAG 2 contrast ratio of at least 4.5:1 against every one of those regions once the overlay is applied. The overlay is painted over each region like CSS: on 8-bit sRGB channel values, result = opacity x overlay + (1 - opacity) x region, rounded to the nearest integer before measuring contrast. Do not overshoot: a darker or lighter overlay than needed hides the photo.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"opacity\": number}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"opacity": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 1
+				}
+			},
+			"required": [
+				"opacity"
+			]
+		},
+		"grader": {
+			"kind": "gen-scrim",
+			"params": {
+				"text": "#ffffff",
+				"scrim": "#0b1f3a",
+				"regions": [
+					"#c9d6df",
+					"#e8dcc8",
+					"#9fb4a3"
+				],
+				"target": 4.5,
+				"step": 0.05,
+				"alphaStar": 0.55
+			}
+		},
+		"witness": {
+			"opacity": 0.55
+		},
+		"invalid": [
+			{},
+			{
+				"opacity": "0.55"
+			},
+			{
+				"opacity": 0.5
+			},
+			{
+				"opacity": 0.65
+			},
+			{
+				"opacity": 0.575
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g102-3",
+		"category": 102,
+		"categoryName": "scrim",
+		"split": "dev",
+		"prompt": "An article card puts near-black text over a dark moody photo, so we lighten the photo with a white overlay layer.\n\nText color: #111827. Overlay color: #ffffff. Worst-case photo regions behind the text: #2b3a4a, #5a4632, #1f2a1c, #7a8a99.\n\nFind the smallest overlay opacity, in steps of 0.05 (for example 0.35), at which the text reaches a WCAG 2 contrast ratio of at least 4.5:1 against every one of those regions once the overlay is applied. The overlay is painted over each region like CSS: on 8-bit sRGB channel values, result = opacity x overlay + (1 - opacity) x region, rounded to the nearest integer before measuring contrast. Do not overshoot: a darker or lighter overlay than needed hides the photo.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"opacity\": number}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"opacity": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 1
+				}
+			},
+			"required": [
+				"opacity"
+			]
+		},
+		"grader": {
+			"kind": "gen-scrim",
+			"params": {
+				"text": "#111827",
+				"scrim": "#ffffff",
+				"regions": [
+					"#2b3a4a",
+					"#5a4632",
+					"#1f2a1c",
+					"#7a8a99"
+				],
+				"target": 4.5,
+				"step": 0.05,
+				"alphaStar": 0.45
+			}
+		},
+		"witness": {
+			"opacity": 0.45
+		},
+		"invalid": [
+			{},
+			{
+				"opacity": "0.45"
+			},
+			{
+				"opacity": 0.4
+			},
+			{
+				"opacity": 0.55
+			},
+			{
+				"opacity": 0.475
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g102-4",
+		"category": 102,
+		"categoryName": "scrim",
+		"split": "dev",
+		"prompt": "A product page puts a white caption over a bright studio photo (including pure white backdrop), with a black overlay layer.\n\nText color: #ffffff. Overlay color: #000000. Worst-case photo regions behind the text: #e8c547, #9fd3e6, #ffffff.\n\nFind the smallest overlay opacity, in steps of 0.01 (for example 0.37), at which the text reaches a WCAG 2 contrast ratio of at least 4.5:1 against every one of those regions once the overlay is applied. The overlay is painted over each region like CSS: on 8-bit sRGB channel values, result = opacity x overlay + (1 - opacity) x region, rounded to the nearest integer before measuring contrast. Do not overshoot: a darker or lighter overlay than needed hides the photo.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"opacity\": number}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"opacity": {
+					"type": "number",
+					"minimum": 0,
+					"maximum": 1
+				}
+			},
+			"required": [
+				"opacity"
+			]
+		},
+		"grader": {
+			"kind": "gen-scrim",
+			"params": {
+				"text": "#ffffff",
+				"scrim": "#000000",
+				"regions": [
+					"#e8c547",
+					"#9fd3e6",
+					"#ffffff"
+				],
+				"target": 4.5,
+				"step": 0.01,
+				"alphaStar": 0.54
+			}
+		},
+		"witness": {
+			"opacity": 0.54
+		},
+		"invalid": [
+			{},
+			{
+				"opacity": "0.54"
+			},
+			{
+				"opacity": 0.53
+			},
+			{
+				"opacity": 0.56
+			},
+			{
+				"opacity": 0.545
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g103-1",
+		"category": 103,
+		"categoryName": "dual-surface",
+		"split": "dev",
+		"prompt": "Pick one focus ring color that works on both of our surfaces: the light surface #ffffff and the dark surface #121212. We want a single color, not one per theme. Requirements:\n\n- Stay in the brand's hue family: OKLCH hue within 20 degrees of the hue of our brand color #2563eb.\n- OKLCH chroma at least 0.16, so it reads as a brand color, not gray.\n- Contrast ratio of at least 3:1 against the light surface #ffffff.\n- Contrast ratio of at least 3:1 against the dark surface #121212.\n\nAny color that meets every requirement is fine. Contrast is the WCAG 2 contrast ratio. OKLCH is Björn Ottosson's Oklab in polar form (lightness 0 to 1, chroma, hue in degrees).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": [
+				"hex"
+			]
+		},
+		"grader": {
+			"kind": "gen-pick",
+			"params": {
+				"hue": {
+					"min": 242.8809,
+					"max": 282.8809
+				},
+				"cMin": 0.16,
+				"contrasts": [
+					{
+						"name": "light",
+						"against": "#ffffff",
+						"min": 3
+					},
+					{
+						"name": "dark",
+						"against": "#121212",
+						"min": 3
+					}
+				],
+				"derivation": {
+					"openMaxChroma": 0.2722,
+					"feasibleColors": 14716,
+					"witnessSlack": 3.999
+				}
+			}
+		},
+		"witness": {
+			"hex": "#1d63fe"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "green"
+			},
+			{
+				"hex": "#e29c01"
+			},
+			{
+				"hex": "#5e7bb3"
+			},
+			{
+				"hex": "#014ced"
+			},
+			{
+				"hex": "#1c99fe"
+			},
+			{
+				"hex": "#674dc0"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g103-2",
+		"category": 103,
+		"categoryName": "dual-surface",
+		"split": "dev",
+		"prompt": "Pick one icon color that works on both of our surfaces: the light surface #f5f5f4 and the dark surface #1c1917. We want a single color, not one per theme. Requirements:\n\n- Stay in the brand's hue family: OKLCH hue within 20 degrees of the hue of our brand color #ea580c.\n- OKLCH chroma at least 0.15, so it reads as a brand color, not gray.\n- Contrast ratio of at least 3:1 against the light surface #f5f5f4.\n- Contrast ratio of at least 3:1 against the dark surface #1c1917.\n\nAny color that meets every requirement is fine. Contrast is the WCAG 2 contrast ratio. OKLCH is Björn Ottosson's Oklab in polar form (lightness 0 to 1, chroma, hue in degrees).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": [
+				"hex"
+			]
+		},
+		"grader": {
+			"kind": "gen-pick",
+			"params": {
+				"hue": {
+					"min": 21.1158,
+					"max": 61.1158
+				},
+				"cMin": 0.15,
+				"contrasts": [
+					{
+						"name": "light",
+						"against": "#f5f5f4",
+						"min": 3
+					},
+					{
+						"name": "dark",
+						"against": "#1c1917",
+						"min": 3
+					}
+				],
+				"derivation": {
+					"openMaxChroma": 0.2559,
+					"feasibleColors": 11184,
+					"witnessSlack": 2.978
+				}
+			}
+		},
+		"witness": {
+			"hex": "#eb4304"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "green"
+			},
+			{
+				"hex": "#14bcfb"
+			},
+			{
+				"hex": "#bb5a34"
+			},
+			{
+				"hex": "#c32607"
+			},
+			{
+				"hex": "#fe550d"
+			},
+			{
+				"hex": "#e0566a"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g103-3",
+		"category": 103,
+		"categoryName": "dual-surface",
+		"split": "dev",
+		"prompt": "Pick one status icon color that works on both of our surfaces: the light surface #d1d5db and the dark surface #1f2937. We want a single color, not one per theme. Requirements:\n\n- Stay in the brand's hue family: OKLCH hue within 20 degrees of the hue of our brand color #16a34a.\n- OKLCH chroma at least 0.11, so it reads as a brand color, not gray.\n- Contrast ratio of at least 3:1 against the light surface #d1d5db.\n- Contrast ratio of at least 3:1 against the dark surface #1f2937.\n\nAny color that meets every requirement is fine. Contrast is the WCAG 2 contrast ratio. OKLCH is Björn Ottosson's Oklab in polar form (lightness 0 to 1, chroma, hue in degrees).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": [
+				"hex"
+			]
+		},
+		"grader": {
+			"kind": "gen-pick",
+			"params": {
+				"hue": {
+					"min": 129.2138,
+					"max": 169.2138
+				},
+				"cMin": 0.11,
+				"contrasts": [
+					{
+						"name": "light",
+						"against": "#d1d5db",
+						"min": 3
+					},
+					{
+						"name": "dark",
+						"against": "#1f2937",
+						"min": 3
+					}
+				],
+				"derivation": {
+					"openMaxChroma": 0.1841,
+					"feasibleColors": 1735,
+					"witnessSlack": 0.78
+				}
+			}
+		},
+		"witness": {
+			"hex": "#3f8407"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "green"
+			},
+			{
+				"hex": "#c07bf8"
+			},
+			{
+				"hex": "#627a6b"
+			},
+			{
+				"hex": "#087e12"
+			},
+			{
+				"hex": "#3cfd7c"
+			},
+			{
+				"hex": "#677d2b"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g103-4",
+		"category": 103,
+		"categoryName": "dual-surface",
+		"split": "dev",
+		"prompt": "Pick one badge outline color that works on both of our surfaces: the light surface #fef3c7 and the dark surface #1e3a8a. We want a single color, not one per theme. Requirements:\n\n- Stay in the brand's hue family: OKLCH hue within 20 degrees of the hue of our brand color #db2777.\n- OKLCH chroma at least 0.17, so it reads as a brand color, not gray.\n- Contrast ratio of at least 3:1 against the light surface #fef3c7.\n- Contrast ratio of at least 3:1 against the dark surface #1e3a8a.\n\nAny color that meets every requirement is fine. Contrast is the WCAG 2 contrast ratio. OKLCH is Björn Ottosson's Oklab in polar form (lightness 0 to 1, chroma, hue in degrees).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": [
+				"hex"
+			]
+		},
+		"grader": {
+			"kind": "gen-pick",
+			"params": {
+				"hue": {
+					"min": 340.5844,
+					"max": 20.5844
+				},
+				"cMin": 0.17,
+				"contrasts": [
+					{
+						"name": "light",
+						"against": "#fef3c7",
+						"min": 3
+					},
+					{
+						"name": "dark",
+						"against": "#1e3a8a",
+						"min": 3
+					}
+				],
+				"derivation": {
+					"openMaxChroma": 0.284,
+					"feasibleColors": 1233,
+					"witnessSlack": 0.249
+				}
+			}
+		},
+		"witness": {
+			"hex": "#e65b82"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "green"
+			},
+			{
+				"hex": "#19a47d"
+			},
+			{
+				"hex": "#d46b7a"
+			},
+			{
+				"hex": "#ee037d"
+			},
+			{
+				"hex": "#fe54ab"
+			},
+			{
+				"hex": "#ee43c1"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g104-1",
+		"category": 104,
+		"categoryName": "composite-mix",
+		"split": "dev",
+		"prompt": "Our design file uses translucent fills. For each one, give the solid color it actually renders as. Composite like a browser does: source-over on 8-bit sRGB channel values, result = alpha x layer + (1 - alpha) x what is below, with no gamma conversion. An 8-digit hex #rrggbbaa has alpha aa/255. With several layers, composite from the bottom up and keep full precision between layers. Round each final channel to the nearest integer and give the opaque hex.\n\n1. rgba(37, 99, 235, 0.15) over #ffffff\n2. #00000080 over #f5f5f5\n3. rgba(255, 255, 255, 0.08) over #121212\n4. rgba(220, 38, 38, 0.12) over #fafafa\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per line, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"hex": {
+								"type": "string",
+								"pattern": "^#[0-9a-fA-F]{3,6}$"
+							}
+						},
+						"required": [
+							"hex"
+						]
+					}
+				}
+			},
+			"required": [
+				"results"
+			]
+		},
+		"grader": {
+			"kind": "gen-mix",
+			"params": {
+				"items": [
+					{
+						"expected": [
+							222.3,
+							231.6,
+							252
+						]
+					},
+					{
+						"expected": [
+							122.019608,
+							122.019608,
+							122.019608
+						]
+					},
+					{
+						"expected": [
+							36.96,
+							36.96,
+							36.96
+						]
+					},
+					{
+						"expected": [
+							246.4,
+							224.56,
+							224.56
+						]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#dee8fc"
+				},
+				{
+					"hex": "#7a7a7a"
+				},
+				{
+					"hex": "#252525"
+				},
+				{
+					"hex": "#f6e1e1"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#211703"
+					},
+					{
+						"hex": "#858585"
+					},
+					{
+						"hex": "#dadada"
+					},
+					{
+						"hex": "#091e1e"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#467aee"
+					},
+					{
+						"hex": "#313131"
+					},
+					{
+						"hex": "#d0d0d0"
+					},
+					{
+						"hex": "#e03f3f"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#dde8fc"
+					},
+					{
+						"hex": "#7a7a7a"
+					},
+					{
+						"hex": "#252525"
+					},
+					{
+						"hex": "#f6e1e1"
+					}
+				]
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "g104-2",
+		"category": 104,
+		"categoryName": "composite-mix",
+		"split": "dev",
+		"prompt": "These UI states stack translucent layers. Layers are listed top first. Give the solid color each stack renders as. Composite like a browser does: source-over on 8-bit sRGB channel values, result = alpha x layer + (1 - alpha) x what is below, with no gamma conversion. An 8-digit hex #rrggbbaa has alpha aa/255. With several layers, composite from the bottom up and keep full precision between layers. Round each final channel to the nearest integer and give the opaque hex.\n\n1. rgba(0, 0, 0, 0.5) over rgba(255, 0, 0, 0.5) over #ffffff\n2. modal backdrop rgba(15, 23, 42, 0.6) over card rgba(255, 255, 255, 0.9) over page #e2e8f0\n3. hover rgba(255, 255, 255, 0.5) over selected #1e40af33 over #ffffff\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per line, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"hex": {
+								"type": "string",
+								"pattern": "^#[0-9a-fA-F]{3,6}$"
+							}
+						},
+						"required": [
+							"hex"
+						]
+					}
+				}
+			},
+			"required": [
+				"results"
+			]
+		},
+		"grader": {
+			"kind": "gen-mix",
+			"params": {
+				"items": [
+					{
+						"expected": [
+							127.5,
+							63.75,
+							63.75
+						]
+					},
+					{
+						"expected": [
+							109.84,
+							114.88,
+							126.6
+						]
+					},
+					{
+						"expected": [
+							232.5,
+							235.9,
+							247
+						]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#804040"
+				},
+				{
+					"hex": "#6e737f"
+				},
+				{
+					"hex": "#e9ecf7"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#7fbfbf"
+					},
+					{
+						"hex": "#918c80"
+					},
+					{
+						"hex": "#161308"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#bf4040"
+					},
+					{
+						"hex": "#eff0f2"
+					},
+					{
+						"hex": "#d2d9ef"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#814040"
+					},
+					{
+						"hex": "#6e737f"
+					},
+					{
+						"hex": "#e9ecf7"
+					}
+				]
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "g104-3",
+		"category": 104,
+		"categoryName": "composite-mix",
+		"split": "dev",
+		"prompt": "We are replacing hand-picked tints with CSS color-mix(). Give the solid hex each expression produces. Each line is a CSS color-mix(): an even 50/50 mix unless a percentage follows the first color (that share goes to the first color, the rest to the second). Mix in the named space: srgb mixes the gamma-encoded channel values; srgb-linear decodes with the standard sRGB transfer function (IEC 61966-2-1), mixes the linear-light values, then re-encodes; oklab mixes Oklab (Ottosson) L, a and b, then converts back to sRGB. Round each final channel to the nearest integer and give the opaque hex.\n\n1. color-mix(in srgb, #ff0000, #0000ff)\n2. color-mix(in oklab, #ff0000, #0000ff)\n3. color-mix(in srgb, #fde047, #1e3a8a)\n4. color-mix(in oklab, #fde047, #1e3a8a)\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per line, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"hex": {
+								"type": "string",
+								"pattern": "^#[0-9a-fA-F]{3,6}$"
+							}
+						},
+						"required": [
+							"hex"
+						]
+					}
+				}
+			},
+			"required": [
+				"results"
+			]
+		},
+		"grader": {
+			"kind": "gen-mix",
+			"params": {
+				"items": [
+					{
+						"expected": [
+							127.5,
+							0,
+							127.5
+						]
+					},
+					{
+						"expected": [
+							140.362472,
+							83.033275,
+							162.307667
+						]
+					},
+					{
+						"expected": [
+							141.5,
+							141,
+							104.5
+						]
+					},
+					{
+						"expected": [
+							133.652045,
+							144.353662,
+							132.231394
+						]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#800080"
+				},
+				{
+					"hex": "#8c53a2"
+				},
+				{
+					"hex": "#8e8d69"
+				},
+				{
+					"hex": "#869084"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#7fff7f"
+					},
+					{
+						"hex": "#73ac5d"
+					},
+					{
+						"hex": "#717296"
+					},
+					{
+						"hex": "#796f7b"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#8c53a2"
+					},
+					{
+						"hex": "#800080"
+					},
+					{
+						"hex": "#869084"
+					},
+					{
+						"hex": "#8e8d69"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#810080"
+					},
+					{
+						"hex": "#8c53a2"
+					},
+					{
+						"hex": "#8e8d69"
+					},
+					{
+						"hex": "#869084"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g104-4",
+		"category": 104,
+		"categoryName": "composite-mix",
+		"split": "dev",
+		"prompt": "We are replacing hand-picked tints with CSS color-mix() in linear light. Give the solid hex each expression produces. Each line is a CSS color-mix(): an even 50/50 mix unless a percentage follows the first color (that share goes to the first color, the rest to the second). Mix in the named space: srgb mixes the gamma-encoded channel values; srgb-linear decodes with the standard sRGB transfer function (IEC 61966-2-1), mixes the linear-light values, then re-encodes; oklab mixes Oklab (Ottosson) L, a and b, then converts back to sRGB. Round each final channel to the nearest integer and give the opaque hex.\n\n1. color-mix(in srgb-linear, #ff0000, #0000ff)\n2. color-mix(in srgb-linear, #000000, #ffffff)\n3. color-mix(in srgb-linear, #22c55e 25%, #ffffff)\n4. color-mix(in srgb-linear, #7c3aed, #f97316)\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per line, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"hex": {
+								"type": "string",
+								"pattern": "^#[0-9a-fA-F]{3,6}$"
+							}
+						},
+						"required": [
+							"hex"
+						]
+					}
+				}
+			},
+			"required": [
+				"results"
+			]
+		},
+		"grader": {
+			"kind": "gen-mix",
+			"params": {
+				"items": [
+					{
+						"expected": [
+							187.516031,
+							0,
+							187.516031
+						]
+					},
+					{
+						"expected": [
+							187.516031,
+							187.516031,
+							187.516031
+						]
+					},
+					{
+						"expected": [
+							225.139736,
+							242.199565,
+							228.280651
+						]
+					},
+					{
+						"expected": [
+							199.513019,
+							91.93936,
+							174.77157
+						]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#bc00bc"
+				},
+				{
+					"hex": "#bcbcbc"
+				},
+				{
+					"hex": "#e1f2e4"
+				},
+				{
+					"hex": "#c85caf"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#43ff43"
+					},
+					{
+						"hex": "#434343"
+					},
+					{
+						"hex": "#1e0d1b"
+					},
+					{
+						"hex": "#37a350"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#800080"
+					},
+					{
+						"hex": "#808080"
+					},
+					{
+						"hex": "#c8f1d7"
+					},
+					{
+						"hex": "#bb5782"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#bd00bc"
+					},
+					{
+						"hex": "#bcbcbc"
+					},
+					{
+						"hex": "#e1f2e4"
+					},
+					{
+						"hex": "#c85caf"
+					}
+				]
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "g105-1",
+		"category": 105,
+		"categoryName": "grayscale-safe",
+		"split": "dev",
+		"prompt": "Pick 3 colors for the series of a bar chart on a white (#ffffff) background. The charts are often printed in black and white, so the colors must stay apart in grayscale. Requirements:\n\n- Every pair of colors differs in Oklab lightness L (0 to 1 scale) by at least 0.15.\n- Each color reaches a WCAG 2 contrast ratio of at least 3:1 against the background #ffffff.\n- Each color is clearly colorful: OKLCH chroma at least 0.08.\n- Every pair is at least 60 degrees apart in OKLCH hue.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [\"#rrggbb\", ... exactly 3 colors]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					},
+					"minItems": 3,
+					"maxItems": 3
+				}
+			},
+			"required": [
+				"colors"
+			]
+		},
+		"grader": {
+			"kind": "gen-grayscale",
+			"params": {
+				"n": 3,
+				"background": "#ffffff",
+				"minContrast": 3,
+				"lGap": 0.15,
+				"cMin": 0.08,
+				"hueGap": 60,
+				"derivation": {
+					"band": [
+						0.25,
+						0.695
+					],
+					"bandLimits": [
+						0.25,
+						0.97
+					],
+					"gStar": 0.2225
+				}
+			}
+		},
+		"witness": {
+			"colors": [
+				"#03116b",
+				"#9b351b",
+				"#ed41e5"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": [
+					"#fcee94",
+					"#64cae4",
+					"#12be1a"
+				]
+			},
+			{
+				"colors": [
+					"#03116b",
+					"#9b351b"
+				]
+			},
+			{
+				"colors": [
+					"#242424",
+					"#5c5c5c",
+					"#9a9a9a"
+				]
+			},
+			{
+				"colors": [
+					"#03116b",
+					"#03116b",
+					"#ed41e5"
+				]
+			},
+			{
+				"colors": [
+					"#03116b",
+					"#7a2814",
+					"#ed41e5"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g105-2",
+		"category": 105,
+		"categoryName": "grayscale-safe",
+		"split": "dev",
+		"prompt": "Pick 4 colors for the lines of a line chart on a white (#ffffff) background. The charts are often printed in black and white, so the colors must stay apart in grayscale. Requirements:\n\n- Every pair of colors differs in Oklab lightness L (0 to 1 scale) by at least 0.1.\n- Each color reaches a WCAG 2 contrast ratio of at least 3:1 against the background #ffffff.\n- Each color is clearly colorful: OKLCH chroma at least 0.08.\n- Every pair is at least 45 degrees apart in OKLCH hue.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [\"#rrggbb\", ... exactly 4 colors]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					},
+					"minItems": 4,
+					"maxItems": 4
+				}
+			},
+			"required": [
+				"colors"
+			]
+		},
+		"grader": {
+			"kind": "gen-grayscale",
+			"params": {
+				"n": 4,
+				"background": "#ffffff",
+				"minContrast": 3,
+				"lGap": 0.1,
+				"cMin": 0.08,
+				"hueGap": 45,
+				"derivation": {
+					"band": [
+						0.25,
+						0.695
+					],
+					"bandLimits": [
+						0.25,
+						0.97
+					],
+					"gStar": 0.1483
+				}
+			}
+		},
+		"witness": {
+			"colors": [
+				"#03116b",
+				"#7f1a3e",
+				"#a15b24",
+				"#c968f1"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": [
+					"#fcee94",
+					"#80e5c1",
+					"#5ea4db",
+					"#36970e"
+				]
+			},
+			{
+				"colors": [
+					"#03116b",
+					"#7f1a3e",
+					"#a15b24"
+				]
+			},
+			{
+				"colors": [
+					"#242424",
+					"#484848",
+					"#6f6f6f",
+					"#9a9a9a"
+				]
+			},
+			{
+				"colors": [
+					"#03116b",
+					"#03116b",
+					"#a15b24",
+					"#c968f1"
+				]
+			},
+			{
+				"colors": [
+					"#03116b",
+					"#691432",
+					"#a15b24",
+					"#c968f1"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g105-3",
+		"category": 105,
+		"categoryName": "grayscale-safe",
+		"split": "dev",
+		"prompt": "Pick 4 colors for the series of a dashboard chart on our dark (#0f172a) background. The charts are often printed in black and white, so the colors must stay apart in grayscale. Requirements:\n\n- Every pair of colors differs in Oklab lightness L (0 to 1 scale) by at least 0.1.\n- Each color reaches a WCAG 2 contrast ratio of at least 3:1 against the background #0f172a.\n- Each color is clearly colorful: OKLCH chroma at least 0.08.\n- Every pair is at least 45 degrees apart in OKLCH hue.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [\"#rrggbb\", ... exactly 4 colors]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					},
+					"minItems": 4,
+					"maxItems": 4
+				}
+			},
+			"required": [
+				"colors"
+			]
+		},
+		"grader": {
+			"kind": "gen-grayscale",
+			"params": {
+				"n": 4,
+				"background": "#0f172a",
+				"minContrast": 3,
+				"lGap": 0.1,
+				"cMin": 0.08,
+				"hueGap": 45,
+				"derivation": {
+					"band": [
+						0.5,
+						0.97
+					],
+					"bandLimits": [
+						0.25,
+						0.97
+					],
+					"gStar": 0.1567
+				}
+			}
+		},
+		"witness": {
+			"colors": [
+				"#25784a",
+				"#f1478d",
+				"#f7ae85",
+				"#fdf79a"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": [
+					"#da87b5",
+					"#0eb872",
+					"#08517a",
+					"#020865"
+				]
+			},
+			{
+				"colors": [
+					"#25784a",
+					"#f1478d",
+					"#f7ae85"
+				]
+			},
+			{
+				"colors": [
+					"#666666",
+					"#929292",
+					"#c1c1c1",
+					"#f2f2f2"
+				]
+			},
+			{
+				"colors": [
+					"#25784a",
+					"#25784a",
+					"#f7ae85",
+					"#fdf79a"
+				]
+			},
+			{
+				"colors": [
+					"#25784a",
+					"#da357c",
+					"#f7ae85",
+					"#fdf79a"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g105-4",
+		"category": 105,
+		"categoryName": "grayscale-safe",
+		"split": "dev",
+		"prompt": "Pick 5 colors for the segments of a stacked area chart on an off-white (#f8fafc) background. The charts are often printed in black and white, so the colors must stay apart in grayscale. Requirements:\n\n- Every pair of colors differs in Oklab lightness L (0 to 1 scale) by at least 0.07.\n- Each color reaches a WCAG 2 contrast ratio of at least 3:1 against the background #f8fafc.\n- Each color is clearly colorful: OKLCH chroma at least 0.06.\n- Every pair is at least 30 degrees apart in OKLCH hue.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [\"#rrggbb\", ... exactly 5 colors]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					},
+					"minItems": 5,
+					"maxItems": 5
+				}
+			},
+			"required": [
+				"colors"
+			]
+		},
+		"grader": {
+			"kind": "gen-grayscale",
+			"params": {
+				"n": 5,
+				"background": "#f8fafc",
+				"minContrast": 3,
+				"lGap": 0.07,
+				"cMin": 0.06,
+				"hueGap": 30,
+				"derivation": {
+					"band": [
+						0.25,
+						0.68
+					],
+					"bandLimits": [
+						0.25,
+						0.97
+					],
+					"gStar": 0.1075
+				}
+			}
+		},
+		"witness": {
+			"colors": [
+				"#440922",
+				"#6b2210",
+				"#78501b",
+				"#807a27",
+				"#bb69f0"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": [
+					"#bbf6dd",
+					"#94ddef",
+					"#87afe4",
+					"#7f85d8",
+					"#44960f"
+				]
+			},
+			{
+				"colors": [
+					"#440922",
+					"#6b2210",
+					"#78501b",
+					"#807a27"
+				]
+			},
+			{
+				"colors": [
+					"#242424",
+					"#3e3e3e",
+					"#595959",
+					"#777777",
+					"#959595"
+				]
+			},
+			{
+				"colors": [
+					"#440922",
+					"#440922",
+					"#78501b",
+					"#807a27",
+					"#bb69f0"
+				]
+			},
+			{
+				"colors": [
+					"#440922",
+					"#5a1b0b",
+					"#78501b",
+					"#807a27",
+					"#bb69f0"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g106-1",
+		"category": 106,
+		"categoryName": "diverging-scale",
+		"split": "dev",
+		"prompt": "Build a 7-step diverging color scale for a temperature-anomaly map: blues on the left end, oranges on the right end, meeting at a light neutral middle. All lightness, chroma and hue values are OKLCH (Ottosson). Requirements:\n\n1. Exactly 7 colors, ordered from the left end to the right end.\n2. The middle (4th) color is a light neutral: lightness at least 0.9, chroma at most 0.03.\n3. Colors 1 to 3 are blues: hue between 235 and 265 degrees, chroma at least 0.04. Colors 5 to 7 are oranges: hue between 40 and 70 degrees, chroma at least 0.04.\n4. Lightness is symmetric around the middle: colors 1 and 7, 2 and 6, 3 and 5 each differ in lightness by at most 0.03.\n5. Lightness rises toward the middle on both sides by at least 0.05 per step.\n6. Both end colors have lightness at most 0.6 and chroma at least 0.1.\n7. The two end colors stay distinguishable for people with deuteranopia: simulate deuteranopia with Machado et al. 2009 at severity 1.0 (matrix applied to linear sRGB, result clipped to 0 to 1), then their CIEDE2000 difference (CIELAB, D65 white) is at least 45.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"steps\": [\"#rrggbb\", ... exactly 7 colors, left to right]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"steps": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					},
+					"minItems": 7,
+					"maxItems": 7
+				}
+			},
+			"required": [
+				"steps"
+			]
+		},
+		"grader": {
+			"kind": "gen-diverging",
+			"params": {
+				"centerLMin": 0.9,
+				"centerCMax": 0.03,
+				"symTol": 0.03,
+				"minStep": 0.05,
+				"endLMax": 0.6,
+				"sideCMin": 0.04,
+				"hueA": {
+					"min": 235,
+					"max": 265
+				},
+				"hueB": {
+					"min": 40,
+					"max": 70
+				},
+				"endCMin": 0.1,
+				"deutanMin": 45,
+				"derivation": {
+					"bestDeutan": 61.039
+				}
+			}
+		},
+		"witness": {
+			"steps": [
+				"#2571f2",
+				"#70a2f6",
+				"#b2cdfa",
+				"#f7f7f7",
+				"#fabba2",
+				"#f7783f",
+				"#c2541f"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"steps": [
+					"#da8e0d",
+					"#8f5d09",
+					"#4d3205",
+					"#080808",
+					"#05445d",
+					"#0887c0",
+					"#3dabe0"
+				]
+			},
+			{
+				"steps": [
+					"#c2541f",
+					"#f7783f",
+					"#fabba2",
+					"#f7f7f7",
+					"#b2cdfa",
+					"#70a2f6",
+					"#2571f2"
+				]
+			},
+			{
+				"steps": [
+					"#2571f2",
+					"#70a2f6",
+					"#b2cdfa",
+					"#f0e2c8",
+					"#fabba2",
+					"#f7783f",
+					"#c2541f"
+				]
+			},
+			{
+				"steps": [
+					"#2571f2",
+					"#70a2f6",
+					"#b2cdfa",
+					"#f7f7f7",
+					"#b2cdfa",
+					"#70a2f6",
+					"#2571f2"
+				]
+			},
+			{
+				"steps": [
+					"#2571f2",
+					"#70a2f6",
+					"#b2cdfa",
+					"#f7f7f7",
+					"#fabba2",
+					"#f7783f"
+				]
+			},
+			{
+				"steps": [
+					"#2571f2",
+					"#70a2f6",
+					"#b2cdfa",
+					"#f7f7f7",
+					"#f9a888",
+					"#f7783f",
+					"#c2541f"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g106-2",
+		"category": 106,
+		"categoryName": "diverging-scale",
+		"split": "dev",
+		"prompt": "Build a 7-step diverging color scale for an election swing map: purples on the left end, greens on the right end, meeting at a light neutral middle. All lightness, chroma and hue values are OKLCH (Ottosson). Requirements:\n\n1. Exactly 7 colors, ordered from the left end to the right end.\n2. The middle (4th) color is a light neutral: lightness at least 0.9, chroma at most 0.03.\n3. Colors 1 to 3 are purples: hue between 295 and 325 degrees, chroma at least 0.04. Colors 5 to 7 are greens: hue between 135 and 160 degrees, chroma at least 0.04.\n4. Lightness is symmetric around the middle: colors 1 and 7, 2 and 6, 3 and 5 each differ in lightness by at most 0.03.\n5. Lightness rises toward the middle on both sides by at least 0.05 per step.\n6. Both end colors have lightness at most 0.6 and chroma at least 0.1.\n7. The two end colors stay distinguishable for people with deuteranopia: simulate deuteranopia with Machado et al. 2009 at severity 1.0 (matrix applied to linear sRGB, result clipped to 0 to 1), then their CIEDE2000 difference (CIELAB, D65 white) is at least 43.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"steps\": [\"#rrggbb\", ... exactly 7 colors, left to right]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"steps": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					},
+					"minItems": 7,
+					"maxItems": 7
+				}
+			},
+			"required": [
+				"steps"
+			]
+		},
+		"grader": {
+			"kind": "gen-diverging",
+			"params": {
+				"centerLMin": 0.9,
+				"centerCMax": 0.03,
+				"symTol": 0.03,
+				"minStep": 0.05,
+				"endLMax": 0.6,
+				"sideCMin": 0.04,
+				"hueA": {
+					"min": 295,
+					"max": 325
+				},
+				"hueB": {
+					"min": 135,
+					"max": 160
+				},
+				"endCMin": 0.1,
+				"deutanMin": 43,
+				"derivation": {
+					"bestDeutan": 58.574
+				}
+			}
+		},
+		"witness": {
+			"steps": [
+				"#872aee",
+				"#a87ef5",
+				"#cebcfa",
+				"#f7f7f7",
+				"#71e83b",
+				"#56b42b",
+				"#3c821d"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"steps": [
+					"#78d511",
+					"#57810a",
+					"#314305",
+					"#080808",
+					"#8e17c4",
+					"#a94bd4",
+					"#c37de2"
+				]
+			},
+			{
+				"steps": [
+					"#3c821d",
+					"#56b42b",
+					"#71e83b",
+					"#f7f7f7",
+					"#cebcfa",
+					"#a87ef5",
+					"#872aee"
+				]
+			},
+			{
+				"steps": [
+					"#872aee",
+					"#a87ef5",
+					"#cebcfa",
+					"#f0e2c8",
+					"#71e83b",
+					"#56b42b",
+					"#3c821d"
+				]
+			},
+			{
+				"steps": [
+					"#872aee",
+					"#a87ef5",
+					"#cebcfa",
+					"#f7f7f7",
+					"#cebcfa",
+					"#a87ef5",
+					"#872aee"
+				]
+			},
+			{
+				"steps": [
+					"#872aee",
+					"#a87ef5",
+					"#cebcfa",
+					"#f7f7f7",
+					"#71e83b",
+					"#56b42b"
+				]
+			},
+			{
+				"steps": [
+					"#872aee",
+					"#a87ef5",
+					"#cebcfa",
+					"#f7f7f7",
+					"#6ada37",
+					"#56b42b",
+					"#3c821d"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g106-3",
+		"category": 106,
+		"categoryName": "diverging-scale",
+		"split": "dev",
+		"prompt": "Build a 7-step diverging color scale for a soil-moisture map: teals on the left end, ochres on the right end, meeting at a light neutral middle. All lightness, chroma and hue values are OKLCH (Ottosson). Requirements:\n\n1. Exactly 7 colors, ordered from the left end to the right end.\n2. The middle (4th) color is a light neutral: lightness at least 0.9, chroma at most 0.03.\n3. Colors 1 to 3 are teals: hue between 185 and 210 degrees, chroma at least 0.04. Colors 5 to 7 are ochres: hue between 55 and 80 degrees, chroma at least 0.04.\n4. Lightness is symmetric around the middle: colors 1 and 7, 2 and 6, 3 and 5 each differ in lightness by at most 0.03.\n5. Lightness rises toward the middle on both sides by at least 0.05 per step.\n6. Both end colors have lightness at most 0.6 and chroma at least 0.08.\n7. The two end colors stay distinguishable for people with deuteranopia: simulate deuteranopia with Machado et al. 2009 at severity 1.0 (matrix applied to linear sRGB, result clipped to 0 to 1), then their CIEDE2000 difference (CIELAB, D65 white) is at least 29.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"steps\": [\"#rrggbb\", ... exactly 7 colors, left to right]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"steps": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					},
+					"minItems": 7,
+					"maxItems": 7
+				}
+			},
+			"required": [
+				"steps"
+			]
+		},
+		"grader": {
+			"kind": "gen-diverging",
+			"params": {
+				"centerLMin": 0.9,
+				"centerCMax": 0.03,
+				"symTol": 0.03,
+				"minStep": 0.05,
+				"endLMax": 0.6,
+				"sideCMin": 0.04,
+				"hueA": {
+					"min": 185,
+					"max": 210
+				},
+				"hueB": {
+					"min": 55,
+					"max": 80
+				},
+				"endCMin": 0.08,
+				"deutanMin": 29,
+				"derivation": {
+					"bestDeutan": 38.976
+				}
+			}
+		},
+		"witness": {
+			"steps": [
+				"#258994",
+				"#33b5c3",
+				"#43e4f5",
+				"#f7f7f7",
+				"#fabd8f",
+				"#e7862d",
+				"#b0651f"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"steps": [
+					"#da766b",
+					"#cc4a3c",
+					"#bc1b0a",
+					"#080808",
+					"#054270",
+					"#1879d2",
+					"#4f9ae0"
+				]
+			},
+			{
+				"steps": [
+					"#b0651f",
+					"#e7862d",
+					"#fabd8f",
+					"#f7f7f7",
+					"#43e4f5",
+					"#33b5c3",
+					"#258994"
+				]
+			},
+			{
+				"steps": [
+					"#258994",
+					"#33b5c3",
+					"#43e4f5",
+					"#f0e2c8",
+					"#fabd8f",
+					"#e7862d",
+					"#b0651f"
+				]
+			},
+			{
+				"steps": [
+					"#258994",
+					"#33b5c3",
+					"#43e4f5",
+					"#f7f7f7",
+					"#43e4f5",
+					"#33b5c3",
+					"#258994"
+				]
+			},
+			{
+				"steps": [
+					"#258994",
+					"#33b5c3",
+					"#43e4f5",
+					"#f7f7f7",
+					"#fabd8f",
+					"#e7862d"
+				]
+			},
+			{
+				"steps": [
+					"#258994",
+					"#33b5c3",
+					"#43e4f5",
+					"#f7f7f7",
+					"#f9ab6e",
+					"#e7862d",
+					"#b0651f"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g106-4",
+		"category": 106,
+		"categoryName": "diverging-scale",
+		"split": "dev",
+		"prompt": "Build a 7-step diverging color scale for a profit-and-loss heatmap: reds on the left end, greens on the right end, meeting at a light neutral middle. All lightness, chroma and hue values are OKLCH (Ottosson). Requirements:\n\n1. Exactly 7 colors, ordered from the left end to the right end.\n2. The middle (4th) color is a light neutral: lightness at least 0.9, chroma at most 0.03.\n3. Colors 1 to 3 are reds: hue between 15 and 35 degrees, chroma at least 0.04. Colors 5 to 7 are greens: hue between 135 and 155 degrees, chroma at least 0.04.\n4. Lightness is symmetric around the middle: colors 1 and 7, 2 and 6, 3 and 5 each differ in lightness by at most 0.03.\n5. Lightness rises toward the middle on both sides by at least 0.05 per step.\n6. Both end colors have lightness at most 0.6 and chroma at least 0.1.\n7. The two end colors stay distinguishable for people with deuteranopia: simulate deuteranopia with Machado et al. 2009 at severity 1.0 (matrix applied to linear sRGB, result clipped to 0 to 1), then their CIEDE2000 difference (CIELAB, D65 white) is at least 8.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"steps\": [\"#rrggbb\", ... exactly 7 colors, left to right]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"steps": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					},
+					"minItems": 7,
+					"maxItems": 7
+				}
+			},
+			"required": [
+				"steps"
+			]
+		},
+		"grader": {
+			"kind": "gen-diverging",
+			"params": {
+				"centerLMin": 0.9,
+				"centerCMax": 0.03,
+				"symTol": 0.03,
+				"minStep": 0.05,
+				"endLMax": 0.6,
+				"sideCMin": 0.04,
+				"hueA": {
+					"min": 15,
+					"max": 35
+				},
+				"hueB": {
+					"min": 135,
+					"max": 155
+				},
+				"endCMin": 0.1,
+				"deutanMin": 8,
+				"derivation": {
+					"bestDeutan": 10.809
+				}
+			}
+		},
+		"witness": {
+			"steps": [
+				"#d9321f",
+				"#f77561",
+				"#fabaae",
+				"#f7f7f7",
+				"#43f080",
+				"#34bf65",
+				"#25914b"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"steps": [
+					"#26cde0",
+					"#088a9e",
+					"#054551",
+					"#080808",
+					"#bc0f7f",
+					"#cb409a",
+					"#da6eb4"
+				]
+			},
+			{
+				"steps": [
+					"#25914b",
+					"#34bf65",
+					"#43f080",
+					"#f7f7f7",
+					"#fabaae",
+					"#f77561",
+					"#d9321f"
+				]
+			},
+			{
+				"steps": [
+					"#d9321f",
+					"#f77561",
+					"#fabaae",
+					"#f0e2c8",
+					"#43f080",
+					"#34bf65",
+					"#25914b"
+				]
+			},
+			{
+				"steps": [
+					"#d9321f",
+					"#f77561",
+					"#fabaae",
+					"#f7f7f7",
+					"#fabaae",
+					"#f77561",
+					"#d9321f"
+				]
+			},
+			{
+				"steps": [
+					"#d9321f",
+					"#f77561",
+					"#fabaae",
+					"#f7f7f7",
+					"#43f080",
+					"#34bf65"
+				]
+			},
+			{
+				"steps": [
+					"#d9321f",
+					"#f77561",
+					"#fabaae",
+					"#f7f7f7",
+					"#3fe178",
+					"#34bf65",
+					"#25914b"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "g107-1",
+		"category": 107,
+		"categoryName": "video-ycbcr",
+		"split": "dev",
+		"prompt": "We are putting our brand colors into a broadcast video package. Give each color's 8-bit Y'CbCr code values. Use BT.709 luma coefficients (Kr = 0.2126, Kb = 0.0722) and 8-bit limited (studio) range: Y' spans 16 to 235, Cb and Cr span 16 to 240 with 128 as zero. Treat each sRGB hex channel divided by 255 as the gamma-encoded R'G'B' signal as is (no transfer-function conversion). Round each code value to the nearest integer.\n\n1. #2563eb\n2. #f59e0b\n3. #16a34a\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"y\": integer, \"cb\": integer, \"cr\": integer}, ... one per color, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": [
+				"results"
+			]
+		},
+		"grader": {
+			"kind": "gen-ycbcr",
+			"params": {
+				"items": [
+					{
+						"kind": "encode",
+						"expected": [
+							98.136165,
+							193.973245,
+							95.291428
+						]
+					},
+					{
+						"kind": "encode",
+						"expected": [
+							158.464052,
+							54.679289,
+							172.131973
+						]
+					},
+					{
+						"kind": "encode",
+						"expected": [
+							124.724998,
+							103.10057,
+							69.654932
+						]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"y": 98,
+					"cb": 194,
+					"cr": 95
+				},
+				{
+					"y": 158,
+					"cb": 55,
+					"cr": 172
+				},
+				{
+					"y": 125,
+					"cb": 103,
+					"cr": 70
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"y": 49.3,
+						"cb": 97.3,
+						"cr": 47.8
+					},
+					{
+						"y": 79.3,
+						"cb": 27.8,
+						"cr": 86.3
+					},
+					{
+						"y": 62.8,
+						"cb": 51.8,
+						"cr": 35.3
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"y": 96,
+						"cb": 206,
+						"cr": 86
+					},
+					{
+						"y": 167,
+						"cb": 40,
+						"cr": 183
+					},
+					{
+						"y": 111,
+						"cb": 107,
+						"cr": 65
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"y": 97,
+						"cb": 194,
+						"cr": 95
+					},
+					{
+						"y": 158,
+						"cb": 55,
+						"cr": 172
+					},
+					{
+						"y": 125,
+						"cb": 103,
+						"cr": 70
+					}
+				]
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "g107-2",
+		"category": 107,
+		"categoryName": "video-ycbcr",
+		"split": "dev",
+		"prompt": "An editor sampled these 8-bit Y'CbCr code values from a graded video clip. Give the sRGB hex a web page should use to match each one. Use BT.709 luma coefficients (Kr = 0.2126, Kb = 0.0722) and 8-bit limited (studio) range: Y' spans 16 to 235, Cb and Cr span 16 to 240 with 128 as zero. Treat each sRGB hex channel divided by 255 as the gamma-encoded R'G'B' signal as is (no transfer-function conversion). Decode each to R'G'B', use those values directly as sRGB channels, scale to 0 to 255 and round to the nearest integer.\n\n1. Y' 63, Cb 205, Cr 104\n2. Y' 173, Cb 66, Cr 166\n3. Y' 110, Cb 154, Cr 182\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per sample, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": [
+				"results"
+			]
+		},
+		"grader": {
+			"kind": "gen-ycbcr",
+			"params": {
+				"items": [
+					{
+						"kind": "decode",
+						"expected": [
+							11.700242,
+							51.095708,
+							217.380965
+						]
+					},
+					{
+						"kind": "decode",
+						"expected": [
+							250.93238,
+							175.779079,
+							51.839308
+						]
+					},
+					{
+						"kind": "decode",
+						"expected": [
+							206.260073,
+							75.130487,
+							164.374501
+						]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#0c33d9"
+				},
+				{
+					"hex": "#fbb034"
+				},
+				{
+					"hex": "#ce4ba4"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#f3cc26"
+					},
+					{
+						"hex": "#044fcb"
+					},
+					{
+						"hex": "#31b45b"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#193cce"
+					},
+					{
+						"hex": "#e9a73a"
+					},
+					{
+						"hex": "#c3509e"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"hex": "#0d33d9"
+					},
+					{
+						"hex": "#fbb034"
+					},
+					{
+						"hex": "#ce4ba4"
+					}
+				]
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "g107-3",
+		"category": 107,
+		"categoryName": "video-ycbcr",
+		"split": "dev",
+		"prompt": "Our image pipeline stores brand colors as JPEG (JFIF) Y'CbCr. Give each color's code values: full range with BT.601 coefficients (Kr = 0.299, Kb = 0.114), all three components spanning 0 to 255, Cb and Cr centered at 128. Use each hex channel (0 to 255) as is, with no transfer-function conversion, and round each code value to the nearest integer.\n\n1. #7c3aed\n2. #0ea5e9\n3. #84cc16\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"y\": integer, \"cb\": integer, \"cr\": integer}, ... one per color, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": [
+				"results"
+			]
+		},
+		"grader": {
+			"kind": "gen-ycbcr",
+			"params": {
+				"items": [
+					{
+						"kind": "encode",
+						"expected": [
+							98.14,
+							206.363424,
+							146.445152
+						]
+					},
+					{
+						"kind": "encode",
+						"expected": [
+							127.603,
+							187.479136,
+							46.970784
+						]
+					},
+					{
+						"kind": "encode",
+						"expected": [
+							161.724,
+							49.148992,
+							106.798784
+						]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"y": 98,
+					"cb": 206,
+					"cr": 146
+				},
+				{
+					"y": 128,
+					"cb": 187,
+					"cr": 47
+				},
+				{
+					"y": 162,
+					"cb": 49,
+					"cr": 107
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"y": 49.3,
+						"cb": 103.3,
+						"cr": 73.3
+					},
+					{
+						"y": 64.3,
+						"cb": 93.8,
+						"cr": 23.8
+					},
+					{
+						"y": 81.3,
+						"cb": 24.8,
+						"cr": 53.8
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"y": 89,
+						"cb": 200,
+						"cr": 150
+					},
+					{
+						"y": 134,
+						"cb": 173,
+						"cr": 59
+					},
+					{
+						"y": 167,
+						"cb": 55,
+						"cr": 104
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"y": 97,
+						"cb": 206,
+						"cr": 146
+					},
+					{
+						"y": 128,
+						"cb": 187,
+						"cr": 47
+					},
+					{
+						"y": 162,
+						"cb": 49,
+						"cr": 107
+					}
+				]
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "g107-4",
+		"category": 107,
+		"categoryName": "video-ycbcr",
+		"split": "dev",
+		"prompt": "A broadcast QC report lists these 8-bit Y'CbCr code values. Some combinations inside the legal code range still do not correspond to any RGB color. Use BT.709 luma coefficients (Kr = 0.2126, Kb = 0.0722) and 8-bit limited (studio) range: Y' spans 16 to 235, Cb and Cr span 16 to 240 with 128 as zero. Treat each sRGB hex channel divided by 255 as the gamma-encoded R'G'B' signal as is (no transfer-function conversion). For each sample, decode to R'G'B': \"legal\" is true only if all three values lie within 0 to 1 before any clamping. Then give the hex after clamping each channel to 0 to 1, scaling to 0 to 255 and rounding to the nearest integer.\n\n1. Y' 180, Cb 60, Cr 200\n2. Y' 120, Cb 140, Cr 110\n3. Y' 40, Cb 240, Cr 128\n4. Y' 200, Cb 120, Cr 125\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"legal\": boolean, \"hex\": \"#rrggbb\"}, ... one per sample, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": [
+				"results"
+			]
+		},
+		"grader": {
+			"kind": "gen-ycbcr",
+			"params": {
+				"items": [
+					{
+						"kind": "legal",
+						"legal": false,
+						"expected": [
+							255,
+							167.090338,
+							47.315583
+						]
+					},
+					{
+						"kind": "legal",
+						"legal": true,
+						"expected": [
+							88.826551,
+							128.129275,
+							146.444712
+						]
+					},
+					{
+						"kind": "legal",
+						"legal": false,
+						"expected": [
+							27.945205,
+							4.061361,
+							255
+						]
+					},
+					{
+						"kind": "legal",
+						"legal": true,
+						"expected": [
+							208.868352,
+							217.551292,
+							197.347361
+						]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"legal": false,
+					"hex": "#ffa72f"
+				},
+				{
+					"legal": true,
+					"hex": "#598092"
+				},
+				{
+					"legal": false,
+					"hex": "#1c04ff"
+				},
+				{
+					"legal": true,
+					"hex": "#d1dac5"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"legal": true,
+						"hex": "#0058d0"
+					},
+					{
+						"legal": false,
+						"hex": "#a67f6d"
+					},
+					{
+						"legal": true,
+						"hex": "#e3fb00"
+					},
+					{
+						"legal": false,
+						"hex": "#2e253a"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"legal": false,
+						"hex": "#ff9f36"
+					},
+					{
+						"legal": true,
+						"hex": "#5c7e8e"
+					},
+					{
+						"legal": false,
+						"hex": "#2813f8"
+					},
+					{
+						"legal": true,
+						"hex": "#c3cbb9"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"legal": false,
+						"hex": "#fea72f"
+					},
+					{
+						"legal": true,
+						"hex": "#598092"
+					},
+					{
+						"legal": false,
+						"hex": "#1c04ff"
+					},
+					{
+						"legal": true,
+						"hex": "#d1dac5"
+					}
+				]
+			},
+			{
+				"results": [
+					{
+						"legal": true,
+						"hex": "#ffa72f"
+					},
+					{
+						"legal": false,
+						"hex": "#598092"
+					},
+					{
+						"legal": true,
+						"hex": "#1c04ff"
+					},
+					{
+						"legal": false,
+						"hex": "#d1dac5"
+					}
+				]
+			}
+		],
+		"toolUseful": false
+	}
+]

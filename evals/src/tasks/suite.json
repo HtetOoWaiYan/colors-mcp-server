@@ -1,0 +1,4266 @@
+[
+	{
+		"id": "c01-1",
+		"category": 1,
+		"categoryName": "convert",
+		"split": "dev",
+		"prompt": "Convert each color to the target format given. \n\n1. #3b82f6 -> oklch: {\"l\": number, \"c\": number, \"h\": degrees}\n2. #808080 -> oklch: {\"l\": number, \"c\": number, \"h\": degrees}\n3. #ff0000 -> oklab: {\"l\": number, \"a\": number, \"b\": number}\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [ one object per color, in the order above, using the object shapes shown ]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "convert",
+			"params": {
+				"items": [
+					{
+						"to": "oklch",
+						"expected": {
+							"l": 0.6230830295087604,
+							"c": 0.18801471201981484,
+							"h": 259.8145266738871
+						}
+					},
+					{
+						"to": "oklch",
+						"expected": {
+							"l": 0.5998708017071177,
+							"c": 2.2359581628717003e-8,
+							"h": 89.87556292373665
+						}
+					},
+					{
+						"to": "oklab",
+						"expected": {
+							"l": 0.6279553606145516,
+							"a": 0.22486306106597398,
+							"b": 0.1258462985307351
+						}
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"l": 0.6231,
+					"c": 0.188,
+					"h": 259.81
+				},
+				{
+					"l": 0.5999,
+					"c": 0,
+					"h": 89.88
+				},
+				{
+					"l": 0.628,
+					"a": 0.2249,
+					"b": 0.1258
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"l": 0.612,
+						"c": 0.394,
+						"h": 130.205
+					},
+					{
+						"l": 0.6,
+						"c": 0.3,
+						"h": 45.24
+					},
+					{
+						"l": 0.614,
+						"a": 0.412,
+						"b": 0.363
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c01-2",
+		"category": 1,
+		"categoryName": "convert",
+		"split": "dev",
+		"prompt": "Convert each color to the target format given. Where an oklch color is outside the sRGB gamut, return the displayable sRGB color with the same lightness and hue and the largest chroma that fits (reduce chroma only).\n\n1. oklch(0.7 0.15 30) -> hex: {\"hex\": \"#rrggbb\"}\n2. oklch(0.45 0.12 265) -> hex: {\"hex\": \"#rrggbb\"}\n3. hsl(200, 80%, 50%) -> hex: {\"hex\": \"#rrggbb\"}\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [ one object per color, in the order above, using the object shapes shown ]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "convert",
+			"params": {
+				"items": [
+					{
+						"to": "hex",
+						"expected": {},
+						"rgb": [
+							0.9285976585636184, 0.46319295936940325, 0.39425098427004035
+						]
+					},
+					{
+						"to": "hex",
+						"expected": {},
+						"rgb": [
+							0.20308595642204091, 0.31752475398384405, 0.5930847247301168
+						]
+					},
+					{
+						"to": "hex",
+						"expected": {},
+						"rgb": [0.09999999999999998, 0.6333333333333331, 0.9]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#ed7665"
+				},
+				{
+					"hex": "#345197"
+				},
+				{
+					"hex": "#19a1e6"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#12899a"
+					},
+					{
+						"hex": "#cbae68"
+					},
+					{
+						"hex": "#e65e19"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c01-3",
+		"category": 1,
+		"categoryName": "convert",
+		"split": "dev",
+		"prompt": "Convert each color to the target format given. Where an oklch color is outside the sRGB gamut, return the displayable sRGB color with the same lightness and hue and the largest chroma that fits (reduce chroma only).\n\n1. oklch(0.75 0.25 145) -> hex: {\"hex\": \"#rrggbb\"}\n2. oklch(0.6 0.3 20) -> hex: {\"hex\": \"#rrggbb\"}\n3. #ffffff -> oklch: {\"l\": number, \"c\": number, \"h\": degrees}\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [ one object per color, in the order above, using the object shapes shown ]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "convert",
+			"params": {
+				"items": [
+					{
+						"to": "hex",
+						"expected": {},
+						"rgb": [0, 0.8224761881121103, 0.2289849239727767]
+					},
+					{
+						"to": "hex",
+						"expected": {},
+						"rgb": [0.9324791857823557, 0, 0.24452704219644933]
+					},
+					{
+						"to": "oklch",
+						"expected": {
+							"l": 0.9999999934735462,
+							"c": 3.7273995535192846e-8,
+							"h": 89.87556309590244
+						}
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#00d23a"
+				},
+				{
+					"hex": "#ee003e"
+				},
+				{
+					"l": 1,
+					"c": 0,
+					"h": 89.88
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#ff2dc5"
+					},
+					{
+						"hex": "#11ffc1"
+					},
+					{
+						"l": 0.8,
+						"c": 0.3,
+						"h": 45.24
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c01-4",
+		"category": 1,
+		"categoryName": "convert",
+		"split": "heldout",
+		"prompt": "Convert each color to the target format given. Where an oklch color is outside the sRGB gamut, return the displayable sRGB color with the same lightness and hue and the largest chroma that fits (reduce chroma only).\n\n1. rgb(255, 128, 0) -> p3: {\"r\": number, \"g\": number, \"b\": number} (display-p3 channels, each 0 to 1)\n2. #1e90ff -> oklab: {\"l\": number, \"a\": number, \"b\": number}\n3. oklch(0.65 0.28 330) -> hex: {\"hex\": \"#rrggbb\"}\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [ one object per color, in the order above, using the object shapes shown ]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "convert",
+			"params": {
+				"items": [
+					{
+						"to": "p3",
+						"expected": {
+							"r": 0.9361802452685157,
+							"g": 0.5290184569489541,
+							"b": 0.19873731704992503
+						}
+					},
+					{
+						"to": "oklab",
+						"expected": {
+							"l": 0.6520055594356652,
+							"a": -0.05493326008860222,
+							"b": -0.18200984640269058
+						}
+					},
+					{
+						"to": "hex",
+						"expected": {},
+						"rgb": [0.8951139984472428, 0.13732043882821685, 0.867308524016702]
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"r": 0.9362,
+					"g": 0.529,
+					"b": 0.1987
+				},
+				{
+					"l": 0.652,
+					"a": -0.0549,
+					"b": -0.182
+				},
+				{
+					"hex": "#e423dd"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"r": 0.768,
+						"g": 0.565,
+						"b": 0.399
+					},
+					{
+						"l": 0.626,
+						"a": 0.273,
+						"b": 0.209
+					},
+					{
+						"hex": "#1bdc22"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c02-1",
+		"category": 2,
+		"categoryName": "parse",
+		"split": "dev",
+		"prompt": "Decide for each input string whether it is a valid color and, if so, give its sRGB hex (ignoring alpha) and alpha (1 when none is given, a number from 0 to 1 otherwise). For an invalid input use valid false, hex null, alpha null. Never guess a value for an invalid input.\nSupported formats: #rgb, #rrggbb, #rrggbbaa, rgb()/rgba() and hsl()/hsla() (commas or spaces; percentages allowed), and these CSS color names (any letter case): black, white, red, lime, blue, yellow, navy, teal, gold, tomato, coral, salmon, indigo, crimson, orchid, chocolate, skyblue, slategray, darkslategray, olive, maroon, gray, silver, orange, green, purple, rebeccapurple, lightgoldenrodyellow, whitesmoke, dodgerblue. Anything else is invalid.\n\n1. \"#FF8800\"\n2. \"#f80\"\n3. \"rgb(12, 34, 56)\"\n4. \"hsl(210, 50%, 40%)\"\n5. \"#12345\"\n6. \"rgb(10, 20)\"\n7. \"tomato\"\n8. \"bluish\"\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"input\": \"<the input string>\", \"valid\": boolean, \"hex\": \"#rrggbb\" or null, \"alpha\": number or null}, ... one per input, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "parse",
+			"params": {
+				"items": [
+					{
+						"input": "#FF8800",
+						"valid": true,
+						"hex": "#ff8800",
+						"alpha": 1
+					},
+					{
+						"input": "#f80",
+						"valid": true,
+						"hex": "#ff8800",
+						"alpha": 1
+					},
+					{
+						"input": "rgb(12, 34, 56)",
+						"valid": true,
+						"hex": "#0c2238",
+						"alpha": 1
+					},
+					{
+						"input": "hsl(210, 50%, 40%)",
+						"valid": true,
+						"hex": "#336699",
+						"alpha": 1
+					},
+					{
+						"input": "#12345",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rgb(10, 20)",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "tomato",
+						"valid": true,
+						"hex": "#ff6347",
+						"alpha": 1
+					},
+					{
+						"input": "bluish",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"input": "#FF8800",
+					"valid": true,
+					"hex": "#ff8800",
+					"alpha": 1
+				},
+				{
+					"input": "#f80",
+					"valid": true,
+					"hex": "#ff8800",
+					"alpha": 1
+				},
+				{
+					"input": "rgb(12, 34, 56)",
+					"valid": true,
+					"hex": "#0c2238",
+					"alpha": 1
+				},
+				{
+					"input": "hsl(210, 50%, 40%)",
+					"valid": true,
+					"hex": "#336699",
+					"alpha": 1
+				},
+				{
+					"input": "#12345",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "rgb(10, 20)",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "tomato",
+					"valid": true,
+					"hex": "#ff6347",
+					"alpha": 1
+				},
+				{
+					"input": "bluish",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"input": "#0077ff",
+						"valid": false,
+						"hex": "#0077ff",
+						"alpha": 0.8
+					},
+					{
+						"input": "#f80",
+						"valid": false,
+						"hex": "#0077ff",
+						"alpha": 0.8
+					},
+					{
+						"input": "rgb(12, 34, 56)",
+						"valid": false,
+						"hex": "#f3ddc7",
+						"alpha": 0.8
+					},
+					{
+						"input": "hsl(210, 50%, 40%)",
+						"valid": false,
+						"hex": "#cc9966",
+						"alpha": 0.8
+					},
+					{
+						"input": "#12345",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rgb(10, 20)",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "tomato",
+						"valid": false,
+						"hex": "#009cb8",
+						"alpha": 0.8
+					},
+					{
+						"input": "bluish",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c02-2",
+		"category": 2,
+		"categoryName": "parse",
+		"split": "dev",
+		"prompt": "Decide for each input string whether it is a valid color and, if so, give its sRGB hex (ignoring alpha) and alpha (1 when none is given, a number from 0 to 1 otherwise). For an invalid input use valid false, hex null, alpha null. Never guess a value for an invalid input.\nSupported formats: #rgb, #rrggbb, #rrggbbaa, rgb()/rgba() and hsl()/hsla() (commas or spaces; percentages allowed), and these CSS color names (any letter case): black, white, red, lime, blue, yellow, navy, teal, gold, tomato, coral, salmon, indigo, crimson, orchid, chocolate, skyblue, slategray, darkslategray, olive, maroon, gray, silver, orange, green, purple, rebeccapurple, lightgoldenrodyellow, whitesmoke, dodgerblue. Anything else is invalid.\n\n1. \"rgb(255 0 0 / 50%)\"\n2. \"rgba(0, 128, 255, 0.25)\"\n3. \"#00ff0080\"\n4. \"hsla(120, 100%, 25%, 0.5)\"\n5. \"#ggg\"\n6. \"hsl(120, 50%, 50%\"\n7. \"rgba(1, 2, 3, 4, 5)\"\n8. \"rebeccapurple\"\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"input\": \"<the input string>\", \"valid\": boolean, \"hex\": \"#rrggbb\" or null, \"alpha\": number or null}, ... one per input, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "parse",
+			"params": {
+				"items": [
+					{
+						"input": "rgb(255 0 0 / 50%)",
+						"valid": true,
+						"hex": "#ff0000",
+						"alpha": 0.5
+					},
+					{
+						"input": "rgba(0, 128, 255, 0.25)",
+						"valid": true,
+						"hex": "#0080ff",
+						"alpha": 0.25
+					},
+					{
+						"input": "#00ff0080",
+						"valid": true,
+						"hex": "#00ff00",
+						"alpha": 0.5
+					},
+					{
+						"input": "hsla(120, 100%, 25%, 0.5)",
+						"valid": true,
+						"hex": "#008000",
+						"alpha": 0.5
+					},
+					{
+						"input": "#ggg",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "hsl(120, 50%, 50%",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rgba(1, 2, 3, 4, 5)",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rebeccapurple",
+						"valid": true,
+						"hex": "#663399",
+						"alpha": 1
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"input": "rgb(255 0 0 / 50%)",
+					"valid": true,
+					"hex": "#ff0000",
+					"alpha": 0.5
+				},
+				{
+					"input": "rgba(0, 128, 255, 0.25)",
+					"valid": true,
+					"hex": "#0080ff",
+					"alpha": 0.25
+				},
+				{
+					"input": "#00ff0080",
+					"valid": true,
+					"hex": "#00ff00",
+					"alpha": 0.5
+				},
+				{
+					"input": "hsla(120, 100%, 25%, 0.5)",
+					"valid": true,
+					"hex": "#008000",
+					"alpha": 0.5
+				},
+				{
+					"input": "#ggg",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "hsl(120, 50%, 50%",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "rgba(1, 2, 3, 4, 5)",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "rebeccapurple",
+					"valid": true,
+					"hex": "#663399",
+					"alpha": 1
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"input": "rgb(255 0 0 / 50%)",
+						"valid": false,
+						"hex": "#00ffff",
+						"alpha": 0.55
+					},
+					{
+						"input": "rgba(0, 128, 255, 0.25)",
+						"valid": false,
+						"hex": "#ff7f00",
+						"alpha": 0.425
+					},
+					{
+						"input": "#00ff0080",
+						"valid": false,
+						"hex": "#ff00ff",
+						"alpha": 0.55
+					},
+					{
+						"input": "hsla(120, 100%, 25%, 0.5)",
+						"valid": false,
+						"hex": "#ff7fff",
+						"alpha": 0.55
+					},
+					{
+						"input": "#ggg",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "hsl(120, 50%, 50%",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rgba(1, 2, 3, 4, 5)",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rebeccapurple",
+						"valid": false,
+						"hex": "#99cc66",
+						"alpha": 0.8
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c02-3",
+		"category": 2,
+		"categoryName": "parse",
+		"split": "dev",
+		"prompt": "Decide for each input string whether it is a valid color and, if so, give its sRGB hex (ignoring alpha) and alpha (1 when none is given, a number from 0 to 1 otherwise). For an invalid input use valid false, hex null, alpha null. Never guess a value for an invalid input.\nSupported formats: #rgb, #rrggbb, #rrggbbaa, rgb()/rgba() and hsl()/hsla() (commas or spaces; percentages allowed), and these CSS color names (any letter case): black, white, red, lime, blue, yellow, navy, teal, gold, tomato, coral, salmon, indigo, crimson, orchid, chocolate, skyblue, slategray, darkslategray, olive, maroon, gray, silver, orange, green, purple, rebeccapurple, lightgoldenrodyellow, whitesmoke, dodgerblue. Anything else is invalid.\n\n1. \"DARKSLATEGRAY\"\n2. \"#FFF\"\n3. \"rgb(0%, 100%, 20%)\"\n4. \"hsl(0, 0%, 100%)\"\n5. \"hsl(360, 100%, 50%)\"\n6. \"#12\"\n7. \"rgb(1, 2, 3\"\n8. \"#abcdef\"\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"input\": \"<the input string>\", \"valid\": boolean, \"hex\": \"#rrggbb\" or null, \"alpha\": number or null}, ... one per input, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "parse",
+			"params": {
+				"items": [
+					{
+						"input": "DARKSLATEGRAY",
+						"valid": true,
+						"hex": "#2f4f4f",
+						"alpha": 1
+					},
+					{
+						"input": "#FFF",
+						"valid": true,
+						"hex": "#ffffff",
+						"alpha": 1
+					},
+					{
+						"input": "rgb(0%, 100%, 20%)",
+						"valid": true,
+						"hex": "#00ff33",
+						"alpha": 1
+					},
+					{
+						"input": "hsl(0, 0%, 100%)",
+						"valid": true,
+						"hex": "#ffffff",
+						"alpha": 1
+					},
+					{
+						"input": "hsl(360, 100%, 50%)",
+						"valid": true,
+						"hex": "#ff0000",
+						"alpha": 1
+					},
+					{
+						"input": "#12",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rgb(1, 2, 3",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "#abcdef",
+						"valid": true,
+						"hex": "#abcdef",
+						"alpha": 1
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"input": "DARKSLATEGRAY",
+					"valid": true,
+					"hex": "#2f4f4f",
+					"alpha": 1
+				},
+				{
+					"input": "#FFF",
+					"valid": true,
+					"hex": "#ffffff",
+					"alpha": 1
+				},
+				{
+					"input": "rgb(0%, 100%, 20%)",
+					"valid": true,
+					"hex": "#00ff33",
+					"alpha": 1
+				},
+				{
+					"input": "hsl(0, 0%, 100%)",
+					"valid": true,
+					"hex": "#ffffff",
+					"alpha": 1
+				},
+				{
+					"input": "hsl(360, 100%, 50%)",
+					"valid": true,
+					"hex": "#ff0000",
+					"alpha": 1
+				},
+				{
+					"input": "#12",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "rgb(1, 2, 3",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "#abcdef",
+					"valid": true,
+					"hex": "#abcdef",
+					"alpha": 1
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"input": "DARKSLATEGRAY",
+						"valid": false,
+						"hex": "#d0b0b0",
+						"alpha": 0.8
+					},
+					{
+						"input": "#FFF",
+						"valid": false,
+						"hex": "#000000",
+						"alpha": 0.8
+					},
+					{
+						"input": "rgb(0%, 100%, 20%)",
+						"valid": false,
+						"hex": "#ff00cc",
+						"alpha": 0.8
+					},
+					{
+						"input": "hsl(0, 0%, 100%)",
+						"valid": false,
+						"hex": "#000000",
+						"alpha": 0.8
+					},
+					{
+						"input": "hsl(360, 100%, 50%)",
+						"valid": false,
+						"hex": "#00ffff",
+						"alpha": 0.8
+					},
+					{
+						"input": "#12",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rgb(1, 2, 3",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "#543210",
+						"valid": false,
+						"hex": "#543210",
+						"alpha": 0.8
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c02-4",
+		"category": 2,
+		"categoryName": "parse",
+		"split": "heldout",
+		"prompt": "Decide for each input string whether it is a valid color and, if so, give its sRGB hex (ignoring alpha) and alpha (1 when none is given, a number from 0 to 1 otherwise). For an invalid input use valid false, hex null, alpha null. Never guess a value for an invalid input.\nSupported formats: #rgb, #rrggbb, #rrggbbaa, rgb()/rgba() and hsl()/hsla() (commas or spaces; percentages allowed), and these CSS color names (any letter case): black, white, red, lime, blue, yellow, navy, teal, gold, tomato, coral, salmon, indigo, crimson, orchid, chocolate, skyblue, slategray, darkslategray, olive, maroon, gray, silver, orange, green, purple, rebeccapurple, lightgoldenrodyellow, whitesmoke, dodgerblue. Anything else is invalid.\n\n1. \"#0F0\"\n2. \"lightgoldenrodyellow\"\n3. \"rgb(255,255,255)\"\n4. \"hsl(240, 100%, 50%)\"\n5. \"color(display-p3 1 0 0)\"\n6. \"#fffffff\"\n7. \"blue2\"\n8. \"rgba(255, 0, 0, 0.5)\"\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"input\": \"<the input string>\", \"valid\": boolean, \"hex\": \"#rrggbb\" or null, \"alpha\": number or null}, ... one per input, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "parse",
+			"params": {
+				"items": [
+					{
+						"input": "#0F0",
+						"valid": true,
+						"hex": "#00ff00",
+						"alpha": 1
+					},
+					{
+						"input": "lightgoldenrodyellow",
+						"valid": true,
+						"hex": "#fafad2",
+						"alpha": 1
+					},
+					{
+						"input": "rgb(255,255,255)",
+						"valid": true,
+						"hex": "#ffffff",
+						"alpha": 1
+					},
+					{
+						"input": "hsl(240, 100%, 50%)",
+						"valid": true,
+						"hex": "#0000ff",
+						"alpha": 1
+					},
+					{
+						"input": "color(display-p3 1 0 0)",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "#fffffff",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "blue2",
+						"valid": false,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rgba(255, 0, 0, 0.5)",
+						"valid": true,
+						"hex": "#ff0000",
+						"alpha": 0.5
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"input": "#0F0",
+					"valid": true,
+					"hex": "#00ff00",
+					"alpha": 1
+				},
+				{
+					"input": "lightgoldenrodyellow",
+					"valid": true,
+					"hex": "#fafad2",
+					"alpha": 1
+				},
+				{
+					"input": "rgb(255,255,255)",
+					"valid": true,
+					"hex": "#ffffff",
+					"alpha": 1
+				},
+				{
+					"input": "hsl(240, 100%, 50%)",
+					"valid": true,
+					"hex": "#0000ff",
+					"alpha": 1
+				},
+				{
+					"input": "color(display-p3 1 0 0)",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "#fffffff",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "blue2",
+					"valid": false,
+					"hex": null,
+					"alpha": null
+				},
+				{
+					"input": "rgba(255, 0, 0, 0.5)",
+					"valid": true,
+					"hex": "#ff0000",
+					"alpha": 0.5
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"input": "#0F0",
+						"valid": false,
+						"hex": "#ff00ff",
+						"alpha": 0.8
+					},
+					{
+						"input": "lightgoldenrodyellow",
+						"valid": false,
+						"hex": "#05052d",
+						"alpha": 0.8
+					},
+					{
+						"input": "rgb(255,255,255)",
+						"valid": false,
+						"hex": "#000000",
+						"alpha": 0.8
+					},
+					{
+						"input": "hsl(240, 100%, 50%)",
+						"valid": false,
+						"hex": "#ffff00",
+						"alpha": 0.8
+					},
+					{
+						"input": "color(display-p3 1 0 0)",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "#fffffff",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "blue2",
+						"valid": true,
+						"hex": null,
+						"alpha": null
+					},
+					{
+						"input": "rgba(255, 0, 0, 0.5)",
+						"valid": false,
+						"hex": "#00ffff",
+						"alpha": 0.55
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c03-1",
+		"category": 3,
+		"categoryName": "contrast-verdict",
+		"split": "dev",
+		"prompt": "Check body-text contrast. Compute the WCAG 2 contrast ratio for each pair (with partially transparent text, first composite it over the background color; round the composited color to 8-bit hex before computing the ratio). \"pass\" is true only if the ratio is at least the required ratio.\n\n1. text #767676 on background #ffffff, required ratio 4.5:1\n2. text #777777 on background #ffffff, required ratio 4.5:1\n3. text #2563eb on background #ffffff, required ratio 4.5:1\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"pass\": boolean, \"ratio\": number rounded to 2 decimals}, ... one per pair, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "verdict",
+			"params": {
+				"items": [
+					{
+						"threshold": 4.5,
+						"ratio": 4.542224959605253,
+						"pass": true
+					},
+					{
+						"threshold": 4.5,
+						"ratio": 4.478089453577214,
+						"pass": false
+					},
+					{
+						"threshold": 4.5,
+						"ratio": 5.168555560022562,
+						"pass": true
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"pass": true,
+					"ratio": 4.54
+				},
+				{
+					"pass": false,
+					"ratio": 4.48
+				},
+				{
+					"pass": true,
+					"ratio": 5.17
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"pass": false,
+						"ratio": 2.57
+					},
+					{
+						"pass": true,
+						"ratio": 2.54
+					},
+					{
+						"pass": false,
+						"ratio": 2.885
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c03-2",
+		"category": 3,
+		"categoryName": "contrast-verdict",
+		"split": "dev",
+		"prompt": "Check text and UI contrast. Compute the WCAG 2 contrast ratio for each pair (with partially transparent text, first composite it over the background color; round the composited color to 8-bit hex before computing the ratio). \"pass\" is true only if the ratio is at least the required ratio.\n\n1. text #949494 on background #ffffff, required ratio 3:1\n2. text #ffcc00 on background #ffffff, required ratio 4.5:1\n3. text #ffffff on background #2563eb, required ratio 4.5:1\n4. text #6b7280 on background #f3f4f6, required ratio 4.5:1\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"pass\": boolean, \"ratio\": number rounded to 2 decimals}, ... one per pair, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "verdict",
+			"params": {
+				"items": [
+					{
+						"threshold": 3,
+						"ratio": 3.0334698257384747,
+						"pass": true
+					},
+					{
+						"threshold": 4.5,
+						"ratio": 1.5119719826162943,
+						"pass": false
+					},
+					{
+						"threshold": 4.5,
+						"ratio": 5.168555560022562,
+						"pass": true
+					},
+					{
+						"threshold": 4.5,
+						"ratio": 4.3929342157461635,
+						"pass": false
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"pass": true,
+					"ratio": 3.03
+				},
+				{
+					"pass": false,
+					"ratio": 1.51
+				},
+				{
+					"pass": true,
+					"ratio": 5.17
+				},
+				{
+					"pass": false,
+					"ratio": 4.39
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"pass": false,
+						"ratio": 1.815
+					},
+					{
+						"pass": true,
+						"ratio": 1.055
+					},
+					{
+						"pass": false,
+						"ratio": 2.885
+					},
+					{
+						"pass": true,
+						"ratio": 2.495
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c03-3",
+		"category": 3,
+		"categoryName": "contrast-verdict",
+		"split": "dev",
+		"prompt": "Check translucent text. Compute the WCAG 2 contrast ratio for each pair (with partially transparent text, first composite it over the background color; round the composited color to 8-bit hex before computing the ratio). \"pass\" is true only if the ratio is at least the required ratio.\n\n1. text #000000 at 0.55 opacity on background #ffffff, required ratio 4.5:1\n2. text #ffffff at 0.8 opacity on background #1e3a8a, required ratio 4.5:1\n3. text #000000 at 0.6 opacity on background #ffeb3b, required ratio 4.5:1\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"pass\": boolean, \"ratio\": number rounded to 2 decimals}, ... one per pair, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "verdict",
+			"params": {
+				"items": [
+					{
+						"threshold": 4.5,
+						"ratio": 4.741667181590045,
+						"pass": true
+					},
+					{
+						"threshold": 4.5,
+						"ratio": 7.26435549077089,
+						"pass": true
+					},
+					{
+						"threshold": 4.5,
+						"ratio": 5.409643597857062,
+						"pass": true
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"pass": true,
+					"ratio": 4.74
+				},
+				{
+					"pass": true,
+					"ratio": 7.26
+				},
+				{
+					"pass": true,
+					"ratio": 5.41
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"pass": false,
+						"ratio": 2.67
+					},
+					{
+						"pass": false,
+						"ratio": 3.93
+					},
+					{
+						"pass": false,
+						"ratio": 3.005
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c03-4",
+		"category": 3,
+		"categoryName": "contrast-verdict",
+		"split": "heldout",
+		"prompt": "Check enhanced (AAA) contrast. Compute the WCAG 2 contrast ratio for each pair (with partially transparent text, first composite it over the background color; round the composited color to 8-bit hex before computing the ratio). \"pass\" is true only if the ratio is at least the required ratio.\n\n1. text #555555 on background #ffffff, required ratio 7:1\n2. text #5f5f5f on background #ffffff, required ratio 7:1\n3. text #1d4ed8 on background #ffffff, required ratio 7:1\n4. text #0f172a on background #e2e8f0, required ratio 7:1\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"pass\": boolean, \"ratio\": number rounded to 2 decimals}, ... one per pair, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "verdict",
+			"params": {
+				"items": [
+					{
+						"threshold": 7,
+						"ratio": 7.455177810447525,
+						"pass": true
+					},
+					{
+						"threshold": 7,
+						"ratio": 6.385487353255615,
+						"pass": false
+					},
+					{
+						"threshold": 7,
+						"ratio": 6.701618401398807,
+						"pass": false
+					},
+					{
+						"threshold": 7,
+						"ratio": 14.481508292066573,
+						"pass": true
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"pass": true,
+					"ratio": 7.46
+				},
+				{
+					"pass": false,
+					"ratio": 6.39
+				},
+				{
+					"pass": false,
+					"ratio": 6.7
+				},
+				{
+					"pass": true,
+					"ratio": 14.48
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"pass": false,
+						"ratio": 4.03
+					},
+					{
+						"pass": true,
+						"ratio": 3.495
+					},
+					{
+						"pass": true,
+						"ratio": 3.65
+					},
+					{
+						"pass": false,
+						"ratio": 7.54
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c04-1",
+		"category": 4,
+		"categoryName": "contrast-fix",
+		"split": "dev",
+		"prompt": "The link text uses text color #7a9bd1 on background #ffffff and must reach a WCAG 2 contrast ratio of at least 4.5:1. Return a replacement text color as an opaque 8-bit sRGB hex. Change only the text color (not the background), keep its hue as close as possible, and keep it as visually close to the original as you can. Reply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": ["hex"]
+		},
+		"grader": {
+			"kind": "fix",
+			"params": {
+				"fg": "#7a9bd1",
+				"bg": "#ffffff",
+				"target": 4.5,
+				"dStar": 0.1159326130890628,
+				"hueConstrained": true
+			}
+		},
+		"witness": {
+			"hex": "#5f75b1"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "#7a9bd1"
+			},
+			{
+				"hex": "#000000"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c04-2",
+		"category": 4,
+		"categoryName": "contrast-fix",
+		"split": "dev",
+		"prompt": "The warning label uses text color #f2a65a on background #ffffff and must reach a WCAG 2 contrast ratio of at least 4.5:1. Return a replacement text color as an opaque 8-bit sRGB hex. Change only the text color (not the background), keep its hue as close as possible, and keep it as visually close to the original as you can. Reply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": ["hex"]
+		},
+		"grader": {
+			"kind": "fix",
+			"params": {
+				"fg": "#f2a65a",
+				"bg": "#ffffff",
+				"target": 4.5,
+				"dStar": 0.206351619798329,
+				"hueConstrained": true
+			}
+		},
+		"witness": {
+			"hex": "#b95e06"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "#f2a65a"
+			},
+			{
+				"hex": "#000000"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c04-3",
+		"category": 4,
+		"categoryName": "contrast-fix",
+		"split": "dev",
+		"prompt": "The caption on a dark panel uses text color #4b5563 on background #111827 and must reach a WCAG 2 contrast ratio of at least 4.5:1. Return a replacement text color as an opaque 8-bit sRGB hex. Change only the text color (not the background), keep its hue as close as possible, and keep it as visually close to the original as you can. Reply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": ["hex"]
+		},
+		"grader": {
+			"kind": "fix",
+			"params": {
+				"fg": "#4b5563",
+				"bg": "#111827",
+				"target": 4.5,
+				"dStar": 0.15275195597245597,
+				"hueConstrained": false
+			}
+		},
+		"witness": {
+			"hex": "#68858d"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "#4b5563"
+			},
+			{
+				"hex": "#000000"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c04-4",
+		"category": 4,
+		"categoryName": "contrast-fix",
+		"split": "heldout",
+		"prompt": "The error message uses text color #e11d48 on background #fef2f2 and must reach a WCAG 2 contrast ratio of at least 7:1. Return a replacement text color as an opaque 8-bit sRGB hex. Change only the text color (not the background), keep its hue as close as possible, and keep it as visually close to the original as you can. Reply with JSON only, in a single ```json code block, with exactly this shape:\n{\"hex\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"hex": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				}
+			},
+			"required": ["hex"]
+		},
+		"grader": {
+			"kind": "fix",
+			"params": {
+				"fg": "#e11d48",
+				"bg": "#fef2f2",
+				"target": 7,
+				"dStar": 0.12417457760360837,
+				"hueConstrained": true
+			}
+		},
+		"witness": {
+			"hex": "#a90037"
+		},
+		"invalid": [
+			{},
+			{
+				"hex": "#e11d48"
+			},
+			{
+				"hex": "#000000"
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c05-1",
+		"category": 5,
+		"categoryName": "adjust",
+		"split": "dev",
+		"prompt": "Apply the stated operation to each color. If the result is outside the sRGB gamut, reduce chroma only (keep lightness and hue) until it fits. Return opaque sRGB hex.\n\n1. #3b82f6: lower OKLCH lightness by 0.1, keeping chroma and hue\n2. #f97316: raise OKLCH lightness by 0.08, keeping chroma and hue\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per color, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "adjust",
+			"params": {
+				"items": [
+					{
+						"expectedHex": "#1a62d3"
+					},
+					{
+						"expectedHex": "#ff9c69"
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#1a62d3"
+				},
+				{
+					"hex": "#ff9c69"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#e59d2c"
+					},
+					{
+						"hex": "#006396"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c05-2",
+		"category": 5,
+		"categoryName": "adjust",
+		"split": "dev",
+		"prompt": "Apply the stated operation to each color. If the result is outside the sRGB gamut, reduce chroma only (keep lightness and hue) until it fits. Return opaque sRGB hex.\n\n1. #16a34a: rotate the OKLCH hue by +40 degrees, keeping lightness and chroma\n2. #9333ea: rotate the OKLCH hue by -30 degrees, keeping lightness and chroma\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per color, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "adjust",
+			"params": {
+				"items": [
+					{
+						"expectedHex": "#009d96"
+					},
+					{
+						"expectedHex": "#4b57ff"
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#009d96"
+				},
+				{
+					"hex": "#4b57ff"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#ff6269"
+					},
+					{
+						"hex": "#b4a800"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c05-3",
+		"category": 5,
+		"categoryName": "adjust",
+		"split": "dev",
+		"prompt": "Apply the stated operation to each color. If the result is outside the sRGB gamut, reduce chroma only (keep lightness and hue) until it fits. Return opaque sRGB hex.\n\n1. #e11d48: multiply the OKLCH chroma by 0.6, keeping lightness and hue\n2. #0ea5e9: multiply the OKLCH chroma by 1.3, keeping lightness and hue\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per color, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "adjust",
+			"params": {
+				"items": [
+					{
+						"expectedHex": "#be565e"
+					},
+					{
+						"expectedHex": "#00a5ea"
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#be565e"
+				},
+				{
+					"hex": "#00a5ea"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#41a9a1"
+					},
+					{
+						"hex": "#ff5a15"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c05-4",
+		"category": 5,
+		"categoryName": "adjust",
+		"split": "heldout",
+		"prompt": "Apply the stated operation to each color. If the result is outside the sRGB gamut, reduce chroma only (keep lightness and hue) until it fits. Return opaque sRGB hex.\n\n1. #7c3aed: set OKLCH lightness to 0.85, keeping chroma and hue\n2. #84cc16: lower OKLCH lightness by 0.15, keeping chroma and hue, then rotate the OKLCH hue by +20 degrees, keeping lightness and chroma\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"results\": [{\"hex\": \"#rrggbb\"}, ... one per color, in order]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"results": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["results"]
+		},
+		"grader": {
+			"kind": "adjust",
+			"params": {
+				"items": [
+					{
+						"expectedHex": "#cfc4ff"
+					},
+					{
+						"expectedHex": "#00a04d"
+					}
+				]
+			}
+		},
+		"witness": {
+			"results": [
+				{
+					"hex": "#cfc4ff"
+				},
+				{
+					"hex": "#00a04d"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"results": [
+					{
+						"hex": "#303b00"
+					},
+					{
+						"hex": "#ff5fb2"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c06-1",
+		"category": 6,
+		"categoryName": "gradient",
+		"split": "dev",
+		"prompt": "Create a smooth 5-stop gradient from #2563eb to #f97316 that interpolates in OKLCH (lightness, chroma and hue each interpolated linearly, hue along the shorter arc), so that the midpoints do not turn gray or muddy. Include both endpoints as the first and last stop. Stops must be opaque sRGB hex (reduce chroma only if a stop falls outside the sRGB gamut).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"stops\": [5 hex strings, first to last]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"stops": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["stops"]
+		},
+		"grader": {
+			"kind": "gradient",
+			"params": {
+				"n": 5,
+				"ref": [
+					[0.5461497196052717, -0.02667111822936724, -0.2135486320035448],
+					[0.5858301010994467, 0.10107835742449395, -0.18188726226696356],
+					[0.625510482961911, 0.18249369345892835, -0.08415903915992262],
+					[0.6651908652995919, 0.19000269539035142, 0.03839254853988683],
+					[0.7048712480319559, 0.1258958294571379, 0.13789492263856906]
+				]
+			}
+		},
+		"witness": {
+			"stops": ["#2563eb", "#9054e3", "#cd4cb6", "#f15375", "#f97316"]
+		},
+		"invalid": [
+			{},
+			{
+				"stops": ["#f97316", "#f15375", "#cd4cb6", "#9054e3", "#2563eb"]
+			},
+			{
+				"stops": ["#2563eb", "#5a67b6", "#8f6b81", "#c46f4b", "#f97316"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c06-2",
+		"category": 6,
+		"categoryName": "gradient",
+		"split": "dev",
+		"prompt": "Create a smooth 7-stop gradient from #dc2626 to #16a34a that interpolates in OKLCH (lightness, chroma and hue each interpolated linearly, hue along the shorter arc), so that the midpoints do not turn gray or muddy. Include both endpoints as the first and last stop. Stops must be opaque sRGB hex (reduce chroma only if a stop falls outside the sRGB gamut).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"stops\": [7 hex strings, first to last]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"stops": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["stops"]
+		},
+		"grader": {
+			"kind": "gradient",
+			"params": {
+				"n": 7,
+				"ref": [
+					[0.5770988110995492, 0.19114881667461225, 0.09876513768882672],
+					[0.5854279428875306, 0.10806580199815546, 0.11846494638701055],
+					[0.5937533670259776, 0.048948215531778416, 0.12081235581672167],
+					[0.6020788187974717, 0.0037295945875218117, 0.1229994442003276],
+					[0.610404269565786, -0.04208904881763875, 0.12518625449387966],
+					[0.6187297273832792, -0.10290446991977659, 0.12752253005306047],
+					[0.6270522263223006, -0.14596860512147602, 0.08696717596183101]
+				]
+			}
+		},
+		"witness": {
+			"stops": [
+				"#dc2626",
+				"#c55600",
+				"#b06d00",
+				"#9f7b00",
+				"#8b8900",
+				"#669700",
+				"#16a34a"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"stops": [
+					"#16a34a",
+					"#669700",
+					"#8b8900",
+					"#9f7b00",
+					"#b06d00",
+					"#c55600",
+					"#dc2626"
+				]
+			},
+			{
+				"stops": [
+					"#dc2626",
+					"#bb3b2c",
+					"#9a5032",
+					"#796438",
+					"#58793e",
+					"#378e44",
+					"#16a34a"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c06-3",
+		"category": 6,
+		"categoryName": "gradient",
+		"split": "dev",
+		"prompt": "Create a smooth 6-stop gradient from #7c3aed to #06b6d4 that interpolates in OKLCH (lightness, chroma and hue each interpolated linearly, hue along the shorter arc), so that the midpoints do not turn gray or muddy. Include both endpoints as the first and last stop. Stops must be opaque sRGB hex (reduce chroma only if a stop falls outside the sRGB gamut).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"stops\": [6 hex strings, first to last]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"stops": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["stops"]
+		},
+		"grader": {
+			"kind": "gradient",
+			"params": {
+				"n": 6,
+				"ref": [
+					[0.5413370806927733, 0.09638432269589797, -0.2269684397086854],
+					[0.5760370317012156, 0.028843907419910775, -0.22053792061666128],
+					[0.6107369826702059, -0.027954599731967456, -0.1962655732508255],
+					[0.6454451175259595, -0.06710754897161764, -0.15317050806046395],
+					[0.6801442261856475, -0.08646452395709964, -0.10594872974604119],
+					[0.7148368350802048, -0.10271903167073548, -0.07251641798027764]
+				]
+			}
+		},
+		"witness": {
+			"stops": [
+				"#7c3aed",
+				"#605ef8",
+				"#3b7bf8",
+				"#0094ec",
+				"#00a6dd",
+				"#06b6d4"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"stops": [
+					"#06b6d4",
+					"#00a6dd",
+					"#0094ec",
+					"#3b7bf8",
+					"#605ef8",
+					"#7c3aed"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c06-4",
+		"category": 6,
+		"categoryName": "gradient",
+		"split": "heldout",
+		"prompt": "Create a smooth 5-stop gradient from #f43f5e to #facc15 that interpolates in OKLCH (lightness, chroma and hue each interpolated linearly, hue along the shorter arc), so that the midpoints do not turn gray or muddy. Include both endpoints as the first and last stop. Stops must be opaque sRGB hex (reduce chroma only if a stop falls outside the sRGB gamut).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"stops\": [5 hex strings, first to last]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"stops": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["stops"]
+		},
+		"grader": {
+			"kind": "gradient",
+			"params": {
+				"n": 5,
+				"ref": [
+					[0.6450321426166099, 0.20659741596779227, 0.06095896607525758],
+					[0.6987212005673711, 0.1589845294028157, 0.11265924480253686],
+					[0.7526289615564397, 0.09942029951526427, 0.13794473878653707],
+					[0.8065316823920042, 0.04799071548166084, 0.15803467082660172],
+					[0.8605594520918282, -0.005847312628063817, 0.17301612885741113]
+				]
+			}
+		},
+		"witness": {
+			"stops": ["#f43f5e", "#ff663f", "#ff8c30", "#ffac20", "#facc15"]
+		},
+		"invalid": [
+			{},
+			{
+				"stops": ["#facc15", "#ffac20", "#ff8c30", "#ff663f", "#f43f5e"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c07-1",
+		"category": 7,
+		"categoryName": "nearest",
+		"split": "dev",
+		"prompt": "Using the CIEDE2000 color difference (computed from CIELAB with a D65 white point, standard kL = kC = kH = 1), find which candidate is closest to the reference #776a37 and order all candidates from closest to farthest.\n\nCandidates: #bdb282, #875b1a, #b2883d, #5a3300, #2b3c21\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"nearest\": \"#rrggbb\", \"order\": [\"#rrggbb\", ... all candidates, closest first]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"nearest": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				},
+				"order": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["nearest", "order"]
+		},
+		"grader": {
+			"kind": "nearest",
+			"params": {
+				"order": ["#875b1a", "#b2883d", "#5a3300", "#2b3c21", "#bdb282"]
+			}
+		},
+		"witness": {
+			"nearest": "#875b1a",
+			"order": ["#875b1a", "#b2883d", "#5a3300", "#2b3c21", "#bdb282"]
+		},
+		"invalid": [
+			{},
+			{
+				"nearest": "#bdb282",
+				"order": ["#bdb282", "#2b3c21", "#5a3300", "#b2883d", "#875b1a"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c07-2",
+		"category": 7,
+		"categoryName": "nearest",
+		"split": "dev",
+		"prompt": "Using the CIEDE2000 color difference (computed from CIELAB with a D65 white point, standard kL = kC = kH = 1), find which candidate is closest to the reference #5d3799 and order all candidates from closest to farthest.\n\nCandidates: #005d7c, #6d2c99, #6d62a9, #333659, #73599f, #885f8d\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"nearest\": \"#rrggbb\", \"order\": [\"#rrggbb\", ... all candidates, closest first]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"nearest": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				},
+				"order": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["nearest", "order"]
+		},
+		"grader": {
+			"kind": "nearest",
+			"params": {
+				"order": [
+					"#6d2c99",
+					"#73599f",
+					"#6d62a9",
+					"#333659",
+					"#885f8d",
+					"#005d7c"
+				]
+			}
+		},
+		"witness": {
+			"nearest": "#6d2c99",
+			"order": [
+				"#6d2c99",
+				"#73599f",
+				"#6d62a9",
+				"#333659",
+				"#885f8d",
+				"#005d7c"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"nearest": "#005d7c",
+				"order": [
+					"#005d7c",
+					"#885f8d",
+					"#333659",
+					"#6d62a9",
+					"#73599f",
+					"#6d2c99"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c07-3",
+		"category": 7,
+		"categoryName": "nearest",
+		"split": "dev",
+		"prompt": "Using the CIEDE2000 color difference (computed from CIELAB with a D65 white point, standard kL = kC = kH = 1), find which candidate is closest to the reference #93c9ff and order all candidates from closest to farthest.\n\nCandidates: #86bfff, #b7b3ff, #9291a6, #b2d5d6, #88c9e4\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"nearest\": \"#rrggbb\", \"order\": [\"#rrggbb\", ... all candidates, closest first]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"nearest": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				},
+				"order": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["nearest", "order"]
+		},
+		"grader": {
+			"kind": "nearest",
+			"params": {
+				"order": ["#86bfff", "#88c9e4", "#b7b3ff", "#b2d5d6", "#9291a6"]
+			}
+		},
+		"witness": {
+			"nearest": "#86bfff",
+			"order": ["#86bfff", "#88c9e4", "#b7b3ff", "#b2d5d6", "#9291a6"]
+		},
+		"invalid": [
+			{},
+			{
+				"nearest": "#9291a6",
+				"order": ["#9291a6", "#b2d5d6", "#b7b3ff", "#88c9e4", "#86bfff"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c07-4",
+		"category": 7,
+		"categoryName": "nearest",
+		"split": "heldout",
+		"prompt": "Using the CIEDE2000 color difference (computed from CIELAB with a D65 white point, standard kL = kC = kH = 1), find which candidate is closest to the reference #4cabbd and order all candidates from closest to farthest.\n\nCandidates: #00a3cd, #4fac8e, #0075bc, #009f8a, #49b7ff\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"nearest\": \"#rrggbb\", \"order\": [\"#rrggbb\", ... all candidates, closest first]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"nearest": {
+					"type": "string",
+					"pattern": "^#[0-9a-fA-F]{3,6}$"
+				},
+				"order": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["nearest", "order"]
+		},
+		"grader": {
+			"kind": "nearest",
+			"params": {
+				"order": ["#00a3cd", "#49b7ff", "#009f8a", "#4fac8e", "#0075bc"]
+			}
+		},
+		"witness": {
+			"nearest": "#00a3cd",
+			"order": ["#00a3cd", "#49b7ff", "#009f8a", "#4fac8e", "#0075bc"]
+		},
+		"invalid": [
+			{},
+			{
+				"nearest": "#0075bc",
+				"order": ["#0075bc", "#4fac8e", "#009f8a", "#49b7ff", "#00a3cd"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c08-1",
+		"category": 8,
+		"categoryName": "ramp",
+		"split": "dev",
+		"prompt": "Build an 11-step tonal ramp (a design-system color scale) for the brand color #2563eb. Step 1 is the lightest and step 11 the darkest. The ramp should keep the brand hue, include the brand color itself as one of the steps, use evenly spaced lightness (perceptually, in OKLCH) from very light (OKLCH lightness at least 0.95) to dark (at most 0.25), keep the color vivid in the middle rather than turning gray, and every step must be a distinct opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"steps\": [11 hex strings, lightest to darkest]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"steps": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["steps"]
+		},
+		"grader": {
+			"kind": "ramp",
+			"params": {
+				"seed": "#2563eb"
+			}
+		},
+		"witness": {
+			"steps": [
+				"#f0f5ff",
+				"#cddeff",
+				"#aac7ff",
+				"#86b0ff",
+				"#6397ff",
+				"#3d7bff",
+				"#2563eb",
+				"#0946cd",
+				"#0030a0",
+				"#001e70",
+				"#000e42"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"steps": [
+					"#f5f5f5",
+					"#dcdcdc",
+					"#c3c3c3",
+					"#aaaaaa",
+					"#939393",
+					"#7c7c7c",
+					"#656565",
+					"#505050",
+					"#3b3b3b",
+					"#282828",
+					"#161616"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c08-2",
+		"category": 8,
+		"categoryName": "ramp",
+		"split": "dev",
+		"prompt": "Build an 11-step tonal ramp (a design-system color scale) for the brand color #16a34a. Step 1 is the lightest and step 11 the darkest. The ramp should keep the brand hue, include the brand color itself as one of the steps, use evenly spaced lightness (perceptually, in OKLCH) from very light (OKLCH lightness at least 0.95) to dark (at most 0.25), keep the color vivid in the middle rather than turning gray, and every step must be a distinct opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"steps\": [11 hex strings, lightest to darkest]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"steps": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["steps"]
+		},
+		"grader": {
+			"kind": "ramp",
+			"params": {
+				"seed": "#16a34a"
+			}
+		},
+		"witness": {
+			"steps": [
+				"#dfffe3",
+				"#7ef899",
+				"#60db7f",
+				"#40bf64",
+				"#16a34a",
+				"#008b3b",
+				"#007330",
+				"#005c25",
+				"#00451a",
+				"#003010",
+				"#001d07"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"steps": [
+					"#f5f5f5",
+					"#dcdcdc",
+					"#c3c3c3",
+					"#aaaaaa",
+					"#939393",
+					"#7c7c7c",
+					"#656565",
+					"#505050",
+					"#3b3b3b",
+					"#282828",
+					"#161616"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c08-3",
+		"category": 8,
+		"categoryName": "ramp",
+		"split": "dev",
+		"prompt": "Build an 11-step tonal ramp (a design-system color scale) for the brand color #e11d48. Step 1 is the lightest and step 11 the darkest. The ramp should keep the brand hue, include the brand color itself as one of the steps, use evenly spaced lightness (perceptually, in OKLCH) from very light (OKLCH lightness at least 0.95) to dark (at most 0.25), keep the color vivid in the middle rather than turning gray, and every step must be a distinct opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"steps\": [11 hex strings, lightest to darkest]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"steps": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["steps"]
+		},
+		"grader": {
+			"kind": "ramp",
+			"params": {
+				"seed": "#e11d48"
+			}
+		},
+		"witness": {
+			"steps": [
+				"#fff1f1",
+				"#ffcece",
+				"#ffa7aa",
+				"#ff7c85",
+				"#fd415e",
+				"#e11d48",
+				"#be0037",
+				"#98002a",
+				"#74001e",
+				"#520012",
+				"#320008"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"steps": [
+					"#f5f5f5",
+					"#dcdcdc",
+					"#c3c3c3",
+					"#aaaaaa",
+					"#939393",
+					"#7c7c7c",
+					"#656565",
+					"#505050",
+					"#3b3b3b",
+					"#282828",
+					"#161616"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c08-4",
+		"category": 8,
+		"categoryName": "ramp",
+		"split": "heldout",
+		"prompt": "Build an 11-step tonal ramp (a design-system color scale) for the brand color #9333ea. Step 1 is the lightest and step 11 the darkest. The ramp should keep the brand hue, include the brand color itself as one of the steps, use evenly spaced lightness (perceptually, in OKLCH) from very light (OKLCH lightness at least 0.95) to dark (at most 0.25), keep the color vivid in the middle rather than turning gray, and every step must be a distinct opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"steps\": [11 hex strings, lightest to darkest]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"steps": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["steps"]
+		},
+		"grader": {
+			"kind": "ramp",
+			"params": {
+				"seed": "#9333ea"
+			}
+		},
+		"witness": {
+			"steps": [
+				"#f7f3ff",
+				"#e2d0ff",
+				"#ceadff",
+				"#bb87ff",
+				"#aa5aff",
+				"#9333ea",
+				"#7e08d1",
+				"#6500aa",
+				"#4d0083",
+				"#36005f",
+				"#20003c"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"steps": [
+					"#f5f5f5",
+					"#dcdcdc",
+					"#c3c3c3",
+					"#aaaaaa",
+					"#939393",
+					"#7c7c7c",
+					"#656565",
+					"#505050",
+					"#3b3b3b",
+					"#282828",
+					"#161616"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c09-1",
+		"category": 9,
+		"categoryName": "theme-tokens",
+		"split": "dev",
+		"prompt": "Create a UI theme. Define design tokens for a light theme and a dark theme with the brand color #2563eb. Tokens (all opaque sRGB hex): background, surface, surface-raised, text, text-muted, primary, on-primary.\nRequirements in BOTH themes: text on background at least 7:1; text on surface-raised at least 4.5:1; text-muted on surface at least 4.5:1; on-primary on primary at least 4.5:1; primary against background at least 3:1; background, surface and surface-raised must be three clearly different lightness levels (at least 0.02 apart in OKLCH lightness). In the light theme, primary must be the brand color or a barely adjusted version of it (within 0.04 in Oklab distance).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"light\": {\"background\": \"#rrggbb\", ... every token}, \"dark\": {... every token}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"light": {
+					"type": "object"
+				},
+				"dark": {
+					"type": "object"
+				}
+			},
+			"required": ["light", "dark"]
+		},
+		"grader": {
+			"kind": "theme",
+			"params": {
+				"brand": "#2563eb",
+				"tokens": [
+					"background",
+					"surface",
+					"surface-raised",
+					"text",
+					"text-muted",
+					"primary",
+					"on-primary"
+				],
+				"surfaces": ["background", "surface", "surface-raised"],
+				"pairs": [
+					{
+						"text": "text",
+						"surface": "background",
+						"min": 7
+					},
+					{
+						"text": "text",
+						"surface": "surface-raised",
+						"min": 4.5
+					},
+					{
+						"text": "text-muted",
+						"surface": "surface",
+						"min": 4.5
+					},
+					{
+						"text": "on-primary",
+						"surface": "primary",
+						"min": 4.5
+					},
+					{
+						"text": "primary",
+						"surface": "background",
+						"min": 3
+					}
+				]
+			}
+		},
+		"witness": {
+			"light": {
+				"background": "#ffffff",
+				"surface": "#f4f6f9",
+				"surface-raised": "#e8ecf1",
+				"text": "#0f172a",
+				"text-muted": "#475569",
+				"primary": "#2563eb",
+				"on-primary": "#ffffff"
+			},
+			"dark": {
+				"background": "#0b1120",
+				"surface": "#151c2c",
+				"surface-raised": "#1f2937",
+				"text": "#f1f5f9",
+				"text-muted": "#aab4c3",
+				"primary": "#2563eb",
+				"on-primary": "#ffffff"
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"light": {
+					"background": "#000000",
+					"surface": "#0b0906",
+					"surface-raised": "#17130e",
+					"text": "#f0e8d5",
+					"text-muted": "#b8aa96",
+					"primary": "#da9c14",
+					"on-primary": "#000000"
+				},
+				"dark": {
+					"background": "#f4eedf",
+					"surface": "#eae3d3",
+					"surface-raised": "#e0d6c8",
+					"text": "#0e0a06",
+					"text-muted": "#554b3c",
+					"primary": "#da9c14",
+					"on-primary": "#000000"
+				}
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c09-2",
+		"category": 9,
+		"categoryName": "theme-tokens",
+		"split": "dev",
+		"prompt": "Create a UI theme. Define design tokens for a light theme and a dark theme with the brand color #0d9488. Tokens (all opaque sRGB hex): background, surface, surface-raised, text, text-muted, primary, on-primary.\nRequirements in BOTH themes: text on background at least 7:1; text on surface-raised at least 4.5:1; text-muted on surface at least 4.5:1; on-primary on primary at least 4.5:1; primary against background at least 3:1; background, surface and surface-raised must be three clearly different lightness levels (at least 0.02 apart in OKLCH lightness). In the light theme, primary must be the brand color or a barely adjusted version of it (within 0.04 in Oklab distance).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"light\": {\"background\": \"#rrggbb\", ... every token}, \"dark\": {... every token}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"light": {
+					"type": "object"
+				},
+				"dark": {
+					"type": "object"
+				}
+			},
+			"required": ["light", "dark"]
+		},
+		"grader": {
+			"kind": "theme",
+			"params": {
+				"brand": "#0d9488",
+				"tokens": [
+					"background",
+					"surface",
+					"surface-raised",
+					"text",
+					"text-muted",
+					"primary",
+					"on-primary"
+				],
+				"surfaces": ["background", "surface", "surface-raised"],
+				"pairs": [
+					{
+						"text": "text",
+						"surface": "background",
+						"min": 7
+					},
+					{
+						"text": "text",
+						"surface": "surface-raised",
+						"min": 4.5
+					},
+					{
+						"text": "text-muted",
+						"surface": "surface",
+						"min": 4.5
+					},
+					{
+						"text": "on-primary",
+						"surface": "primary",
+						"min": 4.5
+					},
+					{
+						"text": "primary",
+						"surface": "background",
+						"min": 3
+					}
+				]
+			}
+		},
+		"witness": {
+			"light": {
+				"background": "#ffffff",
+				"surface": "#f4f6f9",
+				"surface-raised": "#e8ecf1",
+				"text": "#0f172a",
+				"text-muted": "#475569",
+				"primary": "#0d9488",
+				"on-primary": "#000000"
+			},
+			"dark": {
+				"background": "#0b1120",
+				"surface": "#151c2c",
+				"surface-raised": "#1f2937",
+				"text": "#f1f5f9",
+				"text-muted": "#aab4c3",
+				"primary": "#0d9488",
+				"on-primary": "#000000"
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"light": {
+					"background": "#000000",
+					"surface": "#0b0906",
+					"surface-raised": "#17130e",
+					"text": "#f0e8d5",
+					"text-muted": "#b8aa96",
+					"primary": "#f26b77",
+					"on-primary": "#ffffff"
+				},
+				"dark": {
+					"background": "#f4eedf",
+					"surface": "#eae3d3",
+					"surface-raised": "#e0d6c8",
+					"text": "#0e0a06",
+					"text-muted": "#554b3c",
+					"primary": "#f26b77",
+					"on-primary": "#ffffff"
+				}
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c09-3",
+		"category": 9,
+		"categoryName": "theme-tokens",
+		"split": "dev",
+		"prompt": "Create a UI theme. Define design tokens for a light theme and a dark theme with the brand color #9333ea. Tokens (all opaque sRGB hex): background, surface, surface-raised, text, text-muted, primary, on-primary.\nRequirements in BOTH themes: text on background at least 7:1; text on surface-raised at least 4.5:1; text-muted on surface at least 4.5:1; on-primary on primary at least 4.5:1; primary against background at least 3:1; background, surface and surface-raised must be three clearly different lightness levels (at least 0.02 apart in OKLCH lightness). In the light theme, primary must be the brand color or a barely adjusted version of it (within 0.04 in Oklab distance).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"light\": {\"background\": \"#rrggbb\", ... every token}, \"dark\": {... every token}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"light": {
+					"type": "object"
+				},
+				"dark": {
+					"type": "object"
+				}
+			},
+			"required": ["light", "dark"]
+		},
+		"grader": {
+			"kind": "theme",
+			"params": {
+				"brand": "#9333ea",
+				"tokens": [
+					"background",
+					"surface",
+					"surface-raised",
+					"text",
+					"text-muted",
+					"primary",
+					"on-primary"
+				],
+				"surfaces": ["background", "surface", "surface-raised"],
+				"pairs": [
+					{
+						"text": "text",
+						"surface": "background",
+						"min": 7
+					},
+					{
+						"text": "text",
+						"surface": "surface-raised",
+						"min": 4.5
+					},
+					{
+						"text": "text-muted",
+						"surface": "surface",
+						"min": 4.5
+					},
+					{
+						"text": "on-primary",
+						"surface": "primary",
+						"min": 4.5
+					},
+					{
+						"text": "primary",
+						"surface": "background",
+						"min": 3
+					}
+				]
+			}
+		},
+		"witness": {
+			"light": {
+				"background": "#ffffff",
+				"surface": "#f4f6f9",
+				"surface-raised": "#e8ecf1",
+				"text": "#0f172a",
+				"text-muted": "#475569",
+				"primary": "#9333ea",
+				"on-primary": "#ffffff"
+			},
+			"dark": {
+				"background": "#0b1120",
+				"surface": "#151c2c",
+				"surface-raised": "#1f2937",
+				"text": "#f1f5f9",
+				"text-muted": "#aab4c3",
+				"primary": "#9333ea",
+				"on-primary": "#ffffff"
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"light": {
+					"background": "#000000",
+					"surface": "#0b0906",
+					"surface-raised": "#17130e",
+					"text": "#f0e8d5",
+					"text-muted": "#b8aa96",
+					"primary": "#6ccc15",
+					"on-primary": "#000000"
+				},
+				"dark": {
+					"background": "#f4eedf",
+					"surface": "#eae3d3",
+					"surface-raised": "#e0d6c8",
+					"text": "#0e0a06",
+					"text-muted": "#554b3c",
+					"primary": "#6ccc15",
+					"on-primary": "#000000"
+				}
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c09-4",
+		"category": 9,
+		"categoryName": "theme-tokens",
+		"split": "heldout",
+		"prompt": "Create a UI theme. Define design tokens for a light theme and a dark theme with the brand color #be185d. Tokens (all opaque sRGB hex): background, surface, surface-raised, text, text-muted, primary, on-primary.\nRequirements in BOTH themes: text on background at least 7:1; text on surface-raised at least 4.5:1; text-muted on surface at least 4.5:1; on-primary on primary at least 4.5:1; primary against background at least 3:1; background, surface and surface-raised must be three clearly different lightness levels (at least 0.02 apart in OKLCH lightness). In the light theme, primary must be the brand color or a barely adjusted version of it (within 0.04 in Oklab distance).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"light\": {\"background\": \"#rrggbb\", ... every token}, \"dark\": {... every token}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"light": {
+					"type": "object"
+				},
+				"dark": {
+					"type": "object"
+				}
+			},
+			"required": ["light", "dark"]
+		},
+		"grader": {
+			"kind": "theme",
+			"params": {
+				"brand": "#be185d",
+				"tokens": [
+					"background",
+					"surface",
+					"surface-raised",
+					"text",
+					"text-muted",
+					"primary",
+					"on-primary"
+				],
+				"surfaces": ["background", "surface", "surface-raised"],
+				"pairs": [
+					{
+						"text": "text",
+						"surface": "background",
+						"min": 7
+					},
+					{
+						"text": "text",
+						"surface": "surface-raised",
+						"min": 4.5
+					},
+					{
+						"text": "text-muted",
+						"surface": "surface",
+						"min": 4.5
+					},
+					{
+						"text": "on-primary",
+						"surface": "primary",
+						"min": 4.5
+					},
+					{
+						"text": "primary",
+						"surface": "background",
+						"min": 3
+					}
+				]
+			}
+		},
+		"witness": {
+			"light": {
+				"background": "#ffffff",
+				"surface": "#f4f6f9",
+				"surface-raised": "#e8ecf1",
+				"text": "#0f172a",
+				"text-muted": "#475569",
+				"primary": "#be185d",
+				"on-primary": "#ffffff"
+			},
+			"dark": {
+				"background": "#0b1120",
+				"surface": "#151c2c",
+				"surface-raised": "#1f2937",
+				"text": "#f1f5f9",
+				"text-muted": "#aab4c3",
+				"primary": "#be185d",
+				"on-primary": "#ffffff"
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"light": {
+					"background": "#000000",
+					"surface": "#0b0906",
+					"surface-raised": "#17130e",
+					"text": "#f0e8d5",
+					"text-muted": "#b8aa96",
+					"primary": "#41e7a2",
+					"on-primary": "#000000"
+				},
+				"dark": {
+					"background": "#f4eedf",
+					"surface": "#eae3d3",
+					"surface-raised": "#e0d6c8",
+					"text": "#0e0a06",
+					"text-muted": "#554b3c",
+					"primary": "#41e7a2",
+					"on-primary": "#000000"
+				}
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c10-1",
+		"category": 10,
+		"categoryName": "harmony",
+		"split": "dev",
+		"prompt": "Build a complementary color scheme from the base color #cc7455. Use OKLCH hue offsets of 0, 180 degrees from the base hue (so 2 colors, one per offset, including the base itself at offset 0 when it is listed). Keep each color's lightness within 0.08 of the base and its chroma at least 60% of the base chroma; use opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [2 hex strings]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["colors"]
+		},
+		"grader": {
+			"kind": "harmony",
+			"params": {
+				"base": "#cc7455",
+				"offsets": [0, 180]
+			}
+		},
+		"witness": {
+			"colors": ["#cc7455", "#009fc1"]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": ["#cc7455", "#cc7455"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c10-2",
+		"category": 10,
+		"categoryName": "harmony",
+		"split": "dev",
+		"prompt": "Build a triadic color scheme from the base color #40b1b7. Use OKLCH hue offsets of 0, 120, 240 degrees from the base hue (so 3 colors, one per offset, including the base itself at offset 0 when it is listed). Keep each color's lightness within 0.08 of the base and its chroma at least 60% of the base chroma; use opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [3 hex strings]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["colors"]
+		},
+		"grader": {
+			"kind": "harmony",
+			"params": {
+				"base": "#40b1b7",
+				"offsets": [0, 120, 240]
+			}
+		},
+		"witness": {
+			"colors": ["#40b1b7", "#ba8ac5", "#bf9752"]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": ["#40b1b7", "#40b1b7", "#40b1b7"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c10-3",
+		"category": 10,
+		"categoryName": "harmony",
+		"split": "dev",
+		"prompt": "Build a split-complementary color scheme from the base color #8e6ac7. Use OKLCH hue offsets of 0, 150, 210 degrees from the base hue (so 3 colors, one per offset, including the base itself at offset 0 when it is listed). Keep each color's lightness within 0.08 of the base and its chroma at least 60% of the base chroma; use opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [3 hex strings]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["colors"]
+		},
+		"grader": {
+			"kind": "harmony",
+			"params": {
+				"base": "#8e6ac7",
+				"offsets": [0, 150, 210]
+			}
+		},
+		"witness": {
+			"colors": ["#8e6ac7", "#9d7c00", "#319751"]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": ["#8e6ac7", "#8e6ac7", "#8e6ac7"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c10-4",
+		"category": 10,
+		"categoryName": "harmony",
+		"split": "heldout",
+		"prompt": "Build a tetradic color scheme from the base color #90a250. Use OKLCH hue offsets of 0, 90, 180, 270 degrees from the base hue (so 4 colors, one per offset, including the base itself at offset 0 when it is listed). Keep each color's lightness within 0.08 of the base and its chroma at least 60% of the base chroma; use opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [4 hex strings]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["colors"]
+		},
+		"grader": {
+			"kind": "harmony",
+			"params": {
+				"base": "#90a250",
+				"offsets": [0, 90, 180, 270]
+			}
+		},
+		"witness": {
+			"colors": ["#90a250", "#26aabd", "#a288d2", "#d37d70"]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": ["#90a250", "#90a250", "#90a250", "#90a250"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c11-1",
+		"category": 11,
+		"categoryName": "deutan-set",
+		"split": "dev",
+		"prompt": "Choose 4 colors for chart series on a #ffffff background that stay distinguishable for people with deuteranopia (red-green color blindness). Simulate deuteranopia with the Machado 2009 matrix at severity 1.0 applied to linear sRGB (clip to 0..1); then every pair of your colors must differ by CIEDE2000 (D65 CIELAB, no chromatic adaptation) of at least 28.913 after simulation, and by at least 10 under normal vision. Each color needs a WCAG contrast of at least 3:1 against the background, and all colors must be distinct opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [4 hex strings]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["colors"]
+		},
+		"grader": {
+			"kind": "deutan",
+			"params": {
+				"background": "#ffffff",
+				"n": 4,
+				"threshold": 28.913
+			}
+		},
+		"witness": {
+			"colors": ["#000000", "#ff00ff", "#ff3300", "#0000cc"]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": ["#ff0000", "#00aa00", "#ff6600", "#aa8800"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c11-2",
+		"category": 11,
+		"categoryName": "deutan-set",
+		"split": "dev",
+		"prompt": "Choose 5 colors for status badges on a #111827 background that stay distinguishable for people with deuteranopia (red-green color blindness). Simulate deuteranopia with the Machado 2009 matrix at severity 1.0 applied to linear sRGB (clip to 0..1); then every pair of your colors must differ by CIEDE2000 (D65 CIELAB, no chromatic adaptation) of at least 19.124 after simulation, and by at least 10 under normal vision. Each color needs a WCAG contrast of at least 3:1 against the background, and all colors must be distinct opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [5 hex strings]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["colors"]
+		},
+		"grader": {
+			"kind": "deutan",
+			"params": {
+				"background": "#111827",
+				"n": 5,
+				"threshold": 19.124
+			}
+		},
+		"witness": {
+			"colors": ["#ffff00", "#0066ff", "#cc0066", "#99ffff", "#99cc99"]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": ["#ff0000", "#00aa00", "#ff6600", "#aa8800", "#cc0000"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c11-3",
+		"category": 11,
+		"categoryName": "deutan-set",
+		"split": "dev",
+		"prompt": "Choose 4 colors for map regions on a #f5f5f4 background that stay distinguishable for people with deuteranopia (red-green color blindness). Simulate deuteranopia with the Machado 2009 matrix at severity 1.0 applied to linear sRGB (clip to 0..1); then every pair of your colors must differ by CIEDE2000 (D65 CIELAB, no chromatic adaptation) of at least 31.011 after simulation, and by at least 10 under normal vision. Each color needs a WCAG contrast of at least 3:1 against the background, and all colors must be distinct opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [4 hex strings]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["colors"]
+		},
+		"grader": {
+			"kind": "deutan",
+			"params": {
+				"background": "#f5f5f4",
+				"n": 4,
+				"threshold": 31.011
+			}
+		},
+		"witness": {
+			"colors": ["#000033", "#ff3300", "#ff00cc", "#333300"]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": ["#ff0000", "#00aa00", "#ff6600", "#aa8800"]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c11-4",
+		"category": 11,
+		"categoryName": "deutan-set",
+		"split": "heldout",
+		"prompt": "Choose 6 colors for chart series on a #ffffff background that stay distinguishable for people with deuteranopia (red-green color blindness). Simulate deuteranopia with the Machado 2009 matrix at severity 1.0 applied to linear sRGB (clip to 0..1); then every pair of your colors must differ by CIEDE2000 (D65 CIELAB, no chromatic adaptation) of at least 18.934 after simulation, and by at least 10 under normal vision. Each color needs a WCAG contrast of at least 3:1 against the background, and all colors must be distinct opaque sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"colors\": [6 hex strings]}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"colors": {
+					"type": "array",
+					"items": {
+						"type": "string",
+						"pattern": "^#[0-9a-fA-F]{3,6}$"
+					}
+				}
+			},
+			"required": ["colors"]
+		},
+		"grader": {
+			"kind": "deutan",
+			"params": {
+				"background": "#ffffff",
+				"n": 6,
+				"threshold": 18.934
+			}
+		},
+		"witness": {
+			"colors": [
+				"#000000",
+				"#ff00ff",
+				"#ff3300",
+				"#0000cc",
+				"#666666",
+				"#663300"
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"colors": [
+					"#ff0000",
+					"#00aa00",
+					"#ff6600",
+					"#aa8800",
+					"#cc0000",
+					"#009900"
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c12-1",
+		"category": 12,
+		"categoryName": "audit",
+		"split": "dev",
+		"prompt": "Audit this CSS for color problems.\n\n```css\n:root { --brand: #2563eb; --brand-hover: #2a65ec; --ink: #111827; }\n.btn { color: #ffffff; background-color: #5b9bd5; border-color: #5b9bd5; }\n.card { color: #374151; background-color: #f9fafb; border-color: #9ca3af; }\n.note { color: #9ca3af; background-color: #ffffff; }\n```\n\nRules (a finding is reported once per rule and selector):\n- \"text-contrast-aa\": a block that has both color and background-color whose WCAG 2 contrast ratio is below 4.5 (treat all text as normal size). selector = the block's selector.\n- \"nontext-contrast-3\": a block that has both border-color and background-color whose contrast ratio is below 3. selector = the block's selector.\n- \"near-duplicate-token\": two different custom properties in :root whose colors have a CIEDE2000 difference below 2 (D65 CIELAB). selector = \":root\" and detail = the two property names sorted alphabetically and joined with \"|\" (for example \"--a|--b\").\nOnly report these rules. Do not include a detail field for the first two rules. Compute contrast from the colors rounded to 8-bit sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"findings\": [{\"rule\": \"...\", \"selector\": \"...\", \"detail\": \"... (only for near-duplicate-token)\"}]}  (use an empty list if there are no findings)",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"findings": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["findings"]
+		},
+		"grader": {
+			"kind": "audit",
+			"params": {
+				"expected": [
+					{
+						"rule": "near-duplicate-token",
+						"selector": ":root",
+						"detail": "--brand|--brand-hover"
+					},
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".btn"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".btn"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".card"
+					},
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".note"
+					}
+				]
+			}
+		},
+		"witness": {
+			"findings": [
+				{
+					"rule": "near-duplicate-token",
+					"selector": ":root",
+					"detail": "--brand|--brand-hover"
+				},
+				{
+					"rule": "text-contrast-aa",
+					"selector": ".btn"
+				},
+				{
+					"rule": "nontext-contrast-3",
+					"selector": ".btn"
+				},
+				{
+					"rule": "nontext-contrast-3",
+					"selector": ".card"
+				},
+				{
+					"rule": "text-contrast-aa",
+					"selector": ".note"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"findings": [
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".btn"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".btn"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".card"
+					},
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".note"
+					},
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".nonexistent"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c12-2",
+		"category": 12,
+		"categoryName": "audit",
+		"split": "dev",
+		"prompt": "Audit this CSS for color problems.\n\n```css\nbody { color: #1f2937; background-color: #ffffff; }\na { color: #60a5fa; background-color: #ffffff; }\n.badge { color: #92400e; background-color: #fef3c7; border-color: #fef3c7; }\n.input { color: #111827; background-color: #ffffff; border-color: #d1d5db; }\n```\n\nRules (a finding is reported once per rule and selector):\n- \"text-contrast-aa\": a block that has both color and background-color whose WCAG 2 contrast ratio is below 4.5 (treat all text as normal size). selector = the block's selector.\n- \"nontext-contrast-3\": a block that has both border-color and background-color whose contrast ratio is below 3. selector = the block's selector.\n- \"near-duplicate-token\": two different custom properties in :root whose colors have a CIEDE2000 difference below 2 (D65 CIELAB). selector = \":root\" and detail = the two property names sorted alphabetically and joined with \"|\" (for example \"--a|--b\").\nOnly report these rules. Do not include a detail field for the first two rules. Compute contrast from the colors rounded to 8-bit sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"findings\": [{\"rule\": \"...\", \"selector\": \"...\", \"detail\": \"... (only for near-duplicate-token)\"}]}  (use an empty list if there are no findings)",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"findings": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["findings"]
+		},
+		"grader": {
+			"kind": "audit",
+			"params": {
+				"expected": [
+					{
+						"rule": "text-contrast-aa",
+						"selector": "a"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".badge"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".input"
+					}
+				]
+			}
+		},
+		"witness": {
+			"findings": [
+				{
+					"rule": "text-contrast-aa",
+					"selector": "a"
+				},
+				{
+					"rule": "nontext-contrast-3",
+					"selector": ".badge"
+				},
+				{
+					"rule": "nontext-contrast-3",
+					"selector": ".input"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"findings": [
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".badge"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".input"
+					},
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".nonexistent"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c12-3",
+		"category": 12,
+		"categoryName": "audit",
+		"split": "dev",
+		"prompt": "Audit this CSS for color problems.\n\n```css\n:root { --bg: #ffffff; --fg: #111827; --accent: #1d4ed8; --warn: #b45309; }\nbody { color: #111827; background-color: #ffffff; }\n.panel { color: #0f172a; background-color: #f1f5f9; border-color: #64748b; }\n.btn { color: #ffffff; background-color: #1d4ed8; border-color: #bfdbfe; }\n```\n\nRules (a finding is reported once per rule and selector):\n- \"text-contrast-aa\": a block that has both color and background-color whose WCAG 2 contrast ratio is below 4.5 (treat all text as normal size). selector = the block's selector.\n- \"nontext-contrast-3\": a block that has both border-color and background-color whose contrast ratio is below 3. selector = the block's selector.\n- \"near-duplicate-token\": two different custom properties in :root whose colors have a CIEDE2000 difference below 2 (D65 CIELAB). selector = \":root\" and detail = the two property names sorted alphabetically and joined with \"|\" (for example \"--a|--b\").\nOnly report these rules. Do not include a detail field for the first two rules. Compute contrast from the colors rounded to 8-bit sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"findings\": [{\"rule\": \"...\", \"selector\": \"...\", \"detail\": \"... (only for near-duplicate-token)\"}]}  (use an empty list if there are no findings)",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"findings": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["findings"]
+		},
+		"grader": {
+			"kind": "audit",
+			"params": {
+				"expected": []
+			}
+		},
+		"witness": {
+			"findings": []
+		},
+		"invalid": [
+			{},
+			{
+				"findings": [
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".nonexistent"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c12-4",
+		"category": 12,
+		"categoryName": "audit",
+		"split": "heldout",
+		"prompt": "Audit this CSS for color problems.\n\n```css\n:root { --text: #1a1a1a; --text-soft: #666666; --text-softer: #696969; --line: #cccccc; }\n.title { color: #1a1a1a; background-color: #fafafa; }\n.hint { color: #888888; background-color: #fafafa; }\n.box { color: #444444; background-color: #eeeeee; border-color: #e5e5e5; }\n```\n\nRules (a finding is reported once per rule and selector):\n- \"text-contrast-aa\": a block that has both color and background-color whose WCAG 2 contrast ratio is below 4.5 (treat all text as normal size). selector = the block's selector.\n- \"nontext-contrast-3\": a block that has both border-color and background-color whose contrast ratio is below 3. selector = the block's selector.\n- \"near-duplicate-token\": two different custom properties in :root whose colors have a CIEDE2000 difference below 2 (D65 CIELAB). selector = \":root\" and detail = the two property names sorted alphabetically and joined with \"|\" (for example \"--a|--b\").\nOnly report these rules. Do not include a detail field for the first two rules. Compute contrast from the colors rounded to 8-bit sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"findings\": [{\"rule\": \"...\", \"selector\": \"...\", \"detail\": \"... (only for near-duplicate-token)\"}]}  (use an empty list if there are no findings)",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"findings": {
+					"type": "array",
+					"items": {
+						"type": "object"
+					}
+				}
+			},
+			"required": ["findings"]
+		},
+		"grader": {
+			"kind": "audit",
+			"params": {
+				"expected": [
+					{
+						"rule": "near-duplicate-token",
+						"selector": ":root",
+						"detail": "--text-soft|--text-softer"
+					},
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".hint"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".box"
+					}
+				]
+			}
+		},
+		"witness": {
+			"findings": [
+				{
+					"rule": "near-duplicate-token",
+					"selector": ":root",
+					"detail": "--text-soft|--text-softer"
+				},
+				{
+					"rule": "text-contrast-aa",
+					"selector": ".hint"
+				},
+				{
+					"rule": "nontext-contrast-3",
+					"selector": ".box"
+				}
+			]
+		},
+		"invalid": [
+			{},
+			{
+				"findings": [
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".hint"
+					},
+					{
+						"rule": "nontext-contrast-3",
+						"selector": ".box"
+					},
+					{
+						"rule": "text-contrast-aa",
+						"selector": ".nonexistent"
+					}
+				]
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c13-1",
+		"category": 13,
+		"categoryName": "end-to-end",
+		"split": "dev",
+		"prompt": "You are setting up the color system for a SaaS analytics dashboard. Brand color: #2563eb. Deliver four parts.\n\n1. \"ramp\": an 11-step tonal ramp of the brand color, lightest to darkest, keeping hue, vivid in the middle, evenly spaced in OKLCH lightness from at least 0.95 to at most 0.25, including the brand color itself as one step, all steps distinct.\n\n2. \"theme\": light and dark UI tokens. Define design tokens for a light theme and a dark theme with the brand color #2563eb. Tokens (all opaque sRGB hex): background, surface, surface-raised, text, text-muted, primary, on-primary.\nRequirements in BOTH themes: text on background at least 7:1; text on surface-raised at least 4.5:1; text-muted on surface at least 4.5:1; on-primary on primary at least 4.5:1; primary against background at least 3:1; background, surface and surface-raised must be three clearly different lightness levels (at least 0.02 apart in OKLCH lightness). In the light theme, primary must be the brand color or a barely adjusted version of it (within 0.04 in Oklab distance).\n\n3. \"chart\": 4 chart series colors on a #ffffff background that stay distinguishable under deuteranopia (Machado 2009, severity 1.0, linear sRGB): every pair at least 28.913 CIEDE2000 apart after simulation and at least 10 apart under normal vision; each at least 3:1 contrast against the background; all distinct.\n\n4. \"warning\": the warning text color #f59e0b on #ffffff fails 4.5:1; return the closest replacement (same hue, minimal change) that reaches at least 4.5:1, as opaque 8-bit sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"ramp\": {\"steps\": [11 hex]}, \"theme\": {\"light\": {every token}, \"dark\": {every token}}, \"chart\": {\"colors\": [hex, ...]}, \"warning\": {\"hex\": \"#rrggbb\"}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ramp": {
+					"type": "object"
+				},
+				"theme": {
+					"type": "object"
+				},
+				"chart": {
+					"type": "object"
+				},
+				"warning": {
+					"type": "object"
+				}
+			},
+			"required": ["ramp", "theme", "chart", "warning"]
+		},
+		"grader": {
+			"kind": "composite",
+			"params": {
+				"parts": [
+					{
+						"key": "ramp",
+						"grader": {
+							"kind": "ramp",
+							"params": {
+								"seed": "#2563eb"
+							}
+						}
+					},
+					{
+						"key": "theme",
+						"grader": {
+							"kind": "theme",
+							"params": {
+								"brand": "#2563eb",
+								"tokens": [
+									"background",
+									"surface",
+									"surface-raised",
+									"text",
+									"text-muted",
+									"primary",
+									"on-primary"
+								],
+								"surfaces": ["background", "surface", "surface-raised"],
+								"pairs": [
+									{
+										"text": "text",
+										"surface": "background",
+										"min": 7
+									},
+									{
+										"text": "text",
+										"surface": "surface-raised",
+										"min": 4.5
+									},
+									{
+										"text": "text-muted",
+										"surface": "surface",
+										"min": 4.5
+									},
+									{
+										"text": "on-primary",
+										"surface": "primary",
+										"min": 4.5
+									},
+									{
+										"text": "primary",
+										"surface": "background",
+										"min": 3
+									}
+								]
+							}
+						}
+					},
+					{
+						"key": "chart",
+						"grader": {
+							"kind": "deutan",
+							"params": {
+								"background": "#ffffff",
+								"n": 4,
+								"threshold": 28.913
+							}
+						}
+					},
+					{
+						"key": "warning",
+						"grader": {
+							"kind": "fix",
+							"params": {
+								"fg": "#f59e0b",
+								"bg": "#ffffff",
+								"target": 4.5,
+								"dStar": 0.19441732250332444,
+								"hueConstrained": true
+							}
+						}
+					}
+				]
+			}
+		},
+		"witness": {
+			"ramp": {
+				"steps": [
+					"#f0f5ff",
+					"#cddeff",
+					"#aac7ff",
+					"#86b0ff",
+					"#6397ff",
+					"#3d7bff",
+					"#2563eb",
+					"#0946cd",
+					"#0030a0",
+					"#001e70",
+					"#000e42"
+				]
+			},
+			"theme": {
+				"light": {
+					"background": "#ffffff",
+					"surface": "#f4f6f9",
+					"surface-raised": "#e8ecf1",
+					"text": "#0f172a",
+					"text-muted": "#475569",
+					"primary": "#2563eb",
+					"on-primary": "#ffffff"
+				},
+				"dark": {
+					"background": "#0b1120",
+					"surface": "#151c2c",
+					"surface-raised": "#1f2937",
+					"text": "#f1f5f9",
+					"text-muted": "#aab4c3",
+					"primary": "#2563eb",
+					"on-primary": "#ffffff"
+				}
+			},
+			"chart": {
+				"colors": ["#000000", "#ff00ff", "#ff3300", "#0000cc"]
+			},
+			"warning": {
+				"hex": "#b66000"
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"ramp": {
+					"steps": []
+				},
+				"theme": {},
+				"chart": {
+					"colors": []
+				},
+				"warning": {
+					"hex": "#f59e0b"
+				}
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c13-2",
+		"category": 13,
+		"categoryName": "end-to-end",
+		"split": "dev",
+		"prompt": "You are setting up the color system for a health-tracking app. Brand color: #0d9488. Deliver four parts.\n\n1. \"ramp\": an 11-step tonal ramp of the brand color, lightest to darkest, keeping hue, vivid in the middle, evenly spaced in OKLCH lightness from at least 0.95 to at most 0.25, including the brand color itself as one step, all steps distinct.\n\n2. \"theme\": light and dark UI tokens. Define design tokens for a light theme and a dark theme with the brand color #0d9488. Tokens (all opaque sRGB hex): background, surface, surface-raised, text, text-muted, primary, on-primary.\nRequirements in BOTH themes: text on background at least 7:1; text on surface-raised at least 4.5:1; text-muted on surface at least 4.5:1; on-primary on primary at least 4.5:1; primary against background at least 3:1; background, surface and surface-raised must be three clearly different lightness levels (at least 0.02 apart in OKLCH lightness). In the light theme, primary must be the brand color or a barely adjusted version of it (within 0.04 in Oklab distance).\n\n3. \"chart\": 4 chart series colors on a #ffffff background that stay distinguishable under deuteranopia (Machado 2009, severity 1.0, linear sRGB): every pair at least 28.913 CIEDE2000 apart after simulation and at least 10 apart under normal vision; each at least 3:1 contrast against the background; all distinct.\n\n4. \"warning\": the warning text color #eab308 on #ffffff fails 4.5:1; return the closest replacement (same hue, minimal change) that reaches at least 4.5:1, as opaque 8-bit sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"ramp\": {\"steps\": [11 hex]}, \"theme\": {\"light\": {every token}, \"dark\": {every token}}, \"chart\": {\"colors\": [hex, ...]}, \"warning\": {\"hex\": \"#rrggbb\"}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ramp": {
+					"type": "object"
+				},
+				"theme": {
+					"type": "object"
+				},
+				"chart": {
+					"type": "object"
+				},
+				"warning": {
+					"type": "object"
+				}
+			},
+			"required": ["ramp", "theme", "chart", "warning"]
+		},
+		"grader": {
+			"kind": "composite",
+			"params": {
+				"parts": [
+					{
+						"key": "ramp",
+						"grader": {
+							"kind": "ramp",
+							"params": {
+								"seed": "#0d9488"
+							}
+						}
+					},
+					{
+						"key": "theme",
+						"grader": {
+							"kind": "theme",
+							"params": {
+								"brand": "#0d9488",
+								"tokens": [
+									"background",
+									"surface",
+									"surface-raised",
+									"text",
+									"text-muted",
+									"primary",
+									"on-primary"
+								],
+								"surfaces": ["background", "surface", "surface-raised"],
+								"pairs": [
+									{
+										"text": "text",
+										"surface": "background",
+										"min": 7
+									},
+									{
+										"text": "text",
+										"surface": "surface-raised",
+										"min": 4.5
+									},
+									{
+										"text": "text-muted",
+										"surface": "surface",
+										"min": 4.5
+									},
+									{
+										"text": "on-primary",
+										"surface": "primary",
+										"min": 4.5
+									},
+									{
+										"text": "primary",
+										"surface": "background",
+										"min": 3
+									}
+								]
+							}
+						}
+					},
+					{
+						"key": "chart",
+						"grader": {
+							"kind": "deutan",
+							"params": {
+								"background": "#ffffff",
+								"n": 4,
+								"threshold": 28.913
+							}
+						}
+					},
+					{
+						"key": "warning",
+						"grader": {
+							"kind": "fix",
+							"params": {
+								"fg": "#eab308",
+								"bg": "#ffffff",
+								"target": 4.5,
+								"dStar": 0.2274419335282075,
+								"hueConstrained": true
+							}
+						}
+					}
+				]
+			}
+		},
+		"witness": {
+			"ramp": {
+				"steps": [
+					"#d6fff9",
+					"#86f3e5",
+					"#6cdbcd",
+					"#52c3b6",
+					"#36ab9e",
+					"#0d9488",
+					"#007a70",
+					"#006058",
+					"#004841",
+					"#00312c",
+					"#001b18"
+				]
+			},
+			"theme": {
+				"light": {
+					"background": "#ffffff",
+					"surface": "#f4f6f9",
+					"surface-raised": "#e8ecf1",
+					"text": "#0f172a",
+					"text-muted": "#475569",
+					"primary": "#0d9488",
+					"on-primary": "#000000"
+				},
+				"dark": {
+					"background": "#0b1120",
+					"surface": "#151c2c",
+					"surface-raised": "#1f2937",
+					"text": "#f1f5f9",
+					"text-muted": "#aab4c3",
+					"primary": "#0d9488",
+					"on-primary": "#000000"
+				}
+			},
+			"chart": {
+				"colors": ["#000000", "#ff00ff", "#ff3300", "#0000cc"]
+			},
+			"warning": {
+				"hex": "#a56a00"
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"ramp": {
+					"steps": []
+				},
+				"theme": {},
+				"chart": {
+					"colors": []
+				},
+				"warning": {
+					"hex": "#eab308"
+				}
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c13-3",
+		"category": 13,
+		"categoryName": "end-to-end",
+		"split": "dev",
+		"prompt": "You are setting up the color system for a creator marketplace. Brand color: #9333ea. Deliver four parts.\n\n1. \"ramp\": an 11-step tonal ramp of the brand color, lightest to darkest, keeping hue, vivid in the middle, evenly spaced in OKLCH lightness from at least 0.95 to at most 0.25, including the brand color itself as one step, all steps distinct.\n\n2. \"theme\": light and dark UI tokens. Define design tokens for a light theme and a dark theme with the brand color #9333ea. Tokens (all opaque sRGB hex): background, surface, surface-raised, text, text-muted, primary, on-primary.\nRequirements in BOTH themes: text on background at least 7:1; text on surface-raised at least 4.5:1; text-muted on surface at least 4.5:1; on-primary on primary at least 4.5:1; primary against background at least 3:1; background, surface and surface-raised must be three clearly different lightness levels (at least 0.02 apart in OKLCH lightness). In the light theme, primary must be the brand color or a barely adjusted version of it (within 0.04 in Oklab distance).\n\n3. \"chart\": 5 chart series colors on a #ffffff background that stay distinguishable under deuteranopia (Machado 2009, severity 1.0, linear sRGB): every pair at least 24.319 CIEDE2000 apart after simulation and at least 10 apart under normal vision; each at least 3:1 contrast against the background; all distinct.\n\n4. \"warning\": the warning text color #fb923c on #ffffff fails 4.5:1; return the closest replacement (same hue, minimal change) that reaches at least 4.5:1, as opaque 8-bit sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"ramp\": {\"steps\": [11 hex]}, \"theme\": {\"light\": {every token}, \"dark\": {every token}}, \"chart\": {\"colors\": [hex, ...]}, \"warning\": {\"hex\": \"#rrggbb\"}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ramp": {
+					"type": "object"
+				},
+				"theme": {
+					"type": "object"
+				},
+				"chart": {
+					"type": "object"
+				},
+				"warning": {
+					"type": "object"
+				}
+			},
+			"required": ["ramp", "theme", "chart", "warning"]
+		},
+		"grader": {
+			"kind": "composite",
+			"params": {
+				"parts": [
+					{
+						"key": "ramp",
+						"grader": {
+							"kind": "ramp",
+							"params": {
+								"seed": "#9333ea"
+							}
+						}
+					},
+					{
+						"key": "theme",
+						"grader": {
+							"kind": "theme",
+							"params": {
+								"brand": "#9333ea",
+								"tokens": [
+									"background",
+									"surface",
+									"surface-raised",
+									"text",
+									"text-muted",
+									"primary",
+									"on-primary"
+								],
+								"surfaces": ["background", "surface", "surface-raised"],
+								"pairs": [
+									{
+										"text": "text",
+										"surface": "background",
+										"min": 7
+									},
+									{
+										"text": "text",
+										"surface": "surface-raised",
+										"min": 4.5
+									},
+									{
+										"text": "text-muted",
+										"surface": "surface",
+										"min": 4.5
+									},
+									{
+										"text": "on-primary",
+										"surface": "primary",
+										"min": 4.5
+									},
+									{
+										"text": "primary",
+										"surface": "background",
+										"min": 3
+									}
+								]
+							}
+						}
+					},
+					{
+						"key": "chart",
+						"grader": {
+							"kind": "deutan",
+							"params": {
+								"background": "#ffffff",
+								"n": 5,
+								"threshold": 24.319
+							}
+						}
+					},
+					{
+						"key": "warning",
+						"grader": {
+							"kind": "fix",
+							"params": {
+								"fg": "#fb923c",
+								"bg": "#ffffff",
+								"target": 4.5,
+								"dStar": 0.17591857511617556,
+								"hueConstrained": true
+							}
+						}
+					}
+				]
+			}
+		},
+		"witness": {
+			"ramp": {
+				"steps": [
+					"#f7f3ff",
+					"#e2d0ff",
+					"#ceadff",
+					"#bb87ff",
+					"#aa5aff",
+					"#9333ea",
+					"#7e08d1",
+					"#6500aa",
+					"#4d0083",
+					"#36005f",
+					"#20003c"
+				]
+			},
+			"theme": {
+				"light": {
+					"background": "#ffffff",
+					"surface": "#f4f6f9",
+					"surface-raised": "#e8ecf1",
+					"text": "#0f172a",
+					"text-muted": "#475569",
+					"primary": "#9333ea",
+					"on-primary": "#ffffff"
+				},
+				"dark": {
+					"background": "#0b1120",
+					"surface": "#151c2c",
+					"surface-raised": "#1f2937",
+					"text": "#f1f5f9",
+					"text-muted": "#aab4c3",
+					"primary": "#9333ea",
+					"on-primary": "#ffffff"
+				}
+			},
+			"chart": {
+				"colors": ["#000000", "#ff00ff", "#ff3300", "#0000cc", "#666666"]
+			},
+			"warning": {
+				"hex": "#c75300"
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"ramp": {
+					"steps": []
+				},
+				"theme": {},
+				"chart": {
+					"colors": []
+				},
+				"warning": {
+					"hex": "#fb923c"
+				}
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c13-4",
+		"category": 13,
+		"categoryName": "end-to-end",
+		"split": "heldout",
+		"prompt": "You are setting up the color system for a booking site. Brand color: #be185d. Deliver four parts.\n\n1. \"ramp\": an 11-step tonal ramp of the brand color, lightest to darkest, keeping hue, vivid in the middle, evenly spaced in OKLCH lightness from at least 0.95 to at most 0.25, including the brand color itself as one step, all steps distinct.\n\n2. \"theme\": light and dark UI tokens. Define design tokens for a light theme and a dark theme with the brand color #be185d. Tokens (all opaque sRGB hex): background, surface, surface-raised, text, text-muted, primary, on-primary.\nRequirements in BOTH themes: text on background at least 7:1; text on surface-raised at least 4.5:1; text-muted on surface at least 4.5:1; on-primary on primary at least 4.5:1; primary against background at least 3:1; background, surface and surface-raised must be three clearly different lightness levels (at least 0.02 apart in OKLCH lightness). In the light theme, primary must be the brand color or a barely adjusted version of it (within 0.04 in Oklab distance).\n\n3. \"chart\": 4 chart series colors on a #ffffff background that stay distinguishable under deuteranopia (Machado 2009, severity 1.0, linear sRGB): every pair at least 28.913 CIEDE2000 apart after simulation and at least 10 apart under normal vision; each at least 3:1 contrast against the background; all distinct.\n\n4. \"warning\": the warning text color #f0b429 on #ffffff fails 4.5:1; return the closest replacement (same hue, minimal change) that reaches at least 4.5:1, as opaque 8-bit sRGB hex.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"ramp\": {\"steps\": [11 hex]}, \"theme\": {\"light\": {every token}, \"dark\": {every token}}, \"chart\": {\"colors\": [hex, ...]}, \"warning\": {\"hex\": \"#rrggbb\"}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"ramp": {
+					"type": "object"
+				},
+				"theme": {
+					"type": "object"
+				},
+				"chart": {
+					"type": "object"
+				},
+				"warning": {
+					"type": "object"
+				}
+			},
+			"required": ["ramp", "theme", "chart", "warning"]
+		},
+		"grader": {
+			"kind": "composite",
+			"params": {
+				"parts": [
+					{
+						"key": "ramp",
+						"grader": {
+							"kind": "ramp",
+							"params": {
+								"seed": "#be185d"
+							}
+						}
+					},
+					{
+						"key": "theme",
+						"grader": {
+							"kind": "theme",
+							"params": {
+								"brand": "#be185d",
+								"tokens": [
+									"background",
+									"surface",
+									"surface-raised",
+									"text",
+									"text-muted",
+									"primary",
+									"on-primary"
+								],
+								"surfaces": ["background", "surface", "surface-raised"],
+								"pairs": [
+									{
+										"text": "text",
+										"surface": "background",
+										"min": 7
+									},
+									{
+										"text": "text",
+										"surface": "surface-raised",
+										"min": 4.5
+									},
+									{
+										"text": "text-muted",
+										"surface": "surface",
+										"min": 4.5
+									},
+									{
+										"text": "on-primary",
+										"surface": "primary",
+										"min": 4.5
+									},
+									{
+										"text": "primary",
+										"surface": "background",
+										"min": 3
+									}
+								]
+							}
+						}
+					},
+					{
+						"key": "chart",
+						"grader": {
+							"kind": "deutan",
+							"params": {
+								"background": "#ffffff",
+								"n": 4,
+								"threshold": 28.913
+							}
+						}
+					},
+					{
+						"key": "warning",
+						"grader": {
+							"kind": "fix",
+							"params": {
+								"fg": "#f0b429",
+								"bg": "#ffffff",
+								"target": 4.5,
+								"dStar": 0.23404691376307124,
+								"hueConstrained": true
+							}
+						}
+					}
+				]
+			}
+		},
+		"witness": {
+			"ramp": {
+				"steps": [
+					"#fff1f4",
+					"#ffcdd8",
+					"#ffa7bd",
+					"#ff7ca1",
+					"#f35388",
+					"#d93972",
+					"#be185d",
+					"#9b0048",
+					"#750035",
+					"#510023",
+					"#300012"
+				]
+			},
+			"theme": {
+				"light": {
+					"background": "#ffffff",
+					"surface": "#f4f6f9",
+					"surface-raised": "#e8ecf1",
+					"text": "#0f172a",
+					"text-muted": "#475569",
+					"primary": "#be185d",
+					"on-primary": "#ffffff"
+				},
+				"dark": {
+					"background": "#0b1120",
+					"surface": "#151c2c",
+					"surface-raised": "#1f2937",
+					"text": "#f1f5f9",
+					"text-muted": "#aab4c3",
+					"primary": "#be185d",
+					"on-primary": "#ffffff"
+				}
+			},
+			"chart": {
+				"colors": ["#000000", "#ff00ff", "#ff3300", "#0000cc"]
+			},
+			"warning": {
+				"hex": "#a76900"
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"ramp": {
+					"steps": []
+				},
+				"theme": {},
+				"chart": {
+					"colors": []
+				},
+				"warning": {
+					"hex": "#f0b429"
+				}
+			}
+		],
+		"toolUseful": true
+	},
+	{
+		"id": "c14-1",
+		"category": 14,
+		"categoryName": "trap",
+		"split": "dev",
+		"prompt": "What is the hex value of the CSS named color \"rebeccapurple\"?\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"answer\": \"#rrggbb\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"answer": {}
+			},
+			"required": ["answer"]
+		},
+		"grader": {
+			"kind": "trap",
+			"params": {
+				"mode": "hex",
+				"expected": "#663399"
+			}
+		},
+		"witness": {
+			"answer": "#663399"
+		},
+		"invalid": [
+			{},
+			{
+				"answer": "#800080"
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "c14-2",
+		"category": 14,
+		"categoryName": "trap",
+		"split": "dev",
+		"prompt": "Which has the higher contrast ratio against a white background: the CSS color navy or the CSS color gold? Answer with the color name.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"answer\": \"navy\" or \"gold\"}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"answer": {}
+			},
+			"required": ["answer"]
+		},
+		"grader": {
+			"kind": "trap",
+			"params": {
+				"mode": "string",
+				"expected": "navy"
+			}
+		},
+		"witness": {
+			"answer": "navy"
+		},
+		"invalid": [
+			{},
+			{
+				"answer": "gold"
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "c14-3",
+		"category": 14,
+		"categoryName": "trap",
+		"split": "dev",
+		"prompt": "Convert the hex color #00ff00 to its rgb() channel values (0 to 255).\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"answer\": {\"r\": number, \"g\": number, \"b\": number}}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"answer": {}
+			},
+			"required": ["answer"]
+		},
+		"grader": {
+			"kind": "trap",
+			"params": {
+				"mode": "rgb",
+				"expected": [0, 255, 0]
+			}
+		},
+		"witness": {
+			"answer": {
+				"r": 0,
+				"g": 255,
+				"b": 0
+			}
+		},
+		"invalid": [
+			{},
+			{
+				"answer": {
+					"r": 0,
+					"g": 0,
+					"b": 255
+				}
+			}
+		],
+		"toolUseful": false
+	},
+	{
+		"id": "c14-4",
+		"category": 14,
+		"categoryName": "trap",
+		"split": "heldout",
+		"prompt": "Is white text (#ffffff) readable on a pure yellow (#ffff00) background at WCAG AA for normal text? Answer true or false.\n\nReply with JSON only, in a single ```json code block, with exactly this shape:\n{\"answer\": true or false}",
+		"schema": {
+			"type": "object",
+			"properties": {
+				"answer": {}
+			},
+			"required": ["answer"]
+		},
+		"grader": {
+			"kind": "trap",
+			"params": {
+				"mode": "bool",
+				"expected": false
+			}
+		},
+		"witness": {
+			"answer": false
+		},
+		"invalid": [
+			{},
+			{
+				"answer": true
+			}
+		],
+		"toolUseful": false
+	}
+]

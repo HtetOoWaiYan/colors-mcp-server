@@ -1,14 +1,17 @@
 {
 	"name": "@htetoowaiyan/colors-mcp-server",
-	"version": "1.1.0",
-	"description": "A simple color utility MCP server for frontend developers — convert, mix, adjust, and analyze colors.",
+	"version": "2.0.0",
+	"description": "MCP server that gives AI agents exact color math, accessibility checks and ready-made palettes — built for small models. Contrast, OKLCH, gamut, color-blind safety, themes, CSS audit.",
 	"type": "module",
 	"main": "./dist/index.js",
 	"exports": {
 		".": "./dist/index.js"
 	},
 	"bin": {
-		"colors-mcp-server": "./dist/index.js"
+		"colors-mcp-server": "dist/index.js"
+	},
+	"engines": {
+		"node": ">=20"
 	},
 	"files": [
 		"dist",
@@ -18,7 +21,7 @@
 	"scripts": {
 		"dev": "tsx src/index.ts",
 		"build": "tsc",
-		"prepublishOnly": "npm run build",
+		"prepublishOnly": "npm run build:ui && npm run build",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"test:coverage": "vitest run --coverage",
@@ -26,18 +29,26 @@
 		"lint:fix": "biome lint --write src",
 		"format": "biome format --write src",
 		"prepare": "husky",
-		"inspect": "npx @modelcontextprotocol/inspector tsx src/index.ts"
+		"inspect": "npx @modelcontextprotocol/inspector tsx src/index.ts",
+		"build:ui": "node scripts/build-ui.mjs",
+		"eval:preflight": "npm --prefix evals run cli -- preflight"
 	},
 	"keywords": [
 		"mcp",
 		"mcp-server",
 		"colors",
-		"color-conversion",
-		"color-manipulation",
+		"color",
+		"oklch",
 		"wcag",
 		"contrast",
-		"frontend",
-		"culori"
+		"accessibility",
+		"palette",
+		"design-tokens",
+		"color-blindness",
+		"apca",
+		"gamut",
+		"ui",
+		"dataviz"
 	],
 	"author": "HtetOoWaiYan",
 	"license": "MIT",
@@ -50,21 +61,25 @@
 		"url": "https://github.com/HtetOoWaiYan/colors-mcp-server/issues"
 	},
 	"dependencies": {
-		"@modelcontextprotocol/sdk": "^1.26.0",
-		"culori": "^4.0.1",
+		"@modelcontextprotocol/server": "^2.4.0",
+		"colorjs.io": "0.7.1",
 		"pino": "^10.3.1",
 		"pino-pretty": "^13.0.0",
-		"zod": "^3.23.8"
+		"zod": "^4.6.7"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.15",
-		"@types/culori": "^4.0.1",
+		"@modelcontextprotocol/client": "^2.4.0",
+		"@modelcontextprotocol/ext-apps": "^2.0.4",
 		"@types/node": "^22.13.1",
 		"@vitest/coverage-v8": "^3.0.5",
 		"husky": "^9.1.7",
+		"jsdom": "^31.0.0",
 		"lint-staged": "^16.2.7",
 		"tsx": "^4.19.2",
 		"typescript": "^5.7.3",
+		"vite": "^7.3.7",
+		"vite-plugin-singlefile": "^2.3.4",
 		"vitest": "^3.0.5"
 	},
 	"lint-staged": {

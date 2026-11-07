@@ -6,7 +6,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!!**/dist"]
+		"includes": ["**", "!!**/dist", "!src/ui/viewer.generated.ts", "!evals"]
 	},
 	"formatter": {
 		"enabled": true,

@@ -1,0 +1,26 @@
+{
+	"name": "colors-mcp-evals",
+	"private": true,
+	"type": "module",
+	"description": "Eval harness for the colors MCP server (sub-project 0). Not published.",
+	"scripts": {
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit",
+		"cli": "tsx src/cli.ts",
+		"build-suite": "tsx src/tasks/build-suite.ts",
+		"build-suite-gen": "tsx src/tasks/gen/build-gen.ts",
+		"build-suite-fresh": "tsx src/tasks/fresh/build-fresh.ts"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "1.32.2",
+		"ajv": "^8.20.0",
+		"colorjs.io": "0.7.1"
+	},
+	"devDependencies": {
+		"@types/node": "^22.13.1",
+		"tsx": "^4.19.2",
+		"typescript": "^5.7.3",
+		"vitest": "^3.0.5",
+		"zod": "^4.6.7"
+	}
+}
