@@ -98,6 +98,18 @@ export const V2_CASES: Record<string, ToolCase> = {
 		invalid: { foreground: "#000", background: "#fff", level: "Z" },
 		unknownColor: { foreground: "bluish", background: "#fff" },
 	},
+	colors_find: {
+		valid: { hueMin: 140, hueMax: 165, chromaMin: 0.1 },
+		defaulted: { hueMin: 200, hueMax: 220 },
+		invalid: { count: 99 },
+		unknownColor: { against: [{ color: "bluish" }] },
+	},
+	colors_scrim: {
+		valid: { text: "#ffffff", overlay: "#000000", regions: ["#cccccc"] },
+		defaulted: { text: "#fff", overlay: "#000", regions: ["#ddd"] },
+		invalid: { text: "#fff", overlay: "#000", regions: [] },
+		unknownColor: { text: "bluish", overlay: "#000", regions: ["#ddd"] },
+	},
 	colors_fix: {
 		valid: { foreground: "#7a9bd1", background: "#ffffff", target: 4.5 },
 		defaulted: { foreground: "#777", background: "#fff" },

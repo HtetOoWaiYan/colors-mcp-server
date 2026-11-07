@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { compositeOver, type Rgb } from "../engine/color.js";
+import {
+	compositeOver,
+	normHue,
+	type Rgb,
+	rgbToOklch,
+} from "../engine/color.js";
 import { type FindRules, findColors } from "../engine/find.js";
 import type { Cvd } from "../engine/vision.js";
 import { defineTool } from "./define.js";
@@ -21,6 +26,18 @@ const input = z.object({
 			"OKLCH hue band start, degrees 0-360 (red 30, yellow 100, green 145, cyan 200, blue 260, purple 305, pink 350). If hueMin is above hueMax the band wraps through 0.",
 		),
 	hueMax: degrees.optional().describe("OKLCH hue band end, degrees 0-360."),
+	hueOf: z
+		.string()
+		.optional()
+		.describe(
+			"Instead of hueMin/hueMax: keep the found colors in the hue family of this color (for example the brand color). The band is its OKLCH hue plus or minus hueWithin.",
+		),
+	hueWithin: z
+		.number()
+		.min(0)
+		.max(180)
+		.default(20)
+		.describe("Degrees either side of hueOf. Default 20."),
 	chromaMin: z
 		.number()
 		.min(0)
@@ -126,12 +143,28 @@ export const findTool = defineTool({
 	name: "colors_find",
 	title: "Find colors that meet rules",
 	description:
-		"Find colors that satisfy your rules in one call. Combine any of: hue band, chroma range, lightness range, contrast against one or more backgrounds (`against`), and for several colors a minimum lightness gap, hue gap or color difference (optionally color-blind safe). Returns verified hex colors with the most margin, or says which rule cannot be met.",
+		"Find colors that satisfy your rules in one call. Combine any of: hue band (or the hue family of a color), chroma range, lightness range, contrast against one or more backgrounds (`against`), and for several colors a minimum lightness gap, hue gap or color difference (optionally color-blind safe). Returns verified hex colors with the most margin, or says which rule cannot be met.",
 	inputSchema: input,
 	outputSchema: output,
 	handler: guarded((args) => {
 		if ((args.hueMin === undefined) !== (args.hueMax === undefined))
 			return fail("Give both hueMin and hueMax, or neither.");
+		let hue: [number, number] | undefined;
+		if (args.hueOf !== undefined) {
+			const p = parseOne(args.hueOf, "hueOf");
+			if ("error" in p) return p.error;
+			const h = rgbToOklch(p.ok.rgb).h;
+			hue =
+				args.hueWithin >= 180
+					? undefined
+					: [normHue(h - args.hueWithin), normHue(h + args.hueWithin)];
+		} else if (args.hueMin !== undefined && args.hueMax !== undefined) {
+			// 0 to 360 (or any span of a full turn) means every hue, not the single hue 0
+			hue =
+				args.hueMax - args.hueMin >= 360
+					? undefined
+					: [normHue(args.hueMin), normHue(args.hueMax)];
+		}
 		const against: { rgb: Rgb; ratio: number }[] = [];
 		for (const [i, a] of (args.against ?? []).entries()) {
 			const p = parseOne(a.color, `against[${i}].color`);
@@ -149,10 +182,7 @@ export const findTool = defineTool({
 					: [args.cvd as Cvd];
 		const rules: FindRules = {
 			count: args.count,
-			hue:
-				args.hueMin !== undefined && args.hueMax !== undefined
-					? [args.hueMin % 360, args.hueMax % 360]
-					: undefined,
+			hue,
 			chroma: { min: args.chromaMin, max: args.chromaMax },
 			lightness: { min: args.lightnessMin, max: args.lightnessMax },
 			against,

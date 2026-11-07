@@ -511,3 +511,44 @@ describe("colors_blend in linear light", () => {
 		expect(r.sc?.colors[0]).toBe("#bcbcbc");
 	});
 });
+
+describe("colors_find hue handling", () => {
+	it("treats 0 to 360 as every hue, so a set search can use the whole wheel", () => {
+		const r = call("colors_find", {
+			count: 5,
+			hueMin: 0,
+			hueMax: 360,
+			chromaMin: 0.06,
+			minLightnessGap: 0.07,
+			minHueGap: 30,
+			against: [{ color: "#f8fafc", ratio: 3 }],
+		});
+		expect(r.sc?.found).toBe(true);
+		expect(r.sc?.colors).toHaveLength(5);
+	});
+	it("keeps the result in the hue family of a given color", () => {
+		const brand = "#db2777";
+		const r = call("colors_find", {
+			hueOf: brand,
+			hueWithin: 15,
+			chromaMin: 0.12,
+			against: [{ color: "#ffffff", ratio: 3 }],
+		});
+		expect(
+			hueDiff(oklchOf(r.sc?.colors[0]).h, oklchOf(brand).h),
+		).toBeLessThanOrEqual(15);
+	});
+});
+
+describe("colors_palette diverging chroma", () => {
+	it("keeps the third color on each side clearly colored", () => {
+		const r = call("colors_palette", {
+			kind: "diverging",
+			color: "#0d9488",
+			color2: "#b45309",
+		});
+		const cs: string[] = r.sc?.colors;
+		expect(oklchOf(cs[2] as string).c).toBeGreaterThanOrEqual(0.04);
+		expect(oklchOf(cs[4] as string).c).toBeGreaterThanOrEqual(0.04);
+	});
+});
