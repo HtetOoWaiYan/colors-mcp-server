@@ -13,7 +13,8 @@ import { GUIDE_TOPICS, GUIDES, guideByTopic, INDEX_TEXT } from "./guides.js";
 // Short on purpose: high leverage for clients that forward it, noise for those that do not.
 export const INSTRUCTIONS = `Deterministic color tools. Take every number from a tool: contrast ratios, color-space conversions, gamut mapping, color differences, color-blind simulation.
 - Is text readable? colors_check, then colors_fix for the closest passing color.
-- Need a palette? colors_palette (kind ramp, theme or categorical). Review CSS? colors_audit.
+- Need a palette? colors_palette (kind ramp, theme, categorical or diverging). Review CSS? colors_audit.
+- Need colors that meet stated rules (hue, chroma, contrast on given surfaces, gaps between several)? colors_find. Text over an image? colors_scrim.
 - Edit colors in OKLCH with colors_adjust, blend with colors_blend, compare with colors_compare (CIEDE2000).
 - Answer with hex (#rrggbb) unless asked otherwise, and quote the tool's numbers.
 Guides by medium (accessibility, ui-design, dataviz, print, film-video, photo, games, social-brand): resource colors://guide/<topic>.`;
@@ -32,7 +33,9 @@ Every number comes from a tool.
 | --- | --- |
 | Is this text/background readable? | colors_check |
 | Make it pass, keeping the hue | colors_fix |
-| Brand ramp, light/dark theme, chart colors | colors_palette |
+| Brand ramp, light/dark theme, chart colors, diverging scale | colors_palette |
+| Colors that meet stated rules (hue, chroma, contrast, gaps) | colors_find |
+| Overlay opacity for text over an image | colors_scrim |
 | Review a stylesheet | colors_audit |
 | What is this color? Is it valid? | colors_info |
 | Convert formats, gamut-map | colors_convert |

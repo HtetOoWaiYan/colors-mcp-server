@@ -8,6 +8,8 @@ const EXPECTED_TOOLS = [
 	"colors_check",
 	"colors_fix",
 	"colors_palette",
+	"colors_find",
+	"colors_scrim",
 	"colors_audit",
 	"colors_info",
 	"colors_convert",

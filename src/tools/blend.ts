@@ -16,12 +16,12 @@ const input = z.object({
 		.default(5)
 		.describe("How many colors to return, endpoints included. Default 5."),
 	space: z
-		.enum(["oklch", "oklab", "srgb"], {
-			error: 'space must be "oklch", "oklab" or "srgb".',
+		.enum(["oklch", "oklab", "srgb", "srgb-linear"], {
+			error: 'space must be "oklch", "oklab", "srgb" or "srgb-linear".',
 		})
 		.default("oklch")
 		.describe(
-			'Interpolation space. "oklch" (default) keeps colors vivid and takes the shorter hue path; "oklab" is smooth but can dull; "srgb" matches old CSS gradients and goes muddy between far-apart hues.',
+			'Interpolation space. "oklch" (default) keeps colors vivid and takes the shorter hue path; "oklab" is smooth but can dull; "srgb" matches old CSS gradients and goes muddy between far-apart hues; "srgb-linear" mixes in linear light (physical light mixing).',
 		),
 	at: z
 		.number()

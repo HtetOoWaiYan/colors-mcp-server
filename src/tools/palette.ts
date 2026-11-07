@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { categorical } from "../engine/categorical.js";
 import { compositeOver, type Rgb } from "../engine/color.js";
+import { diverging } from "../engine/diverging.js";
 import { buildRamp, stepNames } from "../engine/ramp.js";
 import {
 	buildTheme,
@@ -8,32 +9,36 @@ import {
 	type RuleResult,
 	THEME_TOKENS,
 } from "../engine/theme.js";
-import type { Cvd } from "../engine/vision.js";
+import { type Cvd, minSeparation } from "../engine/vision.js";
 import { defineTool } from "./define.js";
 import { fail, fmt, guarded, hex, parseOne, text } from "./shared.js";
 
 const input = z.object({
 	kind: z
-		.enum(["ramp", "theme", "categorical"], {
-			error: 'kind must be "ramp", "theme" or "categorical".',
+		.enum(["ramp", "theme", "categorical", "diverging"], {
+			error: 'kind must be "ramp", "theme", "categorical" or "diverging".',
 		})
 		.describe(
-			'"ramp" = tonal scale (50..950) of one color; "theme" = light + dark UI tokens from a brand color; "categorical" = a set of clearly different colors for charts or tags.',
+			'"ramp" = tonal scale (50..950) of one color; "theme" = light + dark UI tokens from a brand color; "categorical" = a set of clearly different colors for charts or tags; "diverging" = a scale from one color through a light neutral to a second color.',
 		),
 	color: z
 		.string()
 		.optional()
 		.describe(
-			'Seed color. Required for "ramp" and "theme" (the brand color). Ignored for "categorical".',
+			'Seed color. Required for "ramp" and "theme" (the brand color) and for "diverging" (the left end). Ignored for "categorical".',
 		),
+	color2: z
+		.string()
+		.optional()
+		.describe('"diverging" only: the color at the right end.'),
 	steps: z
 		.number()
 		.int()
 		.min(3)
 		.max(19)
-		.default(11)
+		.optional()
 		.describe(
-			"Ramp only: number of steps, default 11 (named 50, 100 ... 950).",
+			"Ramp: number of steps, default 11 (named 50, 100 ... 950). Diverging: an odd number of steps, default 7.",
 		),
 	count: z
 		.number()
@@ -85,7 +90,7 @@ export const paletteTool = defineTool({
 	name: "colors_palette",
 	title: "Build a palette",
 	description:
-		'Build a finished color palette with verified accessibility. kind "ramp": an 11-step tonal scale of a color (lightest to darkest, the seed is one step, evenly spaced). kind "theme": light and dark UI tokens (background, surface, surface-raised, text, text-muted, border, primary, on-primary) from a brand color, with every text contrast rule checked. kind "categorical": N clearly different, color-blind-safe colors for charts. Returns hex values ready to use.',
+		'Build a finished color palette with verified accessibility. kind "ramp": an 11-step tonal scale of a color (lightest to darkest, the seed is one step, evenly spaced). kind "theme": light and dark UI tokens (background, surface, surface-raised, text, text-muted, border, primary, on-primary) from a brand color, with every text contrast rule checked. kind "categorical": N clearly different, color-blind-safe colors for charts. kind "diverging": a scale from `color` through a light neutral to `color2`, with symmetric lightness. Returns hex values ready to use.',
 	inputSchema: input,
 	outputSchema: output,
 	handler: guarded((args) => {
@@ -127,16 +132,40 @@ export const paletteTool = defineTool({
 			);
 		const seed = parseOne(args.color, "color");
 		if ("error" in seed) return seed.error;
+		if (args.kind === "diverging") {
+			if (!args.color2)
+				return fail(
+					'kind "diverging" needs "color2": the right-end color, e.g. {"kind":"diverging","color":"#0d9488","color2":"#b45309"}.',
+				);
+			const right = parseOne(args.color2, "color2");
+			if ("error" in right) return right.error;
+			const n = args.steps ?? 7;
+			if (n % 2 === 0)
+				return fail(
+					`A diverging scale needs an odd number of steps so one step is the neutral middle. Use ${n - 1} or ${n + 1}.`,
+				);
+			const rgbs = diverging(seed.ok.rgb, right.ok.rgb, n);
+			const colors = rgbs.map((c) => hex(c));
+			const sep = minSeparation(
+				[rgbs[0] as Rgb, rgbs[n - 1] as Rgb],
+				"deuteranopia",
+			).min;
+			return text(
+				`${n}-step diverging scale, left end ${colors[0]} to right end ${colors[n - 1]} through a light neutral middle (${colors[(n - 1) / 2]}). Both ends share one lightness and lightness is symmetric around the middle.\nList: ${colors.join(", ")}\nThe two end colors differ by ${fmt(sep, 1)} (CIEDE2000) under deuteranopia.`,
+				{ kind: "diverging", colors },
+			);
+		}
+		const steps = args.steps ?? 11;
 		if (args.kind === "ramp") {
-			const ramp = buildRamp(seed.ok.rgb, args.steps);
+			const ramp = buildRamp(seed.ok.rgb, steps);
 			const colors = ramp.steps.map((c) => hex(c));
-			const names = stepNames(args.steps);
+			const names = stepNames(steps);
 			const lines = colors.map(
 				(c, i) =>
 					`${names[i]}: ${c}${i === ramp.seedIndex ? "  <- your color" : ""}`,
 			);
 			return text(
-				`${args.steps}-step ramp for ${hex(seed.ok.rgb)}, lightest (${names[0]}) to darkest (${names[args.steps - 1]}), same hue, even OKLCH lightness steps. Your color is step ${names[ramp.seedIndex]}.\n${lines.join("\n")}\nList: ${colors.join(", ")}`,
+				`${steps}-step ramp for ${hex(seed.ok.rgb)}, lightest (${names[0]}) to darkest (${names[steps - 1]}), same hue, even OKLCH lightness steps. Your color is step ${names[ramp.seedIndex]}.\n${lines.join("\n")}\nList: ${colors.join(", ")}`,
 				{ kind: "ramp", colors, names, seedIndex: ramp.seedIndex },
 			);
 		}

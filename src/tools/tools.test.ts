@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { z } from "zod";
 import { hueDiff, parseColor, rgbToOklch } from "../engine/color.js";
+import { contrastRatio } from "../engine/contrast.js";
 import { FORMATS } from "../engine/format.js";
 import { TOOLS } from "./index.js";
 
@@ -29,7 +30,7 @@ function call(name: string, args: Record<string, unknown>) {
 }
 
 describe("tool list", () => {
-	it("keeps the whole tool list small enough for small models (< 14k characters of JSON Schema)", () => {
+	it("keeps the whole tool list small enough for small models (< 18k characters of JSON Schema)", () => {
 		const size = TOOLS.map((t) =>
 			JSON.stringify({
 				n: t.name,
@@ -37,7 +38,7 @@ describe("tool list", () => {
 				i: z.toJSONSchema(t.inputSchema),
 			}),
 		).join("").length;
-		expect(size).toBeLessThan(14_000);
+		expect(size).toBeLessThan(18_000);
 	});
 	it("keeps every description under 90 words", () => {
 		for (const t of TOOLS)
@@ -357,5 +358,156 @@ describe("colors_audit", () => {
 				css: "p { color: #111; background-color: #fff; }",
 			}).text,
 		).toMatch(/^No color problems found/);
+	});
+});
+
+describe("colors_find", () => {
+	const rgbOf = (c: string) => parseColor(c).rgb;
+
+	it("finds one color that meets hue, chroma, lightness and contrast rules", () => {
+		const r = call("colors_find", {
+			hueMin: 140,
+			hueMax: 165,
+			chromaMin: 0.11,
+			lightnessMin: 0.45,
+			against: [{ color: "#ffffff", ratio: 4.5 }],
+		});
+		const c = r.sc?.colors[0];
+		const o = oklchOf(c);
+		expect(o.h).toBeGreaterThanOrEqual(140);
+		expect(o.h).toBeLessThanOrEqual(165);
+		expect(o.c).toBeGreaterThanOrEqual(0.11);
+		expect(o.l).toBeGreaterThanOrEqual(0.45);
+		expect(contrastRatio(rgbOf(c), rgbOf("#ffffff"))).toBeGreaterThanOrEqual(
+			4.5,
+		);
+	});
+	it("meets contrast on a light and a dark surface at once, with a hue band that wraps through 0", () => {
+		const r = call("colors_find", {
+			hueMin: 340,
+			hueMax: 20,
+			chromaMin: 0.1,
+			against: [
+				{ color: "#fef3c7", ratio: 3 },
+				{ color: "#1e3a8a", ratio: 3 },
+			],
+		});
+		const c = r.sc?.colors[0];
+		const h = oklchOf(c).h;
+		expect(h >= 340 || h <= 20).toBe(true);
+		for (const bg of ["#fef3c7", "#1e3a8a"])
+			expect(contrastRatio(rgbOf(c), rgbOf(bg))).toBeGreaterThanOrEqual(3);
+	});
+	it("finds a set whose lightness gaps and hue gaps hold for every pair", () => {
+		const r = call("colors_find", {
+			count: 3,
+			chromaMin: 0.08,
+			minLightnessGap: 0.15,
+			minHueGap: 60,
+			against: [{ color: "#ffffff", ratio: 3 }],
+		});
+		const set: string[] = r.sc?.colors;
+		expect(set).toHaveLength(3);
+		for (let i = 0; i < 3; i++) {
+			expect(oklchOf(set[i]).c).toBeGreaterThanOrEqual(0.08);
+			for (let j = i + 1; j < 3; j++) {
+				expect(
+					Math.abs(oklchOf(set[i]).l - oklchOf(set[j]).l),
+				).toBeGreaterThanOrEqual(0.15);
+				expect(
+					hueDiff(oklchOf(set[i]).h, oklchOf(set[j]).h),
+				).toBeGreaterThanOrEqual(60);
+			}
+		}
+	});
+	it("says which rule is impossible instead of returning a wrong color", () => {
+		const r = call("colors_find", {
+			hueMin: 100,
+			hueMax: 110,
+			chromaMin: 0.15,
+			against: [{ color: "#ffffff", ratio: 7 }],
+		});
+		expect(r.sc?.found).toBe(false);
+		expect(r.text).toMatch(/best is at most \d+\.\d+:1/);
+	});
+	it("asks for both ends of the hue band", () => {
+		const r = call("colors_find", { hueMin: 100 });
+		expect(r.isError).toBe(true);
+	});
+});
+
+describe("colors_scrim", () => {
+	it("returns the smallest grid opacity at which every region reaches the target", () => {
+		const regions = ["#d8d2c4", "#a7b8c9", "#f2efe9"];
+		const r = call("colors_scrim", {
+			text: "#ffffff",
+			overlay: "#000000",
+			regions,
+		});
+		const alpha = r.sc?.opacity as number;
+		const worstAt = (a: number) =>
+			Math.min(
+				...regions.map((hexColor) => {
+					const base = parseColor(hexColor).rgb.map((v) => Math.round(v * 255));
+					const mixed = base.map((v) => Math.round((1 - a) * v) / 255);
+					return contrastRatio([1, 1, 1], mixed as [number, number, number]);
+				}),
+			);
+		expect(worstAt(alpha)).toBeGreaterThanOrEqual(4.5);
+		expect(worstAt(Math.round((alpha - 0.05) * 100) / 100)).toBeLessThan(4.5);
+	});
+	it("says so when no opacity works", () => {
+		const r = call("colors_scrim", {
+			text: "#ffffff",
+			overlay: "#ffffff",
+			regions: ["#eeeeee"],
+		});
+		expect(r.sc?.found).toBe(false);
+	});
+});
+
+describe("colors_palette diverging", () => {
+	it("builds a symmetric scale with a light neutral middle and monotonic sides", () => {
+		const r = call("colors_palette", {
+			kind: "diverging",
+			color: "#0d9488",
+			color2: "#b45309",
+			steps: 7,
+		});
+		const cs: string[] = r.sc?.colors;
+		expect(cs).toHaveLength(7);
+		const l = cs.map((c) => oklchOf(c).l);
+		expect(oklchOf(cs[3] as string).c).toBeLessThan(0.03);
+		expect(l[3]).toBeGreaterThan(0.9);
+		for (let i = 0; i < 3; i++) {
+			expect(Math.abs((l[i] as number) - (l[6 - i] as number))).toBeLessThan(
+				0.02,
+			);
+			expect(l[i + 1] as number).toBeGreaterThan((l[i] as number) + 0.05);
+		}
+	});
+	it("needs an odd step count and a second color", () => {
+		expect(
+			call("colors_palette", { kind: "diverging", color: "#0d9488" }).isError,
+		).toBe(true);
+		expect(
+			call("colors_palette", {
+				kind: "diverging",
+				color: "#0d9488",
+				color2: "#b45309",
+				steps: 6,
+			}).isError,
+		).toBe(true);
+	});
+});
+
+describe("colors_blend in linear light", () => {
+	it("mixes black and white to the linear-light midpoint", () => {
+		const r = call("colors_blend", {
+			colors: ["#000000", "#ffffff"],
+			at: 0.5,
+			space: "srgb-linear",
+		});
+		expect(r.sc?.colors[0]).toBe("#bcbcbc");
 	});
 });

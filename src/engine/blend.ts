@@ -1,15 +1,17 @@
 import {
 	clamp01,
 	gamutMap,
+	linearToSrgb,
 	normHue,
 	type Oklch,
 	oklabToRgb,
 	type Rgb,
 	rgbToOklab,
 	rgbToOklch,
+	srgbToLinear,
 } from "./color.js";
 
-export type BlendSpace = "oklch" | "oklab" | "srgb";
+export type BlendSpace = "oklch" | "oklab" | "srgb" | "srgb-linear";
 
 const ACHROMATIC = 0.004;
 
@@ -39,6 +41,13 @@ export function mixAt(
 		return [0, 1, 2].map((i) =>
 			clamp01((a[i] as number) + ((b[i] as number) - (a[i] as number)) * t),
 		) as Rgb;
+	}
+	if (space === "srgb-linear") {
+		return [0, 1, 2].map((i) => {
+			const x = srgbToLinear(a[i] as number);
+			const y = srgbToLinear(b[i] as number);
+			return clamp01(linearToSrgb(x + (y - x) * t));
+		}) as Rgb;
 	}
 	if (space === "oklab") {
 		const la = rgbToOklab(a);

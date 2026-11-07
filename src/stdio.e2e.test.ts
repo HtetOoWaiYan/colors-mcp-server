@@ -40,6 +40,6 @@ describe("stdio end to end (real child process)", () => {
 		const client = await start("auto");
 		expect(client.getProtocolEra()).toBe("modern");
 		const { tools } = await client.listTools();
-		expect(tools).toHaveLength(11);
+		expect(tools).toHaveLength(13);
 	}, 30_000);
 });
