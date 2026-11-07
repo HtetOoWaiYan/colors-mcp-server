@@ -48,7 +48,7 @@ export interface MatrixSummary {
 	pending: number;
 }
 
-export const GENERATION = {
+const GENERATION = {
 	max_tokens: 4096,
 	temperature: "provider default",
 } as const;
@@ -63,7 +63,7 @@ function shuffled<T>(xs: T[], seed: string): T[] {
 	return a;
 }
 
-export function keyFor(
+function keyFor(
 	o: MatrixOptions,
 	model: ModelSpec,
 	cond: ConditionSpec,

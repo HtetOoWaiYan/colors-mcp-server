@@ -1,19 +1,14 @@
-import { okDistance, type Rgb, rgbToOklab } from "./color.js";
+import { okDistance, type Rgb, rgbToOklab, srgbToLinear } from "./color.js";
 
 type Vec3 = [number, number, number];
-
-const lin = (v: number): number => {
-	const a = Math.abs(v);
-	return a <= 0.04045 ? v / 12.92 : Math.sign(v) * ((a + 0.055) / 1.055) ** 2.4;
-};
 
 const D65: Vec3 = [0.95047, 1, 1.08883];
 
 // D65 is sRGB's own white, so no chromatic adaptation is needed.
 export function rgbToLab(rgb: Rgb): Vec3 {
-	const r = lin(rgb[0]);
-	const g = lin(rgb[1]);
-	const b = lin(rgb[2]);
+	const r = srgbToLinear(rgb[0]);
+	const g = srgbToLinear(rgb[1]);
+	const b = srgbToLinear(rgb[2]);
 	const x = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b;
 	const y = 0.2126729 * r + 0.7151522 * g + 0.072175 * b;
 	const z = 0.0193339 * r + 0.119192 * g + 0.9503041 * b;

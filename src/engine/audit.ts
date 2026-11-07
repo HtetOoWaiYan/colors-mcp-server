@@ -1,4 +1,4 @@
-import { compositeOver, parseColor, type Rgb } from "./color.js";
+import { compositeOver, parseColor, type Rgb, rgbToHex } from "./color.js";
 import { contrastRatio } from "./contrast.js";
 import { deltaE2000 } from "./distance.js";
 import { fixContrast } from "./fix.js";
@@ -78,7 +78,7 @@ export function auditCss(css: string): {
 					selector: b.selector,
 					message: `${ratio.toFixed(2)}:1, needs 4.5:1`,
 					suggestion: fix
-						? `use color ${hex(fix.rgb)} (${fix.ratio.toFixed(2)}:1)`
+						? `use color ${rgbToHex(fix.rgb)} (${fix.ratio.toFixed(2)}:1)`
 						: undefined,
 				});
 			}
@@ -120,12 +120,3 @@ export function auditCss(css: string): {
 	}
 	return { findings, checked };
 }
-
-const hex = (rgb: Rgb): string =>
-	`#${rgb
-		.map((v) =>
-			Math.round(Math.min(1, Math.max(0, v)) * 255)
-				.toString(16)
-				.padStart(2, "0"),
-		)
-		.join("")}`;

@@ -32,7 +32,7 @@ export interface CellResult {
 }
 
 // Precedence is fixed by the spec: infra and limit first, then format, then grading.
-export function classify(
+function classify(
 	run: AgentRun,
 	task: Task,
 ): {

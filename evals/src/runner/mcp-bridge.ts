@@ -15,7 +15,7 @@ export interface ServerSpec {
 }
 
 /** TNI profile: only the text parts of `content` reach the model. structuredContent is dropped. */
-export function contentText(result: unknown): string {
+function contentText(result: unknown): string {
 	const content =
 		(result as { content?: { type: string; text?: string }[] }).content ?? [];
 	return content

@@ -1,11 +1,18 @@
 import Color from "colorjs.io";
-import { clamp01, compositeOver, type Parsed, type Rgb } from "./color.js";
-
-const lin = (v: number): number =>
-	v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+import {
+	clamp01,
+	compositeOver,
+	type Parsed,
+	type Rgb,
+	srgbToLinear,
+} from "./color.js";
 
 export function relativeLuminance(rgb: Rgb): number {
-	return 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
+	return (
+		0.2126 * srgbToLinear(rgb[0]) +
+		0.7152 * srgbToLinear(rgb[1]) +
+		0.0722 * srgbToLinear(rgb[2])
+	);
 }
 
 // Hex output keeps only 8 bits per channel.

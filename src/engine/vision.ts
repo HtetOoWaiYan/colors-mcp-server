@@ -1,4 +1,4 @@
-import { clamp01, type Rgb } from "./color.js";
+import { clamp01, linearToSrgb, type Rgb, srgbToLinear } from "./color.js";
 import { deltaE2000 } from "./distance.js";
 
 export type Cvd =
@@ -38,29 +38,22 @@ const MATRICES: Record<Exclude<Cvd, "achromatopsia">, M> = {
 	],
 };
 
-const toLinear = (v: number): number => {
-	const a = Math.abs(v);
-	return a <= 0.04045 ? v / 12.92 : Math.sign(v) * ((a + 0.055) / 1.055) ** 2.4;
-};
-const fromLinear = (v: number): number =>
-	v <= 0.0031308 ? v * 12.92 : 1.055 * v ** (1 / 2.4) - 0.055;
-
 export function simulate(rgb: Rgb, type: Cvd): Rgb {
 	const lin: Rgb = [
-		toLinear(clamp01(rgb[0])),
-		toLinear(clamp01(rgb[1])),
-		toLinear(clamp01(rgb[2])),
+		srgbToLinear(clamp01(rgb[0])),
+		srgbToLinear(clamp01(rgb[1])),
+		srgbToLinear(clamp01(rgb[2])),
 	];
 	if (type === "achromatopsia") {
 		const y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
-		const g = fromLinear(y);
+		const g = linearToSrgb(y);
 		return [g, g, g];
 	}
 	const m = MATRICES[type];
 	const out = m.map((row) =>
 		clamp01(row[0] * lin[0] + row[1] * lin[1] + row[2] * lin[2]),
 	) as Rgb;
-	return [fromLinear(out[0]), fromLinear(out[1]), fromLinear(out[2])];
+	return [linearToSrgb(out[0]), linearToSrgb(out[1]), linearToSrgb(out[2])];
 }
 
 export function minSeparation(

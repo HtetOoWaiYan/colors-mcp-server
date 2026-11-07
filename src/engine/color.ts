@@ -19,7 +19,7 @@ export interface Parsed {
 // The message tells the caller (often a small model) how to fix the input.
 export class ColorError extends Error {}
 
-export const NAMED_COLORS: string[] = Object.keys(keywords);
+const NAMED_COLORS: string[] = Object.keys(keywords);
 
 const BARE_HEX = /^(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
 
@@ -57,7 +57,7 @@ function closestName(word: string): string | undefined {
 		: undefined;
 }
 
-export const ACCEPTED_FORMATS =
+const ACCEPTED_FORMATS =
 	'hex (#rgb, #rrggbb, #rrggbbaa), rgb(255 0 0), hsl(210 50% 40%), oklch(0.6 0.2 250), oklab(), lab(), lch(), hwb(), color(display-p3 1 0 0), or a CSS name like "tomato"';
 
 export function parseColor(raw: string): Parsed {
@@ -92,18 +92,13 @@ export function rgbToHex(rgb: Rgb, alpha = 1): string {
 	return alpha < 1 ? `${base}${part(alpha)}` : base;
 }
 
-export function hexToRgb(hex: string): Rgb {
-	const p = parseColor(hex);
-	return [clamp01(p.rgb[0]), clamp01(p.rgb[1]), clamp01(p.rgb[2])];
-}
-
 // Oklab (Ottosson): linear sRGB <-> LMS <-> Lab. Hand-rolled: it runs in tight search loops
 // and must not depend on a library's color-object overhead.
-const srgbToLinear = (v: number): number => {
+export const srgbToLinear = (v: number): number => {
 	const a = Math.abs(v);
 	return a <= 0.04045 ? v / 12.92 : Math.sign(v) * ((a + 0.055) / 1.055) ** 2.4;
 };
-const linearToSrgb = (v: number): number => {
+export const linearToSrgb = (v: number): number => {
 	const a = Math.abs(v);
 	return a <= 0.0031308
 		? v * 12.92
