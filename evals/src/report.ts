@@ -84,7 +84,7 @@ export function computeReport(args: {
 	conditions: string[];
 	serverCondition: string;
 	seed?: number;
-	suite?: { name: string; heldout: boolean };
+	suite?: { name: string; heldout: boolean; sealedOnly?: boolean };
 }): Report {
 	const { tasks, cells, models, conditions } = args;
 	const suite = args.suite ?? { name: "v1", heldout: true };
@@ -485,6 +485,109 @@ export function renderMarkdown(
 	L.push("", "## Failure-analysis transcript sample (dev only, seeded)", "");
 	for (const f of r.failureSample)
 		L.push(`- ${f.cellId} (category ${f.category}, ${f.outcome})`);
+	L.push("");
+	return L.join("\n");
+}
+
+// ---- sealed-only suites (fresh): whole-suite aggregates, nothing per task or per category ----
+
+export type SealedAgg = Pick<
+	Agg,
+	| "tasks"
+	| "trials"
+	| "pass"
+	| "checkScore"
+	| "toolCalls"
+	| "inputTokens"
+	| "outputTokens"
+>;
+
+export interface SealedReport {
+	runId: string;
+	suite: string;
+	suiteVersion: number;
+	sealed: true;
+	models: string[];
+	conditions: string[];
+	aggregates: Record<string, Record<string, SealedAgg>>;
+	/** Task-clustered bootstrap of the per-task server minus no-tools difference, per model and pooled. */
+	paired: Record<string, Interval>;
+	dropped: Report["dropped"];
+}
+
+/** Built from the full computation, then cut down to an allow-list, so no per-task field can slip through. */
+export function computeSealedReport(
+	args: Parameters<typeof computeReport>[0],
+): SealedReport {
+	const full = computeReport(args);
+	const aggregates: SealedReport["aggregates"] = {};
+	for (const m of full.models) {
+		aggregates[m] = {};
+		for (const c of full.conditions) {
+			const a = (full.heldout[m] as Record<string, Agg>)[c] as Agg;
+			(aggregates[m] as Record<string, SealedAgg>)[c] = {
+				tasks: a.tasks,
+				trials: a.trials,
+				pass: a.pass,
+				checkScore: a.checkScore,
+				toolCalls: a.toolCalls,
+				inputTokens: a.inputTokens,
+				outputTokens: a.outputTokens,
+			};
+		}
+	}
+	return {
+		runId: full.runId,
+		suite: full.suite,
+		suiteVersion: full.suiteVersion,
+		sealed: true,
+		models: full.models,
+		conditions: full.conditions,
+		aggregates,
+		paired: full.paired.heldout,
+		dropped: full.dropped,
+	};
+}
+
+export function renderSealedMarkdown(
+	r: SealedReport,
+	meta: { serverSha?: string; nodeVersion?: string },
+): string {
+	const L: string[] = [];
+	L.push(`# Eval report: ${r.runId}`, "");
+	L.push(
+		`Suite: ${r.suite}, version ${r.suiteVersion}. Client profile: **TNI** (text-only tool results, no server instructions). Server: \`${meta.serverSha ?? "n/a"}\`. Node ${meta.nodeVersion ?? "n/a"}.`,
+		"",
+		"> **Sealed suite.** Every task is held out. It was authored from designer briefs without sight of the tools or of any results, and it is the final judge, so this report shows whole-suite aggregates only: no per-task or per-category rows, no regressions, no outcomes per task, no transcripts. Descriptive; no significance claims.",
+		"",
+		"## Aggregates per model and condition",
+		"",
+		"| model | condition | tasks | trials | pass | check score | tool calls | in tok | out tok |",
+		"|---|---|---|---|---|---|---|---|---|",
+	);
+	for (const m of r.models)
+		for (const c of r.conditions) {
+			const a = (r.aggregates[m] as Record<string, SealedAgg>)[c] as SealedAgg;
+			L.push(
+				`| ${m} | ${c} | ${a.tasks} | ${a.trials} | ${pct(a.pass)} | ${pct(a.checkScore)} | ${num(a.toolCalls, 1)} | ${num(a.inputTokens, 0)} | ${num(a.outputTokens, 0)} |`,
+			);
+		}
+	L.push(
+		"",
+		"## Paired per-task difference (server minus no-tools)",
+		"",
+		"Task-clustered bootstrap 95% interval, 10,000 seeded resamples.",
+		"",
+	);
+	for (const k of [...r.models, "pooled"])
+		L.push(`- **${k}**: ${ci(r.paired[k] as Interval)}`);
+	L.push("", "## Dropped trials (pairwise infra exclusion)", "");
+	for (const m of r.models) {
+		const d = r.dropped[m] as Report["dropped"][string];
+		L.push(
+			`- ${m}: ${d.trials}/${d.total} dropped${d.incomplete ? " **INCOMPLETE (>10%)**" : ""}`,
+		);
+	}
 	L.push("");
 	return L.join("\n");
 }

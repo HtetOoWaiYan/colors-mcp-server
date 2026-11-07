@@ -8,7 +8,8 @@
 		"typecheck": "tsc --noEmit",
 		"cli": "tsx src/cli.ts",
 		"build-suite": "tsx src/tasks/build-suite.ts",
-		"build-suite-gen": "tsx src/tasks/gen/build-gen.ts"
+		"build-suite-gen": "tsx src/tasks/gen/build-gen.ts",
+		"build-suite-fresh": "tsx src/tasks/fresh/build-fresh.ts"
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "1.32.2",

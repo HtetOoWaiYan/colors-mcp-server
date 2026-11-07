@@ -48,4 +48,13 @@ export const CATEGORY_NAMES: Record<number, string> = {
 	105: "grayscale-safe",
 	106: "diverging-scale",
 	107: "video-ycbcr",
+	// Fresh suite: categories 201+; same kinds as 101-107 with new parameters, plus one new kind.
+	201: "constrained-pick",
+	202: "scrim",
+	203: "dual-surface",
+	204: "composite-mix",
+	205: "grayscale-safe",
+	206: "diverging-scale",
+	207: "video-ycbcr",
+	208: "gradient-text",
 };

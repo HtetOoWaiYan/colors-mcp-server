@@ -46,3 +46,20 @@ npm run build-suite-gen                                     # regenerate (frozen
 npm run cli -- run --suite generalization --run-id gen-v2 --server-ref working-tree
 npm run cli -- report --run-id gen-v2                       # the suite is read from the run manifest
 ```
+
+## Fresh suite (sealed final judge)
+
+The `fresh` suite (32 tasks, categories 201-208) is the final judge after the tools are tuned on the generalization suite. It was written from designer briefs without sight of the tools or of any results. Categories 201-207 are the generalization kinds with new parameters (new hues, surfaces, thresholds, counts, 5- and 9-step and dark-middle diverging scales, BT.601, BT.2020 10-bit and JFIF-decode video math); 208 `gradient-text` asks for a text color that keeps a contrast floor against every point of a CSS gradient, including dips between stops.
+
+- **Every task is held out.** Cells go to `sealed/`, a completed full matrix appends to `results/holdout-log.jsonl` like v1, and `--tasks`/`--limit` are refused (an aggregate over a hand-picked subset is a per-task result). The run log prints `done (sealed)` instead of a held-out cell's outcome.
+- **Aggregates only.** `report` writes pass rate, check score, tool calls and tokens per model and condition, the paired per-task difference with its task-clustered bootstrap interval, and dropped-trial counts. Nothing per task or per category.
+- **Do not read** `src/tasks/fresh/suite-fresh.json`, `cats-fresh.ts` or the sealed cells while iterating on the tools.
+- Own run identity: task hashes in `src/tasks/fresh/manifest-fresh.json`, grader hash over `graders`, `reference`, `graders-gen`, `reference-gen`, `graders-fresh` and `reference-fresh`. Searched floors are 0.6 of the best value meeting the other rules; inputs are kept in `grader.params.derivation`.
+- No `oracle`, by design.
+
+```bash
+npm run build-suite-fresh                                   # regenerate (frozen; --bump makes a new version)
+npm run cli -- preflight --suite fresh --server-ref working-tree
+npm run cli -- run --suite fresh --run-id fresh-v2 --server-ref working-tree
+npm run cli -- report --run-id fresh-v2
+```

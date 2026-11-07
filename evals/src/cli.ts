@@ -1,5 +1,4 @@
 import {
-	appendFileSync,
 	existsSync,
 	mkdirSync,
 	readFileSync,
@@ -15,8 +14,13 @@ import {
 	preflightServer,
 	V2_CASES,
 } from "./preflight.js";
-import { ResultStore, sha256 } from "./record.js";
-import { computeReport, renderMarkdown } from "./report.js";
+import { ResultStore, sha256, spendHoldout } from "./record.js";
+import {
+	computeReport,
+	computeSealedReport,
+	renderMarkdown,
+	renderSealedMarkdown,
+} from "./report.js";
 import { connectServer } from "./runner/mcp-bridge.js";
 import { anthropicProvider } from "./runner/providers/anthropic.js";
 import { openAiProvider } from "./runner/providers/openai.js";
@@ -65,6 +69,11 @@ function runSuite(runId: string): SuiteName | undefined {
 
 async function preflight(): Promise<number> {
 	const ref = flag("server-ref", "main") as string;
+	// Fails before any model call if the frozen suite JSON no longer matches its manifest.
+	const suite = loadSuite(parseSuiteName(flag("suite")));
+	console.log(
+		`suite ${suite.name} v${suite.manifest.version}: ${suite.tasks.length} tasks, manifest ok, grader hash ${suite.graderHash.slice(0, 12)}`,
+	);
 	const service = ensureService();
 	let failed = 0;
 	try {
@@ -74,7 +83,7 @@ async function preflight(): Promise<number> {
 		const s = await preflightServer(
 			build.spec,
 			v2 ? V2_CASES : BASELINE_CASES,
-			11,
+			v2 ? null : 11,
 		);
 		const providers = buildModels(modelIds());
 		const all = [...s.results];
@@ -107,8 +116,13 @@ async function run(): Promise<number> {
 		);
 	let tasks = allTasks;
 	const only = flag("tasks");
-	if (only) tasks = tasks.filter((t) => only.split(",").includes(t.id));
 	const limit = flag("limit");
+	if (suite.sealedOnly && (only || limit))
+		// An aggregate over a hand-picked subset of a sealed suite is a per-task result.
+		throw new Error(
+			`suite ${suite.name} is sealed: --tasks and --limit are refused; run the whole suite`,
+		);
+	if (only) tasks = tasks.filter((t) => only.split(",").includes(t.id));
 	if (limit) tasks = tasks.slice(0, Number(limit));
 	const profile = flag("profile", "tni") as "tni" | "instructions";
 	const store = new ResultStore(results, sealed, runId);
@@ -208,13 +222,13 @@ async function run(): Promise<number> {
 		);
 		const complete =
 			summary.pending === 0 && !summary.stoppedBy && !only && !limit;
-		if (complete && suite.heldout) {
-			// A completed matrix spends one held-out evaluation (sealed-set policy).
-			appendFileSync(
-				join(results, "holdout-log.jsonl"),
-				`${JSON.stringify({ runId, serverSha: build.sha, profile, at: new Date().toISOString() })}\n`,
-			);
-		}
+		spendHoldout(results, suite.heldout, complete, {
+			runId,
+			suite: suite.name,
+			serverSha: build.sha,
+			profile,
+			at: new Date().toISOString(),
+		});
 		return summary.stoppedBy === "rate_limit" ? 2 : 0;
 	} finally {
 		store.resetRunning();
@@ -229,27 +243,35 @@ async function writeReport(
 	models: string[],
 	suiteName: SuiteName,
 ): Promise<void> {
-	const { tasks, manifest, heldout } = loadSuite(suiteName);
+	const { tasks, manifest, heldout, sealedOnly } = loadSuite(suiteName);
 	const store = new ResultStore(results, sealed, runId);
-	const report = computeReport({
+	const args = {
 		runId,
-		suite: { name: suiteName, heldout },
+		suite: { name: suiteName, heldout, sealedOnly },
 		suiteVersion: manifest.version,
 		tasks,
 		cells: store.all(true),
 		models,
 		conditions: ["no-tools", serverName],
 		serverCondition: serverName,
-	});
+	};
+	const meta = { serverSha: sha, nodeVersion: process.version };
+	// A sealed-only suite writes only the cut-down report, so nothing per task reaches results/.
+	const [json, md] = sealedOnly
+		? (() => {
+				const r = computeSealedReport(args);
+				return [r, renderSealedMarkdown(r, meta)] as const;
+			})()
+		: (() => {
+				const r = computeReport(args);
+				return [r, renderMarkdown(r, meta)] as const;
+			})();
 	mkdirSync(join(results, runId), { recursive: true });
 	writeFileSync(
 		join(results, runId, "results.json"),
-		`${JSON.stringify(report, null, "\t")}\n`,
+		`${JSON.stringify(json, null, "\t")}\n`,
 	);
-	writeFileSync(
-		join(results, runId, "report.md"),
-		renderMarkdown(report, { serverSha: sha, nodeVersion: process.version }),
-	);
+	writeFileSync(join(results, runId, "report.md"), md);
 	console.log(`wrote ${join(results, runId, "report.md")}`);
 }
 
@@ -274,6 +296,12 @@ async function report(): Promise<number> {
 
 async function oracle(): Promise<number> {
 	const suite = parseSuiteName(flag("suite"));
+	if (suite === "fresh") {
+		console.error(
+			"oracle: suite fresh has no tool solver by design. It was written without sight of the tools, so there is no tool call to replay, and a per-task oracle over a sealed suite would expose held-out results. Its witnesses and invalid answers are checked by npm test.",
+		);
+		return 64;
+	}
 	if (suite !== "v1") {
 		// Its tasks were written from briefs, not around the tools, so there is no "right tool call" to replay.
 		console.error(
@@ -303,7 +331,7 @@ const table: Record<string, () => Promise<number>> = {
 };
 if (!cmd || !table[cmd]) {
 	console.error(
-		"usage: cli <preflight|run|report|oracle> [--suite v1|generalization] [--server-ref main] [--run-id ID] [--models haiku-5-5,gpt-6-luna] [--trials 2] [--tasks c01-1,...] [--limit N]",
+		"usage: cli <preflight|run|report|oracle> [--suite v1|generalization|fresh] [--server-ref main] [--run-id ID] [--models haiku-5-5,gpt-6-luna] [--trials 2] [--tasks c01-1,...] [--limit N]",
 	);
 	process.exit(64);
 }

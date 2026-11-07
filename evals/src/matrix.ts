@@ -179,7 +179,12 @@ export async function runMatrix(o: MatrixOptions): Promise<MatrixSummary> {
 							break;
 						}
 						summary.ran++;
-						log(`${base.id} -> ${finished.outcome}`);
+						// A held-out cell's outcome is sealed; even the console must not show it per task.
+						log(
+							task.split === "heldout"
+								? `${base.id} -> done (sealed)`
+								: `${base.id} -> ${finished.outcome}`,
+						);
 						break;
 					}
 				}

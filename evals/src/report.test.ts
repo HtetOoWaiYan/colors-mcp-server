@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { CellRecord, Outcome } from "./record.js";
-import { computeReport, renderMarkdown } from "./report.js";
+import {
+	computeReport,
+	computeSealedReport,
+	renderMarkdown,
+	renderSealedMarkdown,
+} from "./report.js";
+import { loadSuite } from "./tasks/load.js";
 import type { Task } from "./tasks/types.js";
 
 const task = (id: string, split: "dev" | "heldout", category = 14): Task => ({
@@ -140,5 +146,59 @@ describe("computeReport", () => {
 		expect(md).not.toContain("Held-out split (sealed)");
 		expect(md).not.toContain("Predeclared bar");
 		expect(md).toContain("| 101 |");
+	});
+});
+
+describe("sealed-only suite (fresh)", () => {
+	const fresh = loadSuite("fresh");
+	// Real ids and categories, mixed outcomes and tool calls, so any per-task leak would carry a recognisable id.
+	const cells = fresh.tasks.flatMap((t, i) =>
+		[1, 2].flatMap((trial) => [
+			cell("m", "no-tools", t, trial, i % 3 === 0 ? "pass" : "semantic_failure"),
+			cell("m", SERVER, t, trial, i % 2 === 0 ? "pass" : "limit_exhausted", {
+				run: {
+					toolCalls: [{ name: "x" }],
+					inputTokens: 100,
+					outputTokens: 10,
+					elapsedMs: 1,
+				} as unknown as CellRecord["run"],
+			}),
+		]),
+	);
+	const r = computeSealedReport({
+		...base,
+		tasks: fresh.tasks,
+		cells,
+		suite: { name: "fresh", heldout: true, sealedOnly: true },
+	});
+	const md = renderSealedMarkdown(r, {});
+	const json = JSON.stringify(r);
+
+	it("contains no task id, cell id or category, in the markdown or the JSON", () => {
+		for (const t of fresh.tasks) {
+			expect(md).not.toContain(t.id);
+			expect(json).not.toContain(t.id);
+		}
+		expect(md).not.toMatch(/^## (Per category|Regressions|Outcomes|Tool usage|Failure)/m);
+		expect(md).not.toMatch(/\|\s*20[1-8]\s*\|/);
+		expect(json).not.toMatch(/categor|regression|failureSample|outcomes|toolUsage/);
+	});
+
+	it("reports whole-suite aggregates and the paired difference with its bootstrap interval", () => {
+		const server = r.aggregates.m?.[SERVER];
+		expect(server).toMatchObject({ tasks: 32, trials: 64, toolCalls: 1, inputTokens: 100 });
+		expect(server?.pass).toBeCloseTo(16 / 32, 9);
+		// per task: server passes on even indexes, baseline on multiples of 3
+		const diffs = fresh.tasks.map((_, i) => (i % 2 === 0 ? 1 : 0) - (i % 3 === 0 ? 1 : 0));
+		expect(r.paired.m?.mean).toBeCloseTo(diffs.reduce((a, b) => a + b, 0) / 32, 9);
+		expect(r.paired.pooled?.n).toBe(32);
+		expect((r.paired.m?.lo ?? 1) <= (r.paired.m?.mean ?? 0)).toBe(true);
+		expect(md).toContain("Task-clustered bootstrap 95% interval");
+	});
+
+	it("says in its header that the suite is sealed and was authored without sight of the tools or any results", () => {
+		expect(md).toContain("Suite: fresh, version 1.");
+		expect(md).toContain("**Sealed suite.**");
+		expect(md).toContain("without sight of the tools or of any results");
 	});
 });

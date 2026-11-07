@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import {
+	appendFileSync,
 	existsSync,
 	mkdirSync,
 	readdirSync,
@@ -158,4 +159,28 @@ function walk(dir: string, out: CellRecord[]): void {
 		else if (e.name.endsWith(".json") && !e.name.includes(".tmp-"))
 			out.push(JSON.parse(readFileSync(p, "utf8")) as CellRecord);
 	}
+}
+
+export interface HoldoutSpend {
+	runId: string;
+	suite: string;
+	serverSha: string;
+	profile: string;
+	at: string;
+}
+
+/** A completed full matrix over a suite with a sealed split spends one held-out evaluation (sealed-set policy). */
+export function spendHoldout(
+	resultsDir: string,
+	suiteHasHeldout: boolean,
+	complete: boolean,
+	entry: HoldoutSpend,
+): boolean {
+	if (!complete || !suiteHasHeldout) return false;
+	mkdirSync(resultsDir, { recursive: true });
+	appendFileSync(
+		join(resultsDir, "holdout-log.jsonl"),
+		`${JSON.stringify(entry)}\n`,
+	);
+	return true;
 }

@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { graderHashFor } from "../identity.js";
 import { MANIFEST_PATH, manifestFor, SUITE_PATH } from "./build-suite.js";
+import { MANIFEST_FRESH_PATH, SUITE_FRESH_PATH } from "./fresh/build-fresh.js";
 import { MANIFEST_GEN_PATH, SUITE_GEN_PATH } from "./gen/build-gen.js";
 import type { Task } from "./types.js";
 
@@ -11,7 +12,7 @@ export interface Manifest {
 	tasks: Record<string, string>;
 }
 
-export type SuiteName = "v1" | "generalization";
+export type SuiteName = "v1" | "generalization" | "fresh";
 
 interface SuiteDef {
 	suitePath: string;
@@ -20,6 +21,8 @@ interface SuiteDef {
 	graderDirs: string[];
 	/** Whether the suite has a sealed held-out split; the generalization suite is dev-only by design. */
 	heldout: boolean;
+	/** Every task is held out: runs refuse task subsets and reports show only whole-suite aggregates. */
+	sealedOnly: boolean;
 }
 
 const SUITES: Record<SuiteName, SuiteDef> = {
@@ -28,12 +31,28 @@ const SUITES: Record<SuiteName, SuiteDef> = {
 		manifestPath: MANIFEST_PATH,
 		graderDirs: ["graders", "reference"],
 		heldout: true,
+		sealedOnly: false,
 	},
 	generalization: {
 		suitePath: SUITE_GEN_PATH,
 		manifestPath: MANIFEST_GEN_PATH,
 		graderDirs: ["graders", "reference", "graders-gen", "reference-gen"],
 		heldout: false,
+		sealedOnly: false,
+	},
+	fresh: {
+		suitePath: SUITE_FRESH_PATH,
+		manifestPath: MANIFEST_FRESH_PATH,
+		graderDirs: [
+			"graders",
+			"reference",
+			"graders-gen",
+			"reference-gen",
+			"graders-fresh",
+			"reference-fresh",
+		],
+		heldout: true,
+		sealedOnly: true,
 	},
 };
 
@@ -52,6 +71,7 @@ export function loadSuite(name: SuiteName = "v1"): {
 	manifest: Manifest;
 	graderHash: string;
 	heldout: boolean;
+	sealedOnly: boolean;
 } {
 	const def = SUITES[name];
 	const tasks = JSON.parse(readFileSync(def.suitePath, "utf8")) as Task[];
@@ -70,5 +90,6 @@ export function loadSuite(name: SuiteName = "v1"): {
 		manifest,
 		graderHash: graderHashFor(def.graderDirs),
 		heldout: def.heldout,
+		sealedOnly: def.sealedOnly,
 	};
 }
