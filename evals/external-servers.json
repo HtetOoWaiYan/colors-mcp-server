@@ -1,0 +1,27 @@
+[
+	{
+		"id": "coolors-mcp",
+		"kind": "npm",
+		"package": "@trishchuk/coolors-mcp",
+		"version": "1.1.0",
+		"bin": "coolors-mcp",
+		"note": "25 tools: CIEDE2000, WCAG+APCA, colour-blindness simulation, HCT/Material 3 palettes, gradients"
+	},
+	{
+		"id": "mcp-color-convert",
+		"kind": "npm",
+		"package": "mcp-color-convert",
+		"version": "0.1.3",
+		"bin": "mcp-color-convert",
+		"note": "20 tools on colorizr: OKLCH/OKLab conversion, adjust, harmonies, WCAG contrast"
+	},
+	{
+		"id": "color-theory-mcp",
+		"kind": "git",
+		"url": "https://github.com/JoshuaRamirez/color-theory-mcp",
+		"commit": "95085b9b59b833f070d4f332f25b29122c1fb5b2",
+		"build": ["node_modules/.bin/tsc"],
+		"entry": "dist/index.js",
+		"note": "27 tools: conversion across many spaces, WCAG+APCA, delta-E, gamut, CVD, harmonies, Material themes"
+	}
+]

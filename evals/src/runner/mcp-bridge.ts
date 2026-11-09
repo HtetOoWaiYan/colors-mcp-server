@@ -12,6 +12,8 @@ export interface ServerSpec {
 	args: string[];
 	cwd: string;
 	env?: Record<string, string>;
+	/** Third-party servers get only PATH, LANG and `env`, never the harness's own environment. */
+	isolateEnv?: boolean;
 }
 
 /** TNI profile: only the text parts of `content` reach the model. structuredContent is dropped. */
@@ -31,7 +33,13 @@ export async function connectServer(spec: ServerSpec): Promise<ToolHost> {
 		command: spec.command,
 		args: spec.args,
 		cwd: spec.cwd,
-		env: { ...(process.env as Record<string, string>), ...spec.env },
+		env: spec.isolateEnv
+			? {
+					PATH: process.env.PATH ?? "",
+					LANG: process.env.LANG ?? "C.UTF-8",
+					...spec.env,
+				}
+			: { ...(process.env as Record<string, string>), ...spec.env },
 		stderr: "ignore",
 	});
 	const client = new Client({ name: "colors-evals", version: "0.0.0" });

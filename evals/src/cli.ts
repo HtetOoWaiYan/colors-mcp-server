@@ -5,6 +5,7 @@ import {
 	writeFileSync,
 } from "node:fs";
 import { join } from "node:path";
+import { prepareExternalServer } from "./external.js";
 import { EVALS_ROOT, prepareServerBuild } from "./identity.js";
 import { type ConditionSpec, type ModelSpec, runMatrix } from "./matrix.js";
 import { formatOracle, runOracle } from "./oracle.js";
@@ -145,7 +146,16 @@ async function run(): Promise<number> {
 	if (reset) console.log(`returned ${reset} interrupted cell(s) to pending`);
 
 	const service = ensureService();
-	const build = prepareServerBuild(ref);
+	// `--server-id` benchmarks a pinned third-party server from external-servers.json instead of a ref of this repo.
+	const externalId = flag("server-id");
+	const external = externalId ? prepareExternalServer(externalId) : undefined;
+	const build = external
+		? {
+				sha: external.pin,
+				spec: external.spec,
+				lockHash: external.lockHash,
+			}
+		: prepareServerBuild(ref);
 	const probe = await connectServer(build.spec);
 	const toolDefsHash = sha256(
 		JSON.stringify({
@@ -156,7 +166,9 @@ async function run(): Promise<number> {
 	);
 	const protocolVersion = probe.protocolVersion;
 	await probe.close();
-	const serverName = `server@${build.sha.slice(0, 8)}${profile === "instructions" ? "+instr" : ""}`;
+	const serverName = external
+		? `${external.id}${profile === "instructions" ? "+instr" : ""}`
+		: `server@${build.sha.slice(0, 8)}${profile === "instructions" ? "+instr" : ""}`;
 	const conditions: ConditionSpec[] = [
 		{ name: "no-tools" },
 		{
@@ -170,8 +182,9 @@ async function run(): Promise<number> {
 	const models = buildModels(modelIds());
 	store.writeManifest({
 		runId,
-		serverRef: ref,
+		serverRef: external ? `external:${external.id}` : ref,
 		serverSha: build.sha,
+		serverLabel: serverName,
 		protocolVersion,
 		toolDefsHash,
 		lockHash: build.lockHash,
@@ -222,7 +235,8 @@ async function run(): Promise<number> {
 		);
 		const complete =
 			summary.pending === 0 && !summary.stoppedBy && !only && !limit;
-		spendHoldout(results, suite.heldout, complete, {
+		// Benchmarking someone else's server tunes nothing, so it does not spend a held-out evaluation.
+		spendHoldout(results, suite.heldout, complete && !external, {
 			runId,
 			suite: suite.name,
 			serverSha: build.sha,
@@ -331,7 +345,7 @@ const table: Record<string, () => Promise<number>> = {
 };
 if (!cmd || !table[cmd]) {
 	console.error(
-		"usage: cli <preflight|run|report|oracle> [--suite v1|generalization|fresh] [--server-ref main] [--run-id ID] [--models haiku-5-5,gpt-6-luna] [--trials 2] [--tasks c01-1,...] [--limit N]",
+		"usage: cli <preflight|run|report|oracle> [--suite v1|generalization|fresh] [--server-ref main | --server-id coolors-mcp] [--run-id ID] [--models haiku-5-5,gpt-6-luna] [--trials 2] [--tasks c01-1,...] [--limit N]",
 	);
 	process.exit(64);
 }
