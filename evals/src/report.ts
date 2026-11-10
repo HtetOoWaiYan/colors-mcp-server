@@ -394,7 +394,9 @@ export function renderMarkdown(
 	);
 	L.push(
 		"",
-		r.hasHeldout
+		r.suite === "neutral"
+			? "> Scope: neutral suite, 12 capability domains drawn from the union of what the compared servers advertise, written by authors who had not seen any server's tools and frozen before any server ran on it. Dev only, so every task and category is shown. Two small hosted models; client profile as stated above. Descriptive; no significance claims."
+			: r.hasHeldout
 			? "> Scope: bounded CSS, UI-token and chart-palette color tasks, two small hosted models, TNI client only. No claim is made about print, film, photo or game work. Baseline results are descriptive; no significance claims."
 			: "> Scope: generalization suite of adjacent and out-of-scope color tasks written from designer briefs, not around the tools; dev split only and never tuned on, so no held-out comparison is made. Two small hosted models, TNI client only. Descriptive; no significance claims.",
 		"",

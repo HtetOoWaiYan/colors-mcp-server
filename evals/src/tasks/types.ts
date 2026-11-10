@@ -57,4 +57,17 @@ export const CATEGORY_NAMES: Record<number, string> = {
 	206: "diverging-scale",
 	207: "video-ycbcr",
 	208: "gradient-text",
+	// Neutral suite: categories 301+; one category per capability domain advertised across the servers compared.
+	301: "apca-contrast",
+	302: "delta-e",
+	303: "space-conversion",
+	304: "color-properties",
+	305: "cvd-simulation",
+	306: "interpolation",
+	307: "harmony",
+	308: "naming-and-text-color",
+	309: "tonal-scale",
+	310: "role-tokens",
+	311: "constraint-search",
+	312: "palette-audit",
 };

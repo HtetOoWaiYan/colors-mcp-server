@@ -3,6 +3,10 @@ import { graderHashFor } from "../identity.js";
 import { MANIFEST_PATH, manifestFor, SUITE_PATH } from "./build-suite.js";
 import { MANIFEST_FRESH_PATH, SUITE_FRESH_PATH } from "./fresh/build-fresh.js";
 import { MANIFEST_GEN_PATH, SUITE_GEN_PATH } from "./gen/build-gen.js";
+import {
+	MANIFEST_NEUTRAL_PATH,
+	SUITE_NEUTRAL_PATH,
+} from "./neutral/build-neutral.js";
 import type { Task } from "./types.js";
 
 export interface Manifest {
@@ -12,7 +16,7 @@ export interface Manifest {
 	tasks: Record<string, string>;
 }
 
-export type SuiteName = "v1" | "generalization" | "fresh";
+export type SuiteName = "v1" | "generalization" | "fresh" | "neutral";
 
 interface SuiteDef {
 	suitePath: string;
@@ -53,6 +57,14 @@ const SUITES: Record<SuiteName, SuiteDef> = {
 		],
 		heldout: true,
 		sealedOnly: true,
+	},
+	// Written blind to every server's tools and frozen before any server ran on it; dev-only so per-category results are visible.
+	neutral: {
+		suitePath: SUITE_NEUTRAL_PATH,
+		manifestPath: MANIFEST_NEUTRAL_PATH,
+		graderDirs: ["graders", "reference", "graders-neutral", "reference-neutral"],
+		heldout: false,
+		sealedOnly: false,
 	},
 };
 

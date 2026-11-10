@@ -345,7 +345,7 @@ const table: Record<string, () => Promise<number>> = {
 };
 if (!cmd || !table[cmd]) {
 	console.error(
-		"usage: cli <preflight|run|report|oracle> [--suite v1|generalization|fresh] [--server-ref main | --server-id coolors-mcp] [--run-id ID] [--models haiku-5-5,gpt-6-luna] [--trials 2] [--tasks c01-1,...] [--limit N]",
+		"usage: cli <preflight|run|report|oracle> [--suite v1|generalization|fresh|neutral] [--server-ref main | --server-id coolors-mcp] [--run-id ID] [--models haiku-5-5,gpt-6-luna] [--trials 2] [--tasks c01-1,...] [--limit N]",
 	);
 	process.exit(64);
 }
