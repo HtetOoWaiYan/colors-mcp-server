@@ -1,5 +1,7 @@
 # Your server vs third-party color MCP servers
 
+> **Superseded for fairness:** see `neutral-suite-comparison-2026-11-10.md`. The suites used below were written alongside or tuned against your tools; on a neutral suite the lead over the best competitor is much smaller.
+
 Run on 2026-11-09 with the existing eval harness, `haiku-5-5` and `gpt-6-luna` through the local inference proxy, harness-default generation settings, 2 trials per task, TNI client profile (only tool-result text reaches the model, no server instructions). The same no-tools cells serve as the baseline for every server (`--reuse-from`).
 
 Servers: this repo at `main` (86a9b68, v2.0.0), and three third-party servers picked because they cover more than yours on paper, pinned in `external-servers.json`:

@@ -20,8 +20,18 @@
 		"kind": "git",
 		"url": "https://github.com/JoshuaRamirez/color-theory-mcp",
 		"commit": "95085b9b59b833f070d4f332f25b29122c1fb5b2",
-		"build": ["node_modules/.bin/tsc"],
+		"build": [
+			"node_modules/.bin/tsc"
+		],
 		"entry": "dist/index.js",
 		"note": "27 tools: conversion across many spaces, WCAG+APCA, delta-E, gamut, CVD, harmonies, Material themes"
+	},
+	{
+		"id": "color-engine-mcp",
+		"kind": "npm",
+		"package": "color-engine-mcp",
+		"version": "1.0.1",
+		"bin": "color-engine-mcp",
+		"note": "6 tools: parse, convert, WCAG contrast, sRGB gamut mapping, OKLCH ramp, contrast solving; ships server instructions"
 	}
 ]

@@ -67,3 +67,7 @@ npm run cli -- report --run-id fresh-v2
 ## Benchmarking other servers
 
 `external-servers.json` pins third-party MCP servers (npm version or git commit). `run --server-id <id>` installs one under `.cache/external/` with install scripts disabled, starts it with a minimal environment, and runs the same matrix against it; it does not spend a held-out evaluation. `scripts/bench-matrix.py` runs a whole comparison (one base run per suite, each server reusing its no-tools cells) and `scripts/bench-compare.mjs` collates it. The 2026-11-09 result is in `results/reports/third-party-servers-2026-11-09.md`.
+
+## Neutral suite
+
+`--suite neutral` (60 tasks, categories 301-312) is a dev-only suite written by authors with no sight of any server's tools, red-teamed by an independent solver and frozen before any server ran on it; it is meant for comparing servers fairly. Run it with `scripts/bench-neutral.py`, collate with `scripts/bench-neutral-compare.ts`; the 2026-11-10 result is in `results/reports/neutral-suite-comparison-2026-11-10.md`. Do not tune a server against it: make a new suite version instead.
