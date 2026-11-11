@@ -1,6 +1,7 @@
 import Color from "colorjs.io";
 import keywords from "colorjs.io/src/keywords.js";
 import {
+	bt2020Encode,
 	clamp01,
 	gamutMap,
 	normHue,
@@ -19,8 +20,12 @@ export const FORMATS = [
 	"oklab",
 	"lab",
 	"lch",
+	"lab-d65",
+	"lch-d65",
 	"p3",
 	"rec2020",
+	"rec2020-oetf",
+	"rec2020-linear",
 	"xyz",
 	"linear",
 	"hsv",
@@ -122,6 +127,39 @@ export function formatColor(
 				.coords.map(zero) as Rgb;
 			return {
 				text: `color(rec2020 ${p.map((v) => num(v, precision)).join(" ")}${a})`,
+			};
+		}
+		case "lab-d65": {
+			const [l, aa, b] = new Color("srgb", rgb)
+				.to("lab-d65")
+				.coords.map(zero) as Rgb;
+			return {
+				text: `lab-d65(${num(l, precision)} ${num(aa, precision)} ${num(b, precision)}${a})`,
+			};
+		}
+		case "lch-d65": {
+			const [l, aa, b] = new Color("srgb", rgb)
+				.to("lab-d65")
+				.coords.map(zero) as Rgb;
+			const c = Math.hypot(aa, b);
+			return {
+				text: `lch-d65(${num(l, precision)} ${num(c, precision)} ${num(c < 1e-4 ? 0 : normHue((Math.atan2(b, aa) * 180) / Math.PI), precision)}${a})`,
+			};
+		}
+		case "rec2020-oetf": {
+			const lin = new Color("srgb", rgb)
+				.to("rec2020-linear")
+				.coords.map(zero) as Rgb;
+			return {
+				text: `color(rec2020-oetf ${lin.map((v) => num(bt2020Encode(v), precision)).join(" ")}${a})`,
+			};
+		}
+		case "rec2020-linear": {
+			const p = new Color("srgb", rgb)
+				.to("rec2020-linear")
+				.coords.map(zero) as Rgb;
+			return {
+				text: `color(rec2020-linear ${p.map((v) => num(v, precision)).join(" ")}${a})`,
 			};
 		}
 		case "xyz": {

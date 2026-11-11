@@ -58,16 +58,54 @@ function closestName(word: string): string | undefined {
 }
 
 const ACCEPTED_FORMATS =
-	'hex (#rgb, #rrggbb, #rrggbbaa), rgb(255 0 0), hsl(210 50% 40%), oklch(0.6 0.2 250), oklab(), lab(), lch(), hwb(), hsv(210 60% 80%), color(display-p3 1 0 0), color(rec2020 ...), color(xyz-d65 ...), color(srgb-linear ...), or a CSS name like "tomato"';
+	'hex (#rgb, #rrggbb, #rrggbbaa), rgb(255 0 0), hsl(210 50% 40%), oklch(0.6 0.2 250), oklab(), lab(), lch(), hwb(), hsv(210 60% 80%), lab-d65(), lch-d65(), color(display-p3 1 0 0), color(rec2020 ...), color(rec2020-oetf ...), color(rec2020-linear ...), color(xyz-d65 ...), color(srgb-linear ...), or a CSS name like "tomato"';
 
-// CSS has no hsv(); Color.js has the space but not the function syntax.
-const HSV =
-	/^hs[vb]\(\s*(-?[\d.]+)(?:deg)?[\s,]+([\d.]+)%?[\s,]+([\d.]+)%?\s*(?:\/\s*([\d.]+)(%?))?\s*\)$/i;
+// Notations CSS lacks (or defines differently) that Color.js has only as spaces: hsv(), D65 Lab/LCh, BT.2020 R'G'B'.
+const NUM = "-?(?:\\d+\\.?\\d*|\\.\\d+)";
+const ARGS = `\\s*(${NUM})(?:deg)?%?[\\s,]+(${NUM})%?[\\s,]+(${NUM})%?\\s*(?:\\/\\s*(${NUM})(%?))?\\s*`;
+const HSV = new RegExp(`^hs[vb]\\(${ARGS}\\)$`, "i");
+const LAB65 = new RegExp(`^lab-d65\\(${ARGS}\\)$`, "i");
+const LCH65 = new RegExp(`^lch-d65\\(${ARGS}\\)$`, "i");
+const OETF = new RegExp(`^color\\(\\s*rec2020-oetf${ARGS}\\)$`, "i");
+const alphaOf = (m: RegExpExecArray) =>
+	m[4] ? Number(m[4]) / (m[5] ? 100 : 1) : 1;
 function makeColor(text: string): Color {
-	const m = HSV.exec(text);
-	if (!m) return new Color(text);
-	const alpha = m[4] ? Number(m[4]) / (m[5] ? 100 : 1) : 1;
-	return new Color("hsv", [Number(m[1]), Number(m[2]), Number(m[3])], alpha);
+	let m = HSV.exec(text);
+	if (m)
+		return new Color(
+			"hsv",
+			[Number(m[1]), Number(m[2]), Number(m[3])],
+			alphaOf(m),
+		);
+	m = LAB65.exec(text);
+	if (m)
+		return new Color(
+			"lab-d65",
+			[Number(m[1]), Number(m[2]), Number(m[3])],
+			alphaOf(m),
+		);
+	m = LCH65.exec(text);
+	if (m) {
+		const h = (Number(m[3]) * Math.PI) / 180;
+		const c = Number(m[2]);
+		return new Color(
+			"lab-d65",
+			[Number(m[1]), c * Math.cos(h), c * Math.sin(h)],
+			alphaOf(m),
+		);
+	}
+	m = OETF.exec(text);
+	if (m)
+		return new Color(
+			"rec2020-linear",
+			[
+				bt2020Decode(Number(m[1])),
+				bt2020Decode(Number(m[2])),
+				bt2020Decode(Number(m[3])),
+			],
+			alphaOf(m),
+		);
+	return new Color(text);
 }
 
 export function parseColor(raw: string): Parsed {
@@ -89,6 +127,22 @@ export function parseColor(raw: string): Parsed {
 	const coords = srgb.coords.map((v) => (Number.isNaN(v) ? 0 : v)) as Rgb;
 	const alpha = Number.isNaN(color.alpha) ? 1 : (color.alpha as number);
 	return { input: text, rgb: coords, alpha, space: color.space.id };
+}
+
+// ITU-R BT.2020-2 table 4 (the "OETF" the standard names). CSS color(rec2020) is a plain 2.4 gamma instead.
+const BT2020_A = 1.09929682680944;
+const BT2020_B = 0.018053968510807;
+export function bt2020Encode(v: number): number {
+	const s = v < 0 ? -1 : 1;
+	const x = Math.abs(v);
+	return x >= BT2020_B ? s * (BT2020_A * x ** 0.45 - (BT2020_A - 1)) : 4.5 * v;
+}
+export function bt2020Decode(v: number): number {
+	const s = v < 0 ? -1 : 1;
+	const x = Math.abs(v);
+	return x < BT2020_B * 4.5
+		? v / 4.5
+		: s * ((x + BT2020_A - 1) / BT2020_A) ** (1 / 0.45);
 }
 
 export const clamp01 = (v: number): number => Math.min(1, Math.max(0, v));

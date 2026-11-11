@@ -226,8 +226,45 @@ describe("colors_convert", () => {
 		expect(out("rec2020")).toBe("color(rec2020 0.8419 0.4699 0.255)");
 		expect(out("hsv")).toBe("hsv(15.8036 87.8431% 100%)");
 	});
+	it("gives D65 Lab/LCh, BT.2020-encoded and linear Rec.2020, distinct from the CSS lab()/rec2020", () => {
+		const out = (to: string) =>
+			call("colors_convert", { colors: ["#c8102e"], to, precision: 3 }).sc
+				?.results[0].output;
+		// CSS lab() is D50-adapted; the D65 variant is what CIEDE2000 here uses.
+		expect(out("lab")).toBe("lab(43.342 66.305 37.52)");
+		expect(out("lab-d65")).toBe("lab-d65(42.535 65.891 35.711)");
+		expect(out("lch-d65")).toMatch(/^lch-d65\(42\.53\d* 74\.9\d* 28\.4/);
+		const rec = (to: string) =>
+			call("colors_convert", { colors: ["#ff5a1f"], to, precision: 4 }).sc
+				?.results[0].output;
+		expect(rec("rec2020")).toBe("color(rec2020 0.8419 0.4699 0.255)");
+		// BT.2020 table 4: 1.0993 L^0.45 - 0.0993 on the linear value 0.6617 is 0.8136.
+		expect(rec("rec2020-oetf")).toMatch(/^color\(rec2020-oetf 0\.813\d /);
+		expect(rec("rec2020-linear")).toMatch(/^color\(rec2020-linear 0\.661\d /);
+	});
+	it("round-trips the new notations as input", () => {
+		const r = call("colors_convert", {
+			colors: [
+				"lab-d65(42.535 65.891 35.711)",
+				"lch-d65(42.535 74.946 28.457)",
+				"color(rec2020-oetf 0.8136 0.4699 0.255)",
+				"color(rec2020-linear 0.6617 0.0 0.0)",
+			],
+			to: "hex",
+		});
+		expect(r.isError).toBe(false);
+		expect(r.sc?.results[0].output).toBe("#c8102e");
+		expect(r.sc?.results[1].output).toBe("#c8102e");
+	});
 	it("accepts the new format names as aliases", () => {
-		for (const to of ["xyz-d65", "srgb-linear", "bt2020", "hsb"])
+		for (const to of [
+			"xyz-d65",
+			"srgb-linear",
+			"bt2020",
+			"hsb",
+			"lab65",
+			"linear-rec2020",
+		])
 			expect(call("colors_convert", { colors: ["#fff"], to }).isError, to).toBe(
 				false,
 			);

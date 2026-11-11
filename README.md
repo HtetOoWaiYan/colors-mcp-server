@@ -1,5 +1,7 @@
 # Colors MCP Server
 
+> **Built entirely by AI agents.** Every line of code, test, benchmark and document in this repository was written by AI agents. The maintainer is not a domain expert in color theory and has not checked the color math by hand. Correctness rests on published formulas, cross-checks against [Color.js](https://colorjs.io) and the benchmark results below, not on expert review. Treat the numbers as engineering output, and report errors you find.
+
 Exact color math, accessibility checks and ready-made palettes for AI agents.
 
 [![npm](https://img.shields.io/npm/v/@htetoowaiyan/colors-mcp-server)](https://www.npmjs.com/package/@htetoowaiyan/colors-mcp-server)
@@ -91,7 +93,7 @@ Thirteen tools. The first six return finished answers. The other seven are exact
 | `colors_scrim` | Find the smallest overlay opacity at which text reaches a contrast ratio on every worst-case region of an image. |
 | `colors_audit` | Scan CSS for text contrast, non-text contrast and near-duplicate tokens. Resolves `var(--x)`. |
 | `colors_info` | Validate colors and describe them: formats, closest name, lightness, contrast on white and black. A bad input gets a suggestion. |
-| `colors_convert` | Convert between hex, rgb, hsl, hwb, hsv, oklch, oklab, lab, lch, xyz (D65), linear sRGB, display-p3 and rec2020; all of them are also read as input. A color outside sRGB loses chroma only, and the result says so. |
+| `colors_convert` | Convert between hex, rgb, hsl, hwb, hsv, oklch, oklab, CSS `lab`/`lch` (D50), `lab-d65`/`lch-d65` (CIELAB with the D65 white, no adaptation), xyz (D65), linear sRGB, display-p3, `rec2020` (CSS, 2.4 gamma), `rec2020-oetf` (BT.2020 transfer function) and `rec2020-linear`; all of them are also read as input. A color outside sRGB loses chroma only, and the result says so. |
 | `colors_compare` | Rank candidates by CIEDE2000 (default), CIE94, CIE76 or Oklab distance, or report all four at once (D65 Lab), and say in plain words how close they are. |
 | `colors_blend` | Build gradients and mixes in OKLCH (shorter hue arc, safe for grays), OKLab, sRGB or linear-light sRGB. |
 | `colors_adjust` | Change lightness, chroma or hue by an exact OKLCH amount (add, multiply or set). |
@@ -132,9 +134,22 @@ The current server beats no tools by +0.34 [0.17, 0.50] (average per-task change
 
 The 14 held-out tasks were last run against the 2.0 server, where both models passed all 14. They pass 32% and 46% without tools. The current server did not re-run them.
 
+**Against other color MCP servers (neutral suite).** Four published servers (coolors-mcp, mcp-color-convert, color-theory-mcp, color-engine-mcp) were run on the same tasks with the same models. The 60 tasks of the second version (neutral v2) cover 12 domains, were written by authors who had not seen any server's tools, were re-solved independently with only Color.js, and were frozen before any server ran on them. Nothing was tuned on them. Mean pass rate over both models:
+
+| Condition | Pass rate | Server minus this one [95% interval] |
+| --- | --- | --- |
+| No tools | 25% | |
+| This server | 73% | |
+| color-theory-mcp | 55% | +0.17 [0.07, 0.27] |
+| color-engine-mcp | 48% | +0.25 [0.14, 0.36] |
+| mcp-color-convert | 36% | +0.36 [0.25, 0.48] |
+| coolors-mcp | 30% | +0.43 [0.33, 0.53] |
+
+The lead over every other server is clear. The first neutral suite showed a much smaller lead over color-theory-mcp (+0.05, not established) and exposed real gaps (APCA was not shown, standard spaces and metrics were missing); those were fixed, and the numbers above come from tasks written after the fix. Caveats: the 12 domains were chosen from what the compared servers advertise, two small models and five tasks per category, and the authors' session context included commit messages naming the new capabilities. The full report is [`evals/results/reports/neutral-v2-final-2026-11-12.md`](evals/results/reports/neutral-v2-final-2026-11-12.md).
+
 **What the numbers do not show.**
 - GPT-6 Luna gains less than Haiku. Without the new tools its gain on the sealed suite is not distinguishable from zero. The remaining misses are mostly arithmetic the tools do not cover, such as compositing and Y'CbCr.
-- The tool list is larger now (about 17,000 characters), so each run uses about 17% to 21% more input tokens.
+- The tool list is larger now (about 18,000 characters), so each run uses about 17% to 21% more input tokens.
 - The suites cover CSS, UI-token, chart-palette and a little video work, and they tested two models. Print, photo and game work have guides but no tasks.
 - The new tools were designed after reading failures on a second task suite, so that suite is no longer a fair test. The sealed suite is.
 
