@@ -71,3 +71,5 @@ npm run cli -- report --run-id fresh-v2
 ## Neutral suite
 
 `--suite neutral` (60 tasks, categories 301-312) is a dev-only suite written by authors with no sight of any server's tools, red-teamed by an independent solver and frozen before any server ran on it; it is meant for comparing servers fairly. Run it with `scripts/bench-neutral.py`, collate with `scripts/bench-neutral-compare.ts`; the 2026-11-10 result is in `results/reports/neutral-suite-comparison-2026-11-10.md`. Do not tune a server against it: make a new suite version instead.
+
+`--suite neutral2` (60 tasks, ids `p301-1`…`p312-5`) is the second version: fresh tasks for the same twelve domains, written blind after the first server fix and frozen before any server ran on it. Run any set of conditions with `scripts/bench-suite.py --suite neutral2 --prefix n2 --mine-ref <sha> --conds mine,coolors-mcp,...`, collate with `scripts/bench-neutral-compare.ts v2`. Neutral v1 was informed by the failures that led to the server fix, so use v2 (or a newer version) to judge. The final result is in `results/reports/neutral-v2-final-2026-11-12.md`.
