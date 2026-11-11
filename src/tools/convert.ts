@@ -10,6 +10,15 @@ const ALIASES: Record<string, Format> = {
 	"color(display-p3)": "p3",
 	hexadecimal: "hex",
 	okl: "oklch",
+	"xyz-d65": "xyz",
+	xyz65: "xyz",
+	"srgb-linear": "linear",
+	"linear-srgb": "linear",
+	"linear-rgb": "linear",
+	"rec.2020": "rec2020",
+	bt2020: "rec2020",
+	"bt.2020": "rec2020",
+	hsb: "hsv",
 };
 
 const input = z.object({
@@ -22,7 +31,9 @@ const input = z.object({
 					: v,
 			z.enum(FORMATS, { error: `to must be one of: ${FORMATS.join(", ")}.` }),
 		)
-		.describe(`Target format: ${FORMATS.join(", ")}. "p3" means display-p3.`),
+		.describe(
+			`Target format: ${FORMATS.join(", ")}. "p3" is display-p3, "xyz" is CIE XYZ (D65, Y of white = 1), "linear" is linear-light sRGB, "rec2020" is BT.2020 with its transfer curve.`,
+		),
 	precision: z
 		.number()
 		.int()
@@ -47,7 +58,7 @@ export const convertTool = defineTool({
 	name: "colors_convert",
 	title: "Convert colors",
 	description:
-		"Convert colors to another format: hex, rgb, hsl, hwb, oklch, oklab, lab, lch or p3. Exact math, handles lists. If a color does not fit sRGB (for hex/rgb/hsl/hwb) it is mapped in by lowering chroma only (same lightness and hue) and the result says so. Use for any format change.",
+		"Convert colors to another format: hex, rgb, hsl, hwb, hsv, oklch, oklab, lab, lch (CIELAB, D65), xyz (D65), linear (linear sRGB), p3 or rec2020. Reads any of them as input too. Exact math, handles lists. If a color does not fit sRGB (for hex/rgb/hsl/hwb) it is mapped in by lowering chroma only (same lightness and hue) and the result says so. Use for any format change.",
 	inputSchema: input,
 	outputSchema: output,
 	handler: guarded((args) => {

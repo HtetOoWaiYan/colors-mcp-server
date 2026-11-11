@@ -80,7 +80,7 @@ export const checkTool = defineTool({
 	name: "colors_check",
 	title: "Check contrast",
 	description:
-		"Check WCAG 2 contrast for text/background color pairs and say PASS or FAIL for each, with the exact ratio and, for failures, a nearby passing color. Use whenever you must know if colors are readable or accessible. Handles translucent colors. Pass foreground+background, or pairs for many.",
+		"Check WCAG 2 contrast for text/background color pairs and say PASS or FAIL for each, with the exact ratio and, for failures, a nearby passing color. Also gives the signed APCA Lc (APCA-W3 0.98G-4g: positive for dark text on light, negative for light on dark). Use whenever you must know if colors are readable or accessible. Handles translucent colors. Pass foreground+background, or pairs for many.",
 	inputSchema: input,
 	outputSchema: output,
 	handler: guarded((args) => {
@@ -123,7 +123,7 @@ export const checkTool = defineTool({
 				background: hex(eff.bg),
 				ratio: Number(ratio.toFixed(2)),
 				pass,
-				apca: Number(Math.abs(apcaContrast(eff.fg, eff.bg)).toFixed(1)),
+				apca: Number(apcaContrast(eff.fg, eff.bg).toFixed(1)),
 				...(suggestion ? { suggestion } : {}),
 			});
 		}
@@ -136,7 +136,7 @@ export const checkTool = defineTool({
 					: `${failed} of ${results.length} pairs FAIL WCAG ${level} ${SIZE_LABEL[size]} (need ${required}:1).`;
 		const lines = results.map(
 			(r, i) =>
-				`${results.length > 1 ? `${i + 1}. ` : ""}${r.pass ? "PASS" : "FAIL"} ${r.foreground} on ${r.background}: ${fmt(r.ratio)}:1${r.suggestion ? `. Passing alternative text color: ${r.suggestion} (use colors_fix for the closest)` : ""}`,
+				`${results.length > 1 ? `${i + 1}. ` : ""}${r.pass ? "PASS" : "FAIL"} ${r.foreground} on ${r.background}: ${fmt(r.ratio)}:1, APCA Lc ${fmt(r.apca, 1)}${r.suggestion ? `. Passing alternative text color: ${r.suggestion} (use colors_fix for the closest)` : ""}`,
 		);
 		return text(`${head}\n${lines.join("\n")}`, {
 			allPass: failed === 0,

@@ -84,15 +84,15 @@ Thirteen tools. The first six return finished answers. The other seven are exact
 
 | Tool | Use it to |
 | --- | --- |
-| `colors_check` | Pass or fail WCAG 2 contrast for one or many pairs (AA or AAA, normal text, large text or UI parts). Reports APCA Lc and a nearby passing color for each failure. Handles translucent colors. |
+| `colors_check` | Pass or fail WCAG 2 contrast for one or many pairs (AA or AAA, normal text, large text or UI parts). Reports the signed APCA Lc (positive dark-on-light, negative light-on-dark) and a nearby passing color for each failure. Handles translucent colors. |
 | `colors_fix` | Get the closest color with the same hue that reaches a target ratio on a given background. |
 | `colors_palette` | Build a finished palette. `ramp` is an 11-step tonal scale that contains the seed color. `theme` is light and dark tokens with every contrast rule checked. `categorical` is N distinct, color-blind-safe chart colors. `diverging` is a scale from one color through a light neutral to a second color, with symmetric lightness. |
 | `colors_find` | Find colors that meet your rules in one call: a hue band (or the hue family of a color), chroma and lightness ranges, contrast against one or more surfaces, and for several colors a minimum lightness gap, hue gap or color difference (optionally color-blind safe). Says which rule cannot be met when none can. |
 | `colors_scrim` | Find the smallest overlay opacity at which text reaches a contrast ratio on every worst-case region of an image. |
 | `colors_audit` | Scan CSS for text contrast, non-text contrast and near-duplicate tokens. Resolves `var(--x)`. |
 | `colors_info` | Validate colors and describe them: formats, closest name, lightness, contrast on white and black. A bad input gets a suggestion. |
-| `colors_convert` | Convert between hex, rgb, hsl, hwb, oklch, oklab, lab, lch and display-p3. A color outside sRGB loses chroma only, and the result says so. |
-| `colors_compare` | Rank candidates by CIEDE2000 (D65 Lab) and say in plain words how close they are. |
+| `colors_convert` | Convert between hex, rgb, hsl, hwb, hsv, oklch, oklab, lab, lch, xyz (D65), linear sRGB, display-p3 and rec2020; all of them are also read as input. A color outside sRGB loses chroma only, and the result says so. |
+| `colors_compare` | Rank candidates by CIEDE2000 (default), CIE94, CIE76 or Oklab distance, or report all four at once (D65 Lab), and say in plain words how close they are. |
 | `colors_blend` | Build gradients and mixes in OKLCH (shorter hue arc, safe for grays), OKLab, sRGB or linear-light sRGB. |
 | `colors_adjust` | Change lightness, chroma or hue by an exact OKLCH amount (add, multiply or set). |
 | `colors_harmony` | Build complementary, split-complementary, triadic, tetradic and analogous schemes by OKLCH hue rotation. |

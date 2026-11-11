@@ -93,3 +93,22 @@ export function describeDeltaE(d: number): string {
 	if (d < 10) return "clearly different";
 	return "very different";
 }
+
+/** CIE76: Euclidean distance in CIELAB (D65). */
+export const deltaE76 = (a: Rgb, b: Rgb): number => {
+	const [l1, a1, b1] = rgbToLab(a);
+	const [l2, a2, b2] = rgbToLab(b);
+	return Math.hypot(l1 - l2, a1 - a2, b1 - b2);
+};
+
+/** CIE94, graphic-arts weights (kL = kC = kH = 1, K1 = 0.045, K2 = 0.015). C1 is the chroma of `a`, the reference. */
+export const deltaE94 = (a: Rgb, b: Rgb): number => {
+	const [l1, a1, b1] = rgbToLab(a);
+	const [l2, a2, b2] = rgbToLab(b);
+	const c1 = Math.hypot(a1, b1);
+	const dC = c1 - Math.hypot(a2, b2);
+	const dH2 = Math.max(0, (a1 - a2) ** 2 + (b1 - b2) ** 2 - dC ** 2);
+	return Math.sqrt(
+		(l1 - l2) ** 2 + (dC / (1 + 0.045 * c1)) ** 2 + dH2 / (1 + 0.015 * c1) ** 2,
+	);
+};

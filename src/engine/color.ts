@@ -58,7 +58,17 @@ function closestName(word: string): string | undefined {
 }
 
 const ACCEPTED_FORMATS =
-	'hex (#rgb, #rrggbb, #rrggbbaa), rgb(255 0 0), hsl(210 50% 40%), oklch(0.6 0.2 250), oklab(), lab(), lch(), hwb(), color(display-p3 1 0 0), or a CSS name like "tomato"';
+	'hex (#rgb, #rrggbb, #rrggbbaa), rgb(255 0 0), hsl(210 50% 40%), oklch(0.6 0.2 250), oklab(), lab(), lch(), hwb(), hsv(210 60% 80%), color(display-p3 1 0 0), color(rec2020 ...), color(xyz-d65 ...), color(srgb-linear ...), or a CSS name like "tomato"';
+
+// CSS has no hsv(); Color.js has the space but not the function syntax.
+const HSV =
+	/^hs[vb]\(\s*(-?[\d.]+)(?:deg)?[\s,]+([\d.]+)%?[\s,]+([\d.]+)%?\s*(?:\/\s*([\d.]+)(%?))?\s*\)$/i;
+function makeColor(text: string): Color {
+	const m = HSV.exec(text);
+	if (!m) return new Color(text);
+	const alpha = m[4] ? Number(m[4]) / (m[5] ? 100 : 1) : 1;
+	return new Color("hsv", [Number(m[1]), Number(m[2]), Number(m[3])], alpha);
+}
 
 export function parseColor(raw: string): Parsed {
 	if (typeof raw !== "string" || raw.trim() === "") {
@@ -68,7 +78,7 @@ export function parseColor(raw: string): Parsed {
 	if (BARE_HEX.test(text)) text = `#${text}`;
 	let color: Color;
 	try {
-		color = new Color(text);
+		color = makeColor(text);
 	} catch {
 		const hint = /^[a-z]+$/i.test(text) ? closestName(text) : undefined;
 		throw new ColorError(

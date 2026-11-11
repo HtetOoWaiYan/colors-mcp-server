@@ -20,11 +20,15 @@ export const FORMATS = [
 	"lab",
 	"lch",
 	"p3",
+	"rec2020",
+	"xyz",
+	"linear",
+	"hsv",
 ] as const;
 export type Format = (typeof FORMATS)[number];
 
 /** Spaces whose values are only meaningful for in-gamut sRGB colors. */
-export const SRGB_FORMATS: Format[] = ["hex", "rgb", "hsl", "hwb"];
+export const SRGB_FORMATS: Format[] = ["hex", "rgb", "hsl", "hwb", "hsv"];
 
 /** Color.js reports a powerless hue (grays) as null; treat missing channels as 0. */
 const zero = (v: number | null | undefined): number =>
@@ -109,6 +113,37 @@ export function formatColor(
 				.coords.map(zero) as Rgb;
 			return {
 				text: `lch(${num(l, precision)} ${num(cc, precision)} ${num(normHue(h), precision)}${a})`,
+			};
+		}
+		case "rec2020": {
+			const p = new Color("srgb", rgb)
+				.to("rec2020")
+				.toGamut({ space: "rec2020", method: "oklch.c" })
+				.coords.map(zero) as Rgb;
+			return {
+				text: `color(rec2020 ${p.map((v) => num(v, precision)).join(" ")}${a})`,
+			};
+		}
+		case "xyz": {
+			const p = new Color("srgb", rgb).to("xyz-d65").coords.map(zero) as Rgb;
+			return {
+				text: `color(xyz-d65 ${p.map((v) => num(v, precision)).join(" ")}${a})`,
+			};
+		}
+		case "linear": {
+			const p = new Color("srgb", rgb)
+				.to("srgb-linear")
+				.coords.map(zero) as Rgb;
+			return {
+				text: `color(srgb-linear ${p.map((v) => num(v, precision)).join(" ")}${a})`,
+			};
+		}
+		case "hsv": {
+			const [h, s, v] = new Color("srgb", working)
+				.to("hsv")
+				.coords.map(zero) as Rgb;
+			return {
+				text: `hsv(${num(h, precision)} ${num(s, precision)}% ${num(v, precision)}%${a})`,
 			};
 		}
 		case "p3": {

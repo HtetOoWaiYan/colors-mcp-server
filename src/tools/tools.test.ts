@@ -1,5 +1,6 @@
 // biome-ignore-all lint/suspicious/noExplicitAny: loosely typed structuredContent in assertions (shapes are enforced by each outputSchema)
 import { describe, expect, it } from "vitest";
+import Color from "colorjs.io";
 import { z } from "zod";
 import { hueDiff, parseColor, rgbToOklch } from "../engine/color.js";
 import { contrastRatio } from "../engine/contrast.js";
@@ -55,6 +56,20 @@ describe("colors_check", () => {
 		expect(r.text).toMatch(/^FAIL: 4\.48:1, needs 4\.5:1/);
 		expect(r.sc?.results[0].pass).toBe(false);
 		expect(r.sc?.results[0].suggestion).toMatch(/^#[0-9a-f]{6}$/);
+	});
+	it("reports signed APCA Lc in the text and the structured result", () => {
+		const dark = call("colors_check", {
+			foreground: "#000000",
+			background: "#ffffff",
+		});
+		expect(dark.sc?.results[0].apca).toBeCloseTo(106, 0);
+		expect(dark.text).toMatch(/APCA Lc 106\b/);
+		const light = call("colors_check", {
+			foreground: "#ffffff",
+			background: "#000000",
+		});
+		expect(light.sc?.results[0].apca).toBeCloseTo(-108, 0);
+		expect(light.text).toMatch(/APCA Lc -107\.9/);
 	});
 	it("passes the edge case 4.54:1", () => {
 		const r = call("colors_check", {
@@ -202,6 +217,41 @@ describe("colors_convert", () => {
 		});
 		expect(r.sc?.results[0].output).toMatch(/^color\(display-p3 /);
 	});
+	it("gives XYZ, linear sRGB, Rec.2020 and HSV (checked against Color.js values)", () => {
+		const out = (to: string) =>
+			call("colors_convert", { colors: ["#ff5a1f"], to, precision: 4 }).sc
+				?.results[0].output;
+		expect(out("xyz")).toBe("color(xyz-d65 0.4514 0.2867 0.0445)");
+		expect(out("linear")).toBe("color(srgb-linear 1 0.1022 0.0137)");
+		expect(out("rec2020")).toBe("color(rec2020 0.8419 0.4699 0.255)");
+		expect(out("hsv")).toBe("hsv(15.8036 87.8431% 100%)");
+	});
+	it("accepts the new format names as aliases", () => {
+		for (const to of ["xyz-d65", "srgb-linear", "bt2020", "hsb"])
+			expect(call("colors_convert", { colors: ["#fff"], to }).isError, to).toBe(
+				false,
+			);
+	});
+	it("reads hsv()/hsb() input and the new color() spaces", () => {
+		const r = call("colors_convert", {
+			colors: [
+				"hsv(15.8036 87.8431% 100%)",
+				"hsb(200, 65%, 80%)",
+				"color(srgb-linear 1 0.1022 0.0137)",
+				"color(xyz-d65 0.4514 0.2867 0.0445)",
+				"color(rec2020 0.8419 0.4699 0.255)",
+			],
+			to: "hex",
+		});
+		expect(r.isError).toBe(false);
+		expect(r.sc?.results.map((x: any) => x.output)).toEqual([
+			"#ff5a1f",
+			"#47a0cc",
+			"#ff5a1f",
+			"#ff5a1f",
+			"#ff5a1f",
+		]);
+	});
 	it("rejects unknown formats with the list of valid ones", () => {
 		const r = call("colors_convert", { colors: ["#fff"], to: "cmyk" });
 		expect("invalid" in r && r.invalid).toContain(
@@ -223,6 +273,50 @@ describe("colors_compare", () => {
 			"#f97316",
 		]);
 		expect(r.text).toMatch(/^Nearest to #2563eb: #1d4ed8 \(ΔE00 /);
+	});
+});
+
+describe("colors_compare metrics", () => {
+	// Independent CIE94 (graphic arts) from Lab values computed by Color.js.
+	const lab = (hexColor: string) =>
+		new Color(hexColor).to("lab-d65").coords as [number, number, number];
+	function cie94(ref: string, other: string): number {
+		const [l1, a1, b1] = lab(ref);
+		const [l2, a2, b2] = lab(other);
+		const c1 = Math.hypot(a1, b1);
+		const c2 = Math.hypot(a2, b2);
+		const dh2 = (a1 - a2) ** 2 + (b1 - b2) ** 2 - (c1 - c2) ** 2;
+		return Math.sqrt(
+			(l1 - l2) ** 2 +
+				((c1 - c2) / (1 + 0.045 * c1)) ** 2 +
+				dh2 / (1 + 0.015 * c1) ** 2,
+		);
+	}
+	it('"all" returns CIE76, CIE94, CIEDE2000 and Oklab for each candidate', () => {
+		const r = call("colors_compare", {
+			color: "#c8102e",
+			candidates: ["#d22630", "#1e3a8a"],
+			metric: "all",
+		});
+		const first = r.sc?.ranking[0];
+		const [l1, a1, b1] = lab("#c8102e");
+		const [l2, a2, b2] = lab("#d22630");
+		expect(first.cie76).toBeCloseTo(Math.hypot(l1 - l2, a1 - a2, b1 - b2), 1);
+		expect(first.cie94).toBeCloseTo(cie94("#c8102e", "#d22630"), 1);
+		expect(first.ciede2000).toBeCloseTo(3.77, 2);
+		expect(r.text).toMatch(/ΔE76 [\d.]+, ΔE94 [\d.]+, ΔE00 3\.77, Oklab/);
+		expect(r.sc?.ranking[1].color).toBe("#1e3a8a");
+	});
+	it("ranks by CIE94 and CIE76 when asked", () => {
+		for (const metric of ["cie94", "cie76"]) {
+			const r = call("colors_compare", {
+				color: "#2563eb",
+				candidates: ["#f97316", "#1d4ed8", "#3b82f6"],
+				metric,
+			});
+			expect(r.sc?.nearest, metric).toBe("#1d4ed8");
+			expect(r.sc?.metric).toBe(metric);
+		}
 	});
 });
 
