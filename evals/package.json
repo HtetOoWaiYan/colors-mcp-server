@@ -11,7 +11,8 @@
 		"build-suite-gen": "tsx src/tasks/gen/build-gen.ts",
 		"build-suite-fresh": "tsx src/tasks/fresh/build-fresh.ts",
 		"build-suite-neutral": "tsx src/tasks/neutral/build-neutral.ts",
-		"build-suite-neutral2": "tsx src/tasks/neutral/build-neutral2.ts"
+		"build-suite-neutral2": "tsx src/tasks/neutral/build-neutral2.ts",
+		"build-suite-neutral3": "tsx src/tasks/neutral/build-neutral3.ts"
 	},
 	"dependencies": {
 		"@modelcontextprotocol/sdk": "1.32.2",

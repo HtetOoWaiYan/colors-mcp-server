@@ -11,6 +11,10 @@ import {
 	MANIFEST_NEUTRAL2_PATH,
 	SUITE_NEUTRAL2_PATH,
 } from "./neutral/build-neutral2.js";
+import {
+	MANIFEST_NEUTRAL3_PATH,
+	SUITE_NEUTRAL3_PATH,
+} from "./neutral/build-neutral3.js";
 import type { Task } from "./types.js";
 
 export interface Manifest {
@@ -20,7 +24,7 @@ export interface Manifest {
 	tasks: Record<string, string>;
 }
 
-export type SuiteName = "v1" | "generalization" | "fresh" | "neutral" | "neutral2";
+export type SuiteName = "v1" | "generalization" | "fresh" | "neutral" | "neutral2" | "neutral3";
 
 interface SuiteDef {
 	suitePath: string;
@@ -74,6 +78,14 @@ const SUITES: Record<SuiteName, SuiteDef> = {
 	neutral2: {
 		suitePath: SUITE_NEUTRAL2_PATH,
 		manifestPath: MANIFEST_NEUTRAL2_PATH,
+		graderDirs: ["graders", "reference", "graders-neutral", "reference-neutral"],
+		heldout: false,
+		sealedOnly: false,
+	},
+	// Third fresh set, written blind after the second server fix and frozen before any server ran on it.
+	neutral3: {
+		suitePath: SUITE_NEUTRAL3_PATH,
+		manifestPath: MANIFEST_NEUTRAL3_PATH,
 		graderDirs: ["graders", "reference", "graders-neutral", "reference-neutral"],
 		heldout: false,
 		sealedOnly: false,
