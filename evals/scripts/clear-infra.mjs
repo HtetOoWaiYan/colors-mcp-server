@@ -4,11 +4,11 @@ import { readdirSync, readFileSync, unlinkSync } from "node:fs";
 import { join } from "node:path";
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(join(d, e.name)) : [join(d, e.name)]);
 let n = 0;
-for (const run of readdirSync("results").filter((x) => x.startsWith("nb-"))) {
+for (const run of readdirSync("results").filter((x) => /^(nb|nb2|n2)-/.test(x))) {
 	for (const f of walk(join("results", run, "cells"))) {
 		const c = JSON.parse(readFileSync(f, "utf8"));
 		if (c.status !== "infra_failed") continue;
-		if (c.condition === "no-tools" && !run.startsWith("nb-base-")) continue;
+		if (c.condition === "no-tools" && !/^(nb|n2)-base-/.test(run)) continue;
 		unlinkSync(f); n++;
 	}
 }

@@ -6,23 +6,67 @@ import { bootstrapMean, mean } from "../src/stats.js";
 const RESULTS = join(import.meta.dirname, "..", "results");
 const MODELS = ["haiku-5-5", "gpt-6-luna"] as const;
 const MODEL_TAG = { "haiku-5-5": "h", "gpt-6-luna": "l" } as const;
-const MINE = "server@86a9b681";
 
 interface Cond {
 	label: string;
-	tag: string; // run-id stem: nb-<tag>-<m>
+	run: string; // run-id stem: <run>-<m>
 	cond: string; // condition name inside that run
 }
-const CONDS: Cond[] = [
-	{ label: "no tools", tag: "base", cond: "no-tools" },
-	{ label: "your server (v2.0.0)", tag: "base", cond: MINE },
-	{ label: "your server + instructions", tag: "mine-instr", cond: `${MINE}+instr` },
-	{ label: "coolors-mcp 1.1.0", tag: "coolors-mcp", cond: "coolors-mcp" },
-	{ label: "mcp-color-convert 0.1.3", tag: "mcp-color-convert", cond: "mcp-color-convert" },
-	{ label: "color-theory-mcp 95085b9", tag: "color-theory-mcp", cond: "color-theory-mcp" },
-	{ label: "color-engine-mcp 1.0.1", tag: "color-engine-mcp", cond: "color-engine-mcp" },
-	{ label: "color-engine-mcp + instructions", tag: "color-engine-mcp-instr", cond: "color-engine-mcp+instr" },
+interface Config {
+	title: string;
+	suiteJson: string;
+	taskCount: number;
+	conds: Cond[];
+	/** label of the server the "mine minus this" column compares against */
+	mine: string;
+	noTools: Cond;
+}
+const MINE_OLD = "server@86a9b681";
+const MINE_FIX = "server@014fe975";
+const OTHERS = (p: string): Cond[] => [
+	{ label: "coolors-mcp 1.1.0", run: `${p}-coolors-mcp`, cond: "coolors-mcp" },
+	{ label: "mcp-color-convert 0.1.3", run: `${p}-mcp-color-convert`, cond: "mcp-color-convert" },
+	{ label: "color-theory-mcp 95085b9", run: `${p}-color-theory-mcp`, cond: "color-theory-mcp" },
+	{ label: "color-engine-mcp 1.0.1", run: `${p}-color-engine-mcp`, cond: "color-engine-mcp" },
+	{ label: "color-engine-mcp + instructions", run: `${p}-color-engine-mcp-instr`, cond: "color-engine-mcp+instr" },
 ];
+const CONFIGS: Record<string, Config> = {
+	// neutral v1 after the server fix: the old server, the fixed server and every third-party server on the same frozen tasks.
+	v1: {
+		title: "Neutral suite v1 (frozen before the server fix)",
+		suiteJson: "neutral/suite-neutral.json",
+		taskCount: 60,
+		noTools: { label: "no tools", run: "nb-base", cond: "no-tools" },
+		mine: "your server, fixed (014fe97)",
+		conds: [
+			{ label: "no tools", run: "nb-base", cond: "no-tools" },
+			{ label: "your server, before fix (86a9b68)", run: "nb-base", cond: MINE_OLD },
+			{ label: "your server, fixed (014fe97)", run: "nb2-mine", cond: MINE_FIX },
+			{ label: "your server, before fix + instructions", run: "nb-mine-instr", cond: `${MINE_OLD}+instr` },
+			{ label: "your server, fixed + instructions", run: "nb2-mine-instr", cond: `${MINE_FIX}+instr` },
+			...OTHERS("nb"),
+		],
+	},
+	// neutral v2: fresh tasks, written blind after the fix, never seen by any server.
+	v2: {
+		title: "Neutral suite v2 (fresh tasks, frozen before any server ran on them)",
+		suiteJson: "neutral/suite-neutral2.json",
+		taskCount: 60,
+		noTools: { label: "no tools", run: "n2-base", cond: "no-tools" },
+		mine: "your server (014fe97)",
+		conds: [
+			{ label: "no tools", run: "n2-base", cond: "no-tools" },
+			{ label: "your server (014fe97)", run: "n2-base", cond: MINE_FIX },
+			{ label: "your server + instructions", run: "n2-mine-instr", cond: `${MINE_FIX}+instr` },
+			...OTHERS("n2"),
+		],
+	},
+};
+const which = process.argv[2] ?? "v1";
+const CFG = CONFIGS[which];
+if (!CFG) throw new Error(`usage: bench-neutral-compare.ts <${Object.keys(CONFIGS).join("|")}>`);
+const CONDS = CFG.conds;
+const MINE_LABEL = CFG.mine;
 
 interface Cell {
 	status: string;
@@ -45,7 +89,7 @@ const cells: Record<string, Record<string, Record<string, Record<number, Cell>>>
 for (const m of MODELS) {
 	cells[m] = {};
 	for (const c of CONDS) {
-		const dir = join(RESULTS, `nb-${c.tag}-${MODEL_TAG[m]}`, "cells", m, c.cond);
+		const dir = join(RESULTS, `${c.run}-${MODEL_TAG[m]}`, "cells", m, c.cond);
 		const byTask: Record<string, Record<number, Cell>> = {};
 		let files: string[] = [];
 		try {
@@ -63,7 +107,7 @@ for (const m of MODELS) {
 }
 
 const tasks = JSON.parse(
-	readFileSync(join(import.meta.dirname, "..", "src", "tasks", "neutral", "suite-neutral.json"), "utf8"),
+	readFileSync(join(import.meta.dirname, "..", "src", "tasks", CFG.suiteJson), "utf8"),
 ) as { id: string; category: number; categoryName: string }[];
 const catName = new Map(tasks.map((t) => [t.category, t.categoryName]));
 const categories = [...new Set(tasks.map((t) => t.category))].sort();
@@ -107,11 +151,11 @@ const diffs = (a: Map<string, number>, b: Map<string, number>) =>
 const L: string[] = [];
 const present = CONDS.filter((c) => Object.keys(cells["haiku-5-5"]?.[c.label] ?? {}).length > 0);
 
-L.push("### Overall (60 tasks x 2 trials x 2 models)", "");
+L.push(`### ${CFG.title}: overall (${tasks.length} tasks x 2 trials x 2 models)`, "");
 L.push("| condition | haiku-5-5 pass | gpt-6-luna pass | mean pass | check score | gain over no tools [95% CI] | mine minus this [95% CI] | tool calls/run | input tok/run | limit rate |");
 L.push("|---|---|---|---|---|---|---|---|---|---|");
 const noTools = pooled("no tools", "pass");
-const mine = pooled("your server (v2.0.0)", "pass");
+const mine = pooled(MINE_LABEL, "pass");
 for (const c of present) {
 	const pp = pooled(c.label, "pass");
 	const ps = pooled(c.label, "score");
@@ -121,7 +165,7 @@ for (const c of present) {
 	const tok = mean(all.map((x) => x.run?.inputTokens ?? 0));
 	const lim = mean(all.map((x) => (x.outcome === "limit_exhausted" ? 1 : 0)));
 	const gain = c.label === "no tools" ? "-" : sg(bootstrapMean(diffs(pp, noTools)));
-	const vsMine = c.label === "your server (v2.0.0)" || c.label === "no tools" ? "-" : sg(bootstrapMean(diffs(mine, pp)));
+	const vsMine = c.label === MINE_LABEL || c.label === "no tools" ? "-" : sg(bootstrapMean(diffs(mine, pp)));
 	L.push(`| ${c.label} | ${pct(perModel[0] as number)} | ${pct(perModel[1] as number)} | ${pct(mean([...pp.values()]))} | ${pct(mean([...ps.values()]))} | ${gain} | ${vsMine} | ${calls.toFixed(1)} | ${Math.round(tok)} | ${pct(lim)} |`);
 }
 

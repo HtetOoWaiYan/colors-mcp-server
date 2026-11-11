@@ -3,6 +3,9 @@ import type { Check, GraderSpec } from "../tasks/types.js";
 import { REGISTRY_A } from "./registry-a.js";
 import { REGISTRY_B } from "./registry-b.js";
 import { REGISTRY_C } from "./registry-c.js";
+import { REGISTRY2_A } from "./registry2-a.js";
+import { REGISTRY2_B } from "./registry2-b.js";
+import { REGISTRY2_C } from "./registry2-c.js";
 
 type GraderFn = (answer: unknown, params: never) => Check[];
 
@@ -11,6 +14,10 @@ const NEUTRAL_REGISTRY: Record<string, GraderFn> = {
 	...REGISTRY_A,
 	...REGISTRY_B,
 	...REGISTRY_C,
+	// v2 reuses v1 kinds where they fit and adds its own in registry2-*; v1 grader code is untouched.
+	...REGISTRY2_A,
+	...REGISTRY2_B,
+	...REGISTRY2_C,
 };
 
 /** Grades a task from any suite: neutral kinds here, everything else by the earlier registries. */
