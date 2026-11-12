@@ -23,6 +23,7 @@ interface Config {
 }
 const MINE_OLD = "server@86a9b681";
 const MINE_FIX = "server@014fe975";
+const MINE_FINAL = "server@56fc00a0";
 const OTHERS = (p: string): Cond[] => [
 	{ label: "coolors-mcp 1.1.0", run: `${p}-coolors-mcp`, cond: "coolors-mcp" },
 	{ label: "mcp-color-convert 0.1.3", run: `${p}-mcp-color-convert`, cond: "mcp-color-convert" },
@@ -47,7 +48,8 @@ const CONFIGS: Record<string, Config> = {
 			...OTHERS("nb"),
 		],
 	},
-	// neutral v2: fresh tasks, written blind after the fix, never seen by any server.
+	// neutral v2: fresh tasks, written blind after the first server fix, never seen by any server. The 56fc00a rows were run
+	// after the second fix (D65 Lab, BT.2020), which was prompted by reading these tasks' transcripts.
 	v2: {
 		title: "Neutral suite v2 (fresh tasks, frozen before any server ran on them)",
 		suiteJson: "neutral/suite-neutral2.json",
@@ -58,7 +60,23 @@ const CONFIGS: Record<string, Config> = {
 			{ label: "no tools", run: "n2-base", cond: "no-tools" },
 			{ label: "your server (014fe97)", run: "n2-base", cond: MINE_FIX },
 			{ label: "your server + instructions", run: "n2-mine-instr", cond: `${MINE_FIX}+instr` },
+			{ label: "your server, after 2nd fix (56fc00a)", run: "n2b-mine", cond: MINE_FINAL },
+			{ label: "your server, after 2nd fix + instructions", run: "n2b-mine-instr", cond: `${MINE_FINAL}+instr` },
 			...OTHERS("n2"),
+		],
+	},
+	// neutral v3: fresh tasks written blind after the second fix, frozen before any server ran on them. The clean judge.
+	v3: {
+		title: "Neutral suite v3 (fresh tasks written after the final server fix)",
+		suiteJson: "neutral/suite-neutral3.json",
+		taskCount: 60,
+		noTools: { label: "no tools", run: "n3-base", cond: "no-tools" },
+		mine: "your server (56fc00a)",
+		conds: [
+			{ label: "no tools", run: "n3-base", cond: "no-tools" },
+			{ label: "your server (56fc00a)", run: "n3-base", cond: MINE_FINAL },
+			{ label: "your server + instructions", run: "n3-mine-instr", cond: `${MINE_FINAL}+instr` },
+			...OTHERS("n3"),
 		],
 	},
 };

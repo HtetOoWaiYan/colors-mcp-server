@@ -134,18 +134,18 @@ The current server beats no tools by +0.34 [0.17, 0.50] (average per-task change
 
 The 14 held-out tasks were last run against the 2.0 server, where both models passed all 14. They pass 32% and 46% without tools. The current server did not re-run them.
 
-**Against other color MCP servers (neutral suite).** Four published servers (coolors-mcp, mcp-color-convert, color-theory-mcp, color-engine-mcp) were run on the same tasks with the same models. The 60 tasks of the second version (neutral v2) cover 12 domains, were written by authors who had not seen any server's tools, were re-solved independently with only Color.js, and were frozen before any server ran on them. Nothing was tuned on them. Mean pass rate over both models:
+**Against other color MCP servers (neutral suite).** Four published servers (coolors-mcp, mcp-color-convert, color-theory-mcp, color-engine-mcp) were run on the same tasks with the same models. The 60 tasks of the third version (neutral v3) cover 12 domains, were written by authors who had not seen any server's tools, were re-solved independently with only Color.js, and were frozen before any server ran on them. They were written after the last server change, and nothing was tuned on them. Mean pass rate over both models (haiku-5-5 and gpt-6-luna, 2 trials each):
 
 | Condition | Pass rate | Server minus this one [95% interval] |
 | --- | --- | --- |
-| No tools | 25% | |
-| This server | 73% | |
-| color-theory-mcp | 55% | +0.17 [0.07, 0.27] |
-| color-engine-mcp | 48% | +0.25 [0.14, 0.36] |
-| mcp-color-convert | 36% | +0.36 [0.25, 0.48] |
-| coolors-mcp | 30% | +0.43 [0.33, 0.53] |
+| No tools | 16% | |
+| This server | 62% | |
+| color-theory-mcp | 46% | +0.17 [0.07, 0.27] |
+| color-engine-mcp | 36% | +0.26 [0.15, 0.38] |
+| mcp-color-convert | 23% | +0.39 [0.29, 0.50] |
+| coolors-mcp | 19% | +0.43 [0.32, 0.54] |
 
-The lead over every other server is clear. The first neutral suite showed a much smaller lead over color-theory-mcp (+0.05, not established) and exposed real gaps (APCA was not shown, standard spaces and metrics were missing); those were fixed, and the numbers above come from tasks written after the fix. Caveats: the 12 domains were chosen from what the compared servers advertise, two small models and five tasks per category, and the authors' session context included commit messages naming the new capabilities. The full report is [`evals/results/reports/neutral-v2-final-2026-11-12.md`](evals/results/reports/neutral-v2-final-2026-11-12.md).
+The lead over every other server is clear, and only this server and color-theory-mcp help by a wide margin; coolors-mcp and mcp-color-convert are not distinguishable from no tools. v3 is harder than the second version (no tools drops from 25% to 16%), so compare the ranks and the paired differences, not the absolute rate. The weakest areas for this server on v3 are APCA contrast, delta-E and role tokens (30 to 40%); part of that is the small models running out of their step or token limit before answering. The first neutral suite showed a much smaller lead over color-theory-mcp (+0.05, not established) and exposed real gaps (APCA was not shown, standard spaces and metrics were missing); those were fixed before the second and third suites were written. Caveats: the 12 domains were chosen from what the compared servers advertise, two small models and five tasks per category, and the authors' session context included commit messages naming the new capabilities. The full report is [`evals/results/reports/neutral-v3-final-2026-11-12.md`](evals/results/reports/neutral-v3-final-2026-11-12.md).
 
 **What the numbers do not show.**
 - GPT-6 Luna gains less than Haiku. Without the new tools its gain on the sealed suite is not distinguishable from zero. The remaining misses are mostly arithmetic the tools do not cover, such as compositing and Y'CbCr.
